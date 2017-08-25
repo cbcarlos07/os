@@ -32,6 +32,7 @@
 
   <body>
   <link href="css/load.css" rel="stylesheet" type="text/css" />
+  <link href="css/bootstrap-chosen.css" rel="stylesheet" type="text/css" />
   <div class="linear-progress-material" style="display: block;">
       <div class="bar bar1"></div>
       <div class="bar bar2"></div>
@@ -167,6 +168,8 @@
 
   	<?php include "includes/cabecalho.php" ?>
 
+   <div class="row"></div>
+
 
 
 
@@ -192,15 +195,15 @@
                       <div class="col-lg-12"></div>
 
                       <div class="form-group ">
-                          <label for="solicitante" class="col-md-1 control-label">Solicitante</label>
-                          <div class="col-md-3">
-                              <input type="email" class="form-control" id="solicitante" placeholder="NOME.SOBRENOME" value="<?php echo $usuario; ?>" onblur="verificarCampo()" />
+                          <label for="solicitante" class="col-md-1 control-label">Solicitante<span style="color: red">*</span></label>
+                          <div class="col-md-4">
+                              <select  class="form-control" id="solicitante" ></select>
                           </div>
                       </div>
 
                       <div class="form-group ">
                           <label for="setor" class="col-md-1 control-label">Setor</label>
-                          <div class="col-md-7">
+                          <div class="col-md-6">
                               <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" ></select>
                           </div>
                       </div>
@@ -273,6 +276,11 @@ Meu IP: 192.168.1.1" onkeydown="verificarCampo()"></textarea>
 
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/chosen.jquery.js"></script>
+      <script>
+          $('#setor').chosen();
+          $('#solicitante').chosen();
+      </script>
     <script src="js/solicitar.js"></script>
       <script>
           var enviar = false;

@@ -84,7 +84,8 @@
         while ( $usuariosList->hasNextUsuario() ){
             $usuario = $usuariosList->getNextUsuario();
             $usuarios[] = array(
-                "usuario" => $usuario->getCdUsuario()
+                "usuario" => $usuario->getCdUsuario(),
+                "nome" => $usuario->getNmUsuario()
             );
         }
 

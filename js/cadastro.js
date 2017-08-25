@@ -255,7 +255,7 @@ function msgErro( msg ) {
             },
             success : function (data) {
 
-                $('#setor').val( data.cdsetor );
+                $('#setor').val( data.cdsetor ).trigger("chosen:updated");
                 verificarCampoChamado();
 
             }
@@ -510,6 +510,7 @@ function msgErro( msg ) {
 
 
 function carregarComboSetor( setor ){
+    var setor = $('#setor');
     $.ajax({
         url      : 'funcao/setor.php',
         type     : 'post',
@@ -527,9 +528,10 @@ function carregarComboSetor( setor ){
                         + value.nmsetor
                         +"</option> ";
 
-                $('#setor').append(option);
+                setor.append(option);
 
             } );
+            setor.trigger("chosen:updated");
 
         }
 
@@ -539,6 +541,7 @@ function carregarComboSetor( setor ){
 
 
 function carregarComboOficina( usuario ){
+    var oficina = $('#oficina');
     $.ajax({
         url      : 'funcao/oficina.php',
         type     : 'post',
@@ -555,9 +558,13 @@ function carregarComboOficina( usuario ){
                     + value.oficina
                     +"</option> ";
 
-                $('#oficina').append(option);
+                oficina.append(option);
 
             } );
+
+            oficina.trigger("chosen:updated");
+
+
         }
 
     });
@@ -585,7 +592,7 @@ function carregarComboTipoOs( tipoOs ){
 
             } );
 
-            $('#tipoos').val( tipoOs );
+            $('#tipoos').val( tipoOs ).trigger("chosen:updated");
         }
 
     });
@@ -615,6 +622,7 @@ function carregarComboTipoOs( tipoOs ){
                     comboMotivo.append(option);
 
                 } );
+                comboMotivo.trigger("chosen:updated");
             }
 
         });
@@ -643,7 +651,7 @@ function carregarComboResponsavel( oficina, usuario ){
                 $('#responsavel').append(option);
 
             } );
-            $('#responsavel').val( usuario );
+            $('#responsavel').val( usuario ).trigger("chosen:updated");
         }
 
     });
@@ -705,6 +713,7 @@ function carregarComboFuncionario( especialidade ){
         }
 
 function carregarComboSolcitante(  ){
+    var solicitante = $('#solicitante');
     $.ajax({
         url      : 'funcao/usuario.php',
         type     : 'post',
@@ -718,11 +727,13 @@ function carregarComboSolcitante(  ){
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
 
-                var option  = $('<option>').val( value.usuario ).text( value.usuario ) ;
+                var option  = $('<option>').val( value.usuario ).text( value.nome ) ;
 
-                $('#solicitante').append(option);
+                solicitante.append(option);
 
             } );
+
+            solicitante.trigger("chosen:updated");
         }
 
     });
@@ -745,7 +756,8 @@ function carregarComboSolcitante(  ){
          if( boolNovoServico ){
              //console.log('Abrir modal');
              $('#tela-servico').modal('show');
-             $('#resp').val(0);
+             //$('#resp').val(0);
+             $("#resp option:contains(" + $('#usuario').val().trim() +")").attr("selected", true);
              $('#servico').val(0);
              $('#desc').val("");
              $('#snfeito').attr('checked',false);
@@ -1156,12 +1168,21 @@ function carregarTabela (  ) {
 
 
             $.each(data, function (key, value) {
+                var linhas;
+                if( value.responsavel == $('#usuario').val() ){
+                    linhas = "<tr class='linha' bgcolor='#FFCCBC'>"
+                        +"<td>" + value.cdos + "</td>"
+                        +"<td>" + value.pedido + "</td>"
+                        +"<td>" + value.situacao + "</td>"
+                        +"</tr>";
+                }else{
+                    linhas = "<tr class='linha'>"
+                        +"<td>" + value.cdos + "</td>"
+                        +"<td>" + value.pedido + "</td>"
+                        +"<td>" + value.situacao + "</td>"
+                        +"</tr>";
+                }
 
-                linhas = "<tr class='linha'>"
-                            +"<td>" + value.cdos + "</td>"
-                            +"<td>" + value.pedido + "</td>"
-                            +"<td>" + value.situacao + "</td>"
-                         +"</tr>";
                 $('.tabela-chamados').append(linhas);
             });
 
@@ -1226,7 +1247,7 @@ function getOs( codigoOs ) {
                         .attr('href','#editar')
                         .attr('title', 'Chamado concluido');
 
-                    setAtributes( "#status", "disabled", true );
+                    setAtributes( "#status", "disabled", false );
 
 
 
@@ -1236,18 +1257,18 @@ function getOs( codigoOs ) {
                 $('#dataos').val(data.pedido);
                 //console.log('Previsao: '+data.previsao);
                 $('#previsao').val(data.previsao);
-                $('#solicitante').val(data.solicitante);
-                $('#setor').val(data.setor);
-                $('#tipoos').val(data.tipoos);
+                $('#solicitante').val(data.solicitante).trigger("chosen:updated");
+                $('#setor').val(data.setor).trigger("chosen:updated");
+                $('#tipoos').val(data.tipoos).trigger("chosen:updated");
 
                 carregarComboMotivo( data.tipoos );
                // console.log("Motivo: "+data.motivo);
-                $('#motivo').val( data.motivo );
-                $('#oficina').val(data.oficina);
+                $('#motivo').val( data.motivo ).trigger("chosen:updated");
+                $('#oficina').val(data.oficina).trigger("chosen:updated");
                 $('#descricao').val(data.descricao);
                 $('#observacao').val(data.observacao);
-                $('#responsavel').val(data.atendente);
-                $('#status').val(data.situacao);
+                $('#responsavel').val(data.atendente).trigger("chosen:updated");
+                $('#status').val(data.situacao).trigger("chosen:updated");
                 setarValorComboStatus( data.situacao );
                 $('#resolucao').val(data.resolucao);
 
@@ -1270,6 +1291,7 @@ function getOs( codigoOs ) {
                 setAtributes( "#responsavel", "disabled", false );
 
                 setAtributes( "#resolucao", "disabled", false );
+                verificarCampo();
 
             }else{
                 msgAvisoChamado( 'Ordem de servi&ccedil;o n&atilde;o encontrada' );

@@ -12,6 +12,7 @@
    ?>
 
    <link href="css/font-awesome.css" rel="stylesheet">
+   <link href="css/bootstrap-chosen.css" rel="stylesheet">
    <link href="css/solicitar.css" rel="stylesheet">
    <link href="css/chosen.css" rel="stylesheet">
    <link href="css/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
@@ -80,16 +81,17 @@
                           <input type="hidden" id="tempoHora">
                           <input type="hidden" id="tempoMinuto">
                           <input type="hidden" id="codigoItem">
+
                           <label for="resp" class="col-md-2 control-label">Respons&aacute;vel <span style="color: red;">*</span></label>
-                          <div class="col-md-4">
-                              <select  class="form-control"  tabindex="2" id="resp" ></select>
+                          <div class="col-md-5">
+                              <select  class="form-control"   id="resp" ></select>
                           </div>
                       </div>
                       <div class="row"></div>
                       <div class="form-group ">
                           <label for="servico" class="col-md-2 control-label" title="Tipo de Servi&ccedil;o">Servi&ccedil;o <span style="color: red;">*</span></label>
-                          <div class="col-md-4">
-                              <select  class="form-control"  tabindex="2" id="servico" ></select>
+                          <div class="col-md-5">
+                              <select  class="form-control"  id="servico" ></select>
                           </div>
                       </div>
                       <div class="form-group col-lg-12"></div>
@@ -104,8 +106,8 @@
 
                       </div>
 
-                      <div class="form-group col-md-6" >
-                          <label for="snvisualiza" class="col-md-5">Cliente visualiza?</label>
+                      <div class="form-group col-md-7" >
+                          <label for="snvisualiza" class="col-md-5">Cliente &atilde;o visualiza?</label>
                           &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snvisualiza" value="S"/>
 
                       </div>
@@ -330,8 +332,23 @@
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.datetimepicker.full.js"></script>
+    <script src="js/chosen.jquery.js"></script>
     <script src="js/chamados.js"></script>
+    <script>
+        $("#setor").chosen();
+        $("#tipoos").chosen();
+        $("#motivo").chosen();
+        $("#oficina").chosen();
+        $("#responsavel").chosen();
+        $("#status").chosen();
+        $('.modal-servico').on('shown.bs.modal', function () {
+            $('#resp', this).chosen('destroy').chosen();
+            $('#servico', this).chosen('destroy').chosen();
+           // console.log("User: "+$('#usuario').val());
+           // $('#resp').text( $('#usuario').val() ).trigger("chosen:updated");
+        });
 
+    </script>
 
 
   </body>

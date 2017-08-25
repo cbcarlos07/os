@@ -301,7 +301,8 @@ class os_dao
                     FROM DBAMV.USUARIO_OFICINA O
                         ,DBAMV.OFICINA         A
                     WHERE O.CD_USUARIO = :usuario   
-                      AND A.CD_OFICINA = O.CD_OFICINA";
+                      AND A.CD_OFICINA = O.CD_OFICINA
+                      AND A.DS_OFICINA LIKE 'TI%'";
         $list = new oficina_list();
         try {
             $stmt = ociparse( $conn, $sql );

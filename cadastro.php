@@ -12,6 +12,7 @@
    ?>
 
    <link href="css/font-awesome.css" rel="stylesheet">
+   <link href="css/bootstrap-chosen.css" rel="stylesheet">
    <link href="css/solicitar.css" rel="stylesheet">
    <link href="css/chosen.css" rel="stylesheet">
    <link href="css/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
@@ -201,7 +202,7 @@
 
                       <div class="form-group ">
                           <label for="solicitante" class="col-md-1 control-label">Solicitante<span style="color: red">*</span></label>
-                          <div class="col-md-2">
+                          <div class="col-md-4">
                               <select  class="form-control" id="solicitante" ></select>
                           </div>
                       </div>
@@ -342,7 +343,24 @@
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.datetimepicker.full.js"></script>
+    <script src="js/chosen.jquery.js"></script>
     <script src="js/cadastro.js"></script>
+    <script>
+          $('#solicitante').chosen();
+          $('#setor').chosen();
+          $('#tipoos').chosen();
+          $('#motivo').chosen();
+          $('#oficina').chosen();
+          $('#responsavel').chosen();
+          $('#status').chosen();
+          $('.modal-servico').on('shown.bs.modal', function () {
+              $('#resp', this).chosen('destroy').chosen();
+              $('#servico', this).chosen('destroy').chosen();
+              // console.log("User: "+$('#usuario').val());
+              // $('#resp').text( $('#usuario').val() ).trigger("chosen:updated");
+          });
+
+    </script>
 
 
 

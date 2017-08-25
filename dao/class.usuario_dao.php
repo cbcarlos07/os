@@ -72,20 +72,23 @@ class usuario_dao
         require  ('../lib/nusoap.php');
         $conn = new connection_factory();
         $conexao = $conn->getConnection();
-        $sql = "SELECT * FROM dbasgu.usuarios WHERE cd_usuario = :usuario ";
+        $sql = "select dbaadv.senhausuariomv(:usuario)  SENHA FROM DUAL ";
         try {
             $stmt =  oci_parse($conexao, $sql);
             oci_bind_by_name($stmt, ":usuario", $login, -1);
             oci_execute($stmt);
             if($row = oci_fetch_array($stmt, OCI_ASSOC)){
 
-                $usuario_banco = $row['CD_USUARIO'];
-                $senha_banco   = $row['CD_SENHA'];
+               // $usuario_banco = $row['CD_USUARIO'];
+                $senha_banco   = $row['SENHA'];;
+                if( $senha_banco == $senha  ){
+                    $retorno = 1;
+                }
 
             }
             //echo "Usuario Form: ".$login."\n";
             //echo "Senha Form: ".$senha;
-            $conn->closeConnection($conexao);
+            /*$conn->closeConnection($conexao);
 
 
             $client = new nusoap_client("http://chamados.sulwork.com.br/webservice/usermv/service.php?wsdl");
@@ -93,7 +96,7 @@ class usuario_dao
             $retorno =     $client->call('price_senha_form',array("senha"=>"$senha"
             ,"senha_b"=>"$senha_banco"
             ,"usuario_f"=>"$login"
-            ,"usuario_b"=>"$usuario_banco"));
+            ,"usuario_b"=>"$usuario_banco"));*/
 
         } catch (PDOException $ex) {
             echo " Erro: ".$ex->getMessage();

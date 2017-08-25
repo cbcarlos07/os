@@ -135,6 +135,11 @@ switch ( $acao ){
             if( $ordem->getResponsavel()->getCdUsuario() != "" )
                $situacao = "Em atendimento";
 
+
+            if( $ordem->getSituacao() == 'C' ){
+                $situacao = "Conclu&iacute;da";
+            }
+
              //  $situation = returnStatus($ordem->getSituacao()); //
 
             $tbody[] = array(
@@ -167,9 +172,10 @@ switch ( $acao ){
          while ( $osList->hasNextOs() ){
              $ordem = $osList->getNextOs();
              $obj[] = array(
-                 "cdos"       => $ordem->getCdOs(),
-                 "pedido"     => $ordem->getDataPedido(),
-                 "situacao"   => returnStatusAcento($ordem->getSituacao())
+                 "cdos"         => $ordem->getCdOs(),
+                 "pedido"       => $ordem->getDataPedido(),
+                 "situacao"     => returnStatusAcento($ordem->getSituacao()),
+                 "responsavel"  => $ordem->getResponsavel()->getCdUsuario()
              );
          }
          echo json_encode( $obj );

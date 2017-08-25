@@ -7,10 +7,13 @@ $(document).ready(function () {
   var usuario = document.getElementById('usuario').value;
 
   $('#descricao').focus();
-  buscarLastSolicitante();
+  carregarComboSolcitante();
+  carregarComboSetor();
+ // buscarLastSolicitante( $('#solicitante').chosen().val() );
   carregarTabela( usuario );
   carregarTemplates( usuario );
   startCountdown();
+  buscarLastSolicitante( usuario );
 
 
 
@@ -123,40 +126,67 @@ function mensagemSucesso() {
     },2000);
 }
 
+function carregarComboSolcitante(  ){
+    //console.log("Usuario: "+$('#usuario').val());
+    $.ajax({
+        url      : 'funcao/usuario.php',
+        type     : 'post',
+        dataType : 'json',
+        data : {
+            acao   : 'U'
+        },
+        success : function (data) {
+            var op = $("<option>").val(0).text('Selecione');
+            $('#solicitante').append(op);
+            // console.log(data);
+            $.each( data.usuarios, function (key, value) {
 
-function carregarComboSetor( idSetor ){
+                var option  = $('<option>').val( value.usuario ).text( value.nome ) ;
+
+                $('#solicitante').append(option);
+
+            } );
+            $('#solicitante').val( $('#usuario').val() ).trigger("chosen:updated");
+            //$('#solicitante').trigger("chosen:updated");
+           // buscarLastSolicitante( $('#solicitante').val() );
+
+
+        }
+
+    });
+
+}
+function carregarComboSetor(  ){
     //  console.log("IdSetor: "+idSetor);
       $.ajax({
           url      : 'funcao/setor.php',
           type     : 'post',
           dataType : 'json',
           data : {
-            acao : 'S',
-            cdsetor : idSetor
+            acao : 'S'
           },
           success : function (data) {
+
               var op = "<option value='0'>Selecione um setor</option>";
               $('#setor').append(op);
 
               $.each( data.setor, function (key, value) {
-                  var option = "";
-                  if( idSetor === value.codsetor ){
-                      option = "<option value='"+ value.codsetor +"' selected>"
-                                 + value.nmsetor
-                               +"</option>";
 
-                  }else{
                       option = "<option value='"+ value.codsetor +"'>"
                                + value.nmsetor
                                +"</option> ";
-                  }
+
                  $('#setor').append(option);
 
               } );
+
+              $('#setor').trigger("chosen:updated");
+
              //  console.log(" CD Setor carregar: "+idSetor);
-              $('#setor').val( idSetor );
+
+
           }
-          
+
       });
 
 }
@@ -575,9 +605,13 @@ function limparCampos() {
 
 
 }
-function buscarLastSolicitante() {
-    var solicitante = $('#solicitante').val();
-  //  console.log("Solicitante: "+solicitante);
+function buscarLastSolicitante( usuario ) {
+   // var solicitante = $('#usuario').val();
+    //var solicitante = $('#solicitante').val();
+
+    console.log("Solicitante: "+usuario);
+    $('#usuario').val( usuario );
+    carregarTabela( usuario );
     var cdsetor = 0;
     $.ajax({
         url   : 'funcao/os.php',
@@ -585,14 +619,17 @@ function buscarLastSolicitante() {
         type : 'post',
         data : {
             acao : 'D',
-            solicitante : solicitante
+            solicitante : usuario
         },
         success : function (data) {
 
             cdsetor =  data.cdsetor ;
+            $('#setor').val( cdsetor ).trigger("chosen:updated");
+
+
            // console.log("Buscar last setor: "+cdsetor);
 
-            carregarComboSetor( cdsetor );
+           // carregarComboSetor( cdsetor );
 
         }
     });
@@ -613,5 +650,11 @@ function startCountdown(){
 
 }
 
+
+$('#solicitante').on('change', function () {
+      var value = $(this).chosen().val();
+      console.log( "Mudou: "+value );
+      buscarLastSolicitante( $(this).val() );
+});
 
 

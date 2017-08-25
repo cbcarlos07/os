@@ -416,6 +416,7 @@ $("#datai").datetimepicker({
                cdos : _cdOs
            },
            success : function (data) {
+             //  console.log("Seetor: "+data.setor);
                var tipoos = data.tipoos;
                carregarComboMotivo( tipoos );
                carregarComboTipoOs( tipoos );
@@ -429,6 +430,7 @@ $("#datai").datetimepicker({
                $('#observacao').val( data.observacao );
                $('#solicitante').val( data.solicitante );
 
+
                verificarCampoChamado();
                preencherTabelaServicos();
               // console.log("Tipo OS: "+tipoos);
@@ -440,6 +442,7 @@ $("#datai").datetimepicker({
 
 
 function carregarComboSetor( ){
+    var setor = $('#setor');
     $.ajax({
         url      : 'funcao/setor.php',
         type     : 'post',
@@ -449,7 +452,7 @@ function carregarComboSetor( ){
         },
         success : function (data) {
             var op = "<option value='0'>Selecione um setor</option>";
-            $('#setor').append(op);
+            setor.append(op);
 
             $.each( data.setor, function (key, value) {
 
@@ -457,9 +460,10 @@ function carregarComboSetor( ){
                         + value.nmsetor
                         +"</option> ";
 
-                $('#setor').append(option);
+                setor.append(option);
 
             } );
+            setor.trigger("chosen:updated");
         }
 
     });
@@ -487,6 +491,8 @@ function carregarComboOficina( usuario ){
                 $('#oficina').append(option);
 
             } );
+
+            $('#oficina').trigger("chosen:updated");
         }
 
     });
@@ -513,7 +519,7 @@ function carregarComboTipoOs( tipoOs ){
 
             } );
 
-            $('#tipoos').val( tipoOs );
+            $('#tipoos').val( tipoOs ).trigger("chosen:updated");;
         }
 
     });
@@ -543,6 +549,8 @@ function carregarComboTipoOs( tipoOs ){
                     comboMotivo.append(option);
 
                 } );
+
+                comboMotivo.trigger("chosen:updated");
             }
 
         });
@@ -571,7 +579,7 @@ function carregarComboResponsavel( oficina, usuario ){
                 $('#responsavel').append(option);
 
             } );
-            $('#responsavel').val( usuario );
+            $('#responsavel').val( usuario ).trigger("chosen:updated");
         }
 
     });
@@ -582,6 +590,7 @@ function carregarComboResponsavel( oficina, usuario ){
 }
 
 function carregarComboFuncionario( especialidade ){
+    var resp = $('#resp');
     $.ajax({
         url      : 'funcao/responsavel.php',
         type     : 'post',
@@ -592,15 +601,16 @@ function carregarComboFuncionario( especialidade ){
         },
         success : function (data) {
             var op = "<option value='0'>Selecione</option>";
-            $('#resp').append(op);
+            resp.append(op);
             // console.log(data);
             $.each( data.funcionarios, function (key, value) {
 
                 var option  = $('<option>').val( value.codigo ).text( value.nome ) ;
 
-                $('#resp').append(option);
+                resp.append(option);
 
             } );
+            resp.trigger("chosen.updated")
         }
 
     });
@@ -647,8 +657,12 @@ function carregarComboFuncionario( especialidade ){
      function validarCamposServico() {
          if( boolNovoServico ){
              //console.log('Abrir modal');
+
              $('#tela-servico').modal('show');
-             $('#resp').val(0);
+             //$('#resp').val(0);
+             //$('#resp').text( $('#usuario').val() ).trigger("chosen:updated");
+             //$("#resp").find("option[text=" + $('#usuario').val().trim() + "]").attr("selected", true);
+             $("#resp option:contains(" + $('#usuario').val().trim() +")").attr("selected", true);
              $('#servico').val(0);
              $('#desc').val("");
              $('#snfeito').attr('checked',false);
@@ -665,6 +679,7 @@ function carregarComboFuncionario( especialidade ){
              var descricao   =    $('#descricao').val();
              var responsavel =    $('#responsavel').val();
              var observacao  =    $('#observacao').val();
+
 
              if( ( setor == 0) || ( descricao == "" ) || ( observacao == "" ) || ( responsavel == 0 ) || ( !verificarData() ) ){
                  if( setor == 0 ){
@@ -998,6 +1013,7 @@ dataFinal.on('blur', function () {
 
             });
         }
+
 
 
 

@@ -7,6 +7,11 @@ var URL_SEND  = 'funcao/usuario.php';
 var TYPE_SEND = 'post';
 var DATA_TYPE = 'json';
 
+$(document).ready(function () {
+   $('.loading').fadeOut();
+   $('.alerta').fadeOut();
+});
+
 $('#u').on('focusout', function () {
     var usuario = $(this).val();
     $.ajax({
@@ -66,19 +71,30 @@ function submitForm() {
         url : URL_SEND,
         type: TYPE_SEND,
         dataType : DATA_TYPE,
+        beforeSend : aguardando,
         data : {
             usuario : usuario,
             senha  : senha,
             acao   : 'L'
         },
         success : function (data) {
-          //  alert("Retorno: "+data.sucesso);
-
-            if(data.sucesso == 1)
-                if( data.sistema == 1 )
-                 window.location.href = './bem.php';
-                else
+           // alert("Retorno: "+data.sucesso);
+            $('.loading').fadeOut();
+            if(data.sucesso == 1) {
+                if (data.sistema === 1) {
+                    window.location.href = './bem.php';
+                }
+                else {
                     window.location.href = './solicitar.php';
+
+
+                }
+            }else{
+                $('input[id="u"]').css( "border-color","red" );
+                $('input[id="p"]').css( "border-color","red" );
+                alertaErro();
+            }
+
         }
 
     });
@@ -101,3 +117,17 @@ $('.btn-sim').on('click',function () {
       }
   });
 });
+
+function aguardando() {
+    $('.loading').fadeIn();
+}
+
+function alertaErro() {
+    var alerta = $('.alerta');
+    alerta.empty().html('<div class="alert alert-danger"><strong>Ops</strong> Login ou senha inv&aacute;lidos</div>').fadeIn('fast');
+    setTimeout(function () {
+        alerta.fadeOut();
+        $('input[id="u"]').css( "border-color","" );
+        $('input[id="p"]').css( "border-color","" );
+    }, 3000);
+}

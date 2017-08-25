@@ -9,10 +9,10 @@
              if( $_SESSION['sistema'] == 1 ){
                  //fazem parte do setor de informática
               ?>
-                 <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>
                  <li><a href="solicitar.php"><i class="glyphicon glyphicon-record"></i>Solicitar</a></li>
                  <li><a href="recebimentos.php"><i class="glyphicon glyphicon-pencil"></i>Recebimentos</a></li>
                  <li><a href="cadastro.php"><i class="glyphicon glyphicon-edit"></i>Cadastrar Chamado</a></li>
+                 <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>
             <?php
              }else{
                  //nao fazem parte do setor de informática

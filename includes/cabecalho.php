@@ -17,13 +17,13 @@
 <div class="header">
     <div class="container">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-7">
                 <!-- Logo -->
                 <div class="logo">
-                    <h1><a href="index.html"><?php echo $saudacao. $_SESSION['usuario']."!"; ?></a></h1>
+                    <h4><a href="index.html"  style="color: #ffffff"><?php echo $saudacao. $_SESSION['usuario']."!"; ?></a></h4>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-3">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="input-group form">
