@@ -12,10 +12,10 @@ class connection_factory
     private $ora_senha = "senha";
     private $ora_bd = "(DESCRIPTION=
                         (ADDRESS_LIST=
-                        (ADDRESS=(PROTOCOL=TCP)(HOST=IP)(PORT=1521))
+                        (ADDRESS=(PROTOCOL=TCP)(HOST=ip-do-servidor)(PORT=1521))
                         )
                         (CONNECT_DATA=
-                        (SERVICE_NAME=senha)
+                        (SERVICE_NAME=servico)
                         )
                         )";
     public  function  getConnection(){

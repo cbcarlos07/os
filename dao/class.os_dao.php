@@ -115,6 +115,32 @@ class os_dao
 
     }
 
+    public function get_total_chamados_aguardando(){
+        require_once 'class.connection_factory.php';
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+
+        $os_list = 0;
+
+        $query = "SELECT COUNT(*) TOTAL FROM DBAMV.VIEW_HAM_LISTA_OS_OPEN";
+        try{
+            $stmt = oci_parse($conn, $query);
+            ociexecute( $stmt );
+            while ( $row = oci_fetch_array($stmt, OCI_ASSOC) ){
+
+                $os_list = $row['TOTAL'];
+            }
+
+        }catch (PDOException $e){
+            echo "Erro: ".$e->getMessage();
+        }
+        return $os_list;
+
+    }
+
+
+
+
     public function getTotalChamados($usuario){
         require_once 'class.connection_factory.php';
         require_once 'services/class.os_list.php';
@@ -178,7 +204,7 @@ class os_dao
             $conn = $con->getConnection();
 
 
-            $sql =   "SELECT * FROM VIEW_HAM_OS_CHAMARDOS V WHERE V.NM_USUARIO = :usuario ";
+            $sql =   "SELECT * FROM DBAMV.VIEW_HAM_OS_CHAMADOS V WHERE V.NM_USUARIO = :usuario ";
 
             try {
                $stmt = oci_parse( $conn, $sql );
@@ -321,6 +347,39 @@ class os_dao
         return $list;
     }
 
+
+    public function getListOficinas( ){
+        require_once "class.connection_factory.php";
+        require_once "../services/class.oficina_list.php";
+        require_once "../beans/class.oficina.php";
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $sql =   "SELECT O.CD_OFICINA 
+                        ,A.DS_OFICINA 
+                    FROM DBAMV.USUARIO_OFICINA O
+                        ,DBAMV.OFICINA         A
+                  WHERE A.CD_OFICINA = O.CD_OFICINA
+                    AND A.DS_OFICINA LIKE 'TI%'
+                    GROUP BY O.CD_OFICINA 
+                             ,A.DS_OFICINA ";
+        $list = new oficina_list();
+        try {
+            $stmt = ociparse( $conn, $sql );
+
+            ociexecute( $stmt );
+            while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $oficina = new oficina();
+                $oficina->setCdOficina( $row["CD_OFICINA"]);
+                $oficina->setDsOficina( $row["DS_OFICINA"]);
+                $list->addOficina( $oficina );
+            }
+        } catch ( PDOException $ex ) {
+            echo "Erro: ".$ex->getMessage();
+        }
+
+        return $list;
+    }
+
     public function getListUsuarioOficina( $oficina ){
       require_once "class.connection_factory.php";
       require_once "../beans/class.usuario.php";
@@ -342,6 +401,31 @@ class os_dao
         try {
             $stmt = ociparse( $conn, $sql );
             ocibindbyname( $stmt, ":oficina", $oficina );
+            ociexecute( $stmt );
+            while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $usuario = new usuario();
+                $usuario->setNmUsuario( $row["NM_USUARIO"]);
+                $usuario->setCdUsuario( $row["CD_USUARIO"]);
+                $list->addUsuario($usuario);
+            }
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+
+        return $list;
+    }
+
+
+    public function getListaResponsaveis(  ){
+        require_once "class.connection_factory.php";
+        require_once "../beans/class.usuario.php";
+        require_once "../services/class.usuario_list.php";
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $sql =   "SELECT * FROM DBAMV.VIEW_HAM_OS_USUARIOS";
+        $list = new usuario_list();
+        try {
+            $stmt = ociparse( $conn, $sql );
             ociexecute( $stmt );
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
                 $usuario = new usuario();
@@ -973,7 +1057,7 @@ class os_dao
         $osList = new os_list();
         $sql =  "SELECT * FROM (
                   SELECT rownum LINHA, V.* 
-                  FROM VIEW_HAM_GETSOLICITACAO V
+                  FROM DBAMV.VIEW_HAM_GETSOLICITACAO V
                   )
                   WHERE LINHA > :inicio AND LINHA < :fim";
         try {
@@ -1071,6 +1155,212 @@ class os_dao
           echo "Erro: ".$ex->getMessage();
         }
         return $teste;
+    }
+
+    public function getListaChamados( $opcao, $parametro ){
+        require_once "class.connection_factory.php";
+        $teste = false;
+
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+
+
+        try {
+
+            switch ($opcao){
+                case 'C':
+                    $sql = "SELECT * FROM DBAMV.VIEW_HAM_MEUS_CHAMADOS V WHERE V.CD_OS = :codigo";
+                    $stmt = ociparse( $conn, $conn );
+                    ocibindbyname( $stmt, ":codigo", $parametro );
+                    break;
+                case 'O':
+                    $sql = "SELECT * FROM DBAMV.VIEW_HAM_MEUS_CHAMADOS V WHERE V.CD_OS = :codigo";
+                    $stmt = ociparse( $conn, $conn );
+                    ocibindbyname( $stmt, ":codigo", $parametro );
+                    break;
+
+            }
+
+
+            ociexecute( $stmt );
+            if( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $teste = true;
+            }
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+        return $teste;
+    }
+
+	 public function getListaMeusChamados( $variavel ){
+		require_once "../includes/error.php";
+        require_once "class.connection_factory.php";
+        require_once "../services/class.os_list.php";
+        require_once "../beans/class.os.php";
+        require_once "../beans/class.oficina.php";
+        require_once "../beans/class.setor.php";
+        require_once "../beans/class.usuario.php";
+
+
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $os_list = new os_list();
+
+        try {
+            $sql = "SELECT * 
+                      FROM DBAMV.V_CHAMADOS_CONSULTA V
+                     WHERE  V.NM_SOLICITANTE LIKE :solicitante
+                        AND V.CD_SETOR       LIKE :setor
+                        AND V.CD_OFICINA     LIKE :oficina
+                        AND V.CD_OS          LIKE :codigo
+                        AND V.CD_RESPONSAVEL LIKE :responsavel";
+            $stmt = oci_parse( $conn, $sql );
+            oci_bind_by_name( $stmt, "solicitante", $variavel['solicitante'] );
+            oci_bind_by_name( $stmt, "setor", $variavel['setor'] );
+            oci_bind_by_name( $stmt, "oficina", $variavel['oficina'] );
+            oci_bind_by_name( $stmt, "codigo", $variavel['codigo'] );
+            oci_bind_by_name( $stmt, "responsavel", $variavel['responsavel'] );
+
+            ociexecute( $stmt );
+            while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $os = new os();
+                $servico = "";
+                if( isset( $row['DS_SERVICO'] ) )
+                    $servico = $row['DS_SERVICO'];
+
+                $os->setCdOs( $row['CD_OS'] );
+                $os->setPrioridade( $row['PRIORIDADE'] );
+                $os->setOficina( new oficina() );
+                $os->setSolicitante( new usuario() );
+                $os->getSolicitante()->setCdUsuario( $row['NM_SOLICITANTE'] );
+                $os->setResponsavel( new usuario() );
+                $os->getResponsavel()->setCdUsuario( $row['CD_RESPONSAVEL'] );
+                $os->setSetor( new setor() );
+                $os->getSetor()->setNmSetor( $row['NM_SETOR'] );
+                $os->setDescricao( $servico );
+                $os->setDataPedido( $row['DT_PEDIDO'] );
+                $os->setPrevisao( $row['TIME_'] );
+                $os_list->addOs( $os );
+            }
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+        return $os_list;
+    }
+
+    public function getTotalMeusChamados( $usuario ){
+
+        require_once "class.connection_factory.php";
+
+
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $total = 0;
+        try {
+            $sql = "SELECT COUNT(*) TOTAL 
+                      FROM DBAMV.V_CHAMADOS_CONSULTA V
+                        WHERE V.CD_RESPONSAVEL = :responsavel";
+            $stmt = oci_parse( $conn, $sql );
+            oci_bind_by_name( $stmt, "responsavel", $usuario );
+
+            ociexecute( $stmt );
+            if( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+               $total = $row['TOTAL'];
+            }
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+        return $total;
+    }
+
+    public function getListaMeusServicos( $variavel ){
+        require_once "../includes/error.php";
+        require_once "class.connection_factory.php";
+        require_once "../services/class.itemSolicitacaoServico_list.php";
+        require_once "../beans/class.os.php";
+        require_once "../beans/class.oficina.php";
+        require_once "../beans/class.setor.php";
+        require_once "../beans/class.usuario.php";
+        require_once "../beans/class.itemSolicitacaoServico.php";
+        require_once "../beans/class.manuServ.php";
+
+
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $os_list = new itemSolicitacaoServico_list();
+
+        try {
+            $sql = "SELECT * 
+                      FROM DBAMV.V_CHAMADOS_SERVICOS V
+                     WHERE  V.NM_SOLICITANTE LIKE :solicitante
+                        AND V.CD_SETOR       LIKE :setor
+                        AND V.CD_OFICINA     LIKE :oficina
+                        AND V.CD_OS          LIKE :codigo
+                        AND V.CD_FUNC        LIKE :responsavel";
+            $stmt = oci_parse( $conn, $sql );
+            oci_bind_by_name( $stmt, "solicitante", $variavel['solicitante'] );
+            oci_bind_by_name( $stmt, "setor", $variavel['setor'] );
+            oci_bind_by_name( $stmt, "oficina", $variavel['oficina'] );
+            oci_bind_by_name( $stmt, "codigo", $variavel['codigo'] );
+            oci_bind_by_name( $stmt, "responsavel", $variavel['responsavel'] );
+
+            ociexecute( $stmt );
+            while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $os = new itemSolicitacaoServico();
+
+                $servico = "";
+                if( isset( $row['DS_SERVICO'] ) )
+                    $servico = $row['DS_SERVICO'];
+
+                $os->setCdOs( $row['CD_OS'] );
+                $os->setChamado( $row['CHAMADO'] );
+                $os->setResponsavel( $row['CD_RESPONSAVEL'] );
+                $os->setManuServ( new manuServ() );
+                $os->getManuServ()->setStrNmServico( $row['NM_SERVICO'] );
+                $os->setDescricao( $servico );
+                $os->setDataInicial( $row['INICIO'] );
+                $os->setTempo( $row['STATUS'] );
+
+                $os_list->addItemSolicitacaoServico( $os );
+            }
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+        return $os_list;
+    }
+
+    public function getListFuncionario(){
+        require_once "class.connection_factory.php";
+        require_once "../beans/class.funcionario.php";
+        require_once "../services/class.funcionario_list.php";
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+
+        $sql =   " SELECT F.CD_FUNC
+                          ,F.NM_FUNC
+                    FROM   DBAMV.MANU_ESPEC  E
+                          ,DBAMV.FUNCIONARIO F
+                          ,DBAMV.FUNC_ESPEC  FE
+                    WHERE FE.CD_ESPEC = E.CD_ESPEC
+                      AND FE.CD_FUNC  = F.CD_FUNC
+                    GROUP BY F.CD_FUNC
+                          ,F.NM_FUNC
+                          ORDER BY 2 ";
+        $list = new funcionario_list();
+        try {
+            $stmt = ociparse( $conn, $sql );
+            ociexecute( $stmt );
+            while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $usuario = new funcionario();
+                $usuario->setNmFuncionario( $row["NM_FUNC"]);
+                $usuario->setCdFuncionario( $row["CD_FUNC"]);
+                $list->addFuncionario( $usuario );
+            }
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+
+        return $list;
     }
 
 

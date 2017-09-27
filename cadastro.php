@@ -7,6 +7,11 @@
    include "includes/head.php";
 
    $usuario = $_SESSION['usuario'];
+   
+   $cdOs = 0;
+   if( isset($_POST['cdos']) ){
+		$cdOs = $_POST['cdos'];
+   }
 
 
    ?>
@@ -180,7 +185,7 @@
                       <div class="form-group ">
                           <label for="cdos" class="col-md-1 control-label">Cd OS</label>
                           <div class="col-md-2">
-                              <input type="text" class="form-control" id="cdos" placeholder="C&oacute;d" disabled >
+                              <input type="text" class="form-control" id="cdos" placeholder="C&oacute;d" disabled value="<?= $cdOs ?>">
                           </div>
                       </div>
 

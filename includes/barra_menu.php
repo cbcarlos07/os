@@ -1,3 +1,18 @@
+
+<style>
+   .noti .num{
+       background-color: red;
+       color: white;
+       font-size: 10px;
+       font-weight: bold;
+       width: 20px;
+       position: absolute;
+       text-align: center;
+       border-radius:10px;
+       margin-top: 5px;
+
+   }
+</style>
 <div class="col-md-2">
     <div class="sidebar content-box" style="display: block;">
         <ul class="nav">
@@ -8,10 +23,70 @@
             <?php
              if( $_SESSION['sistema'] == 1 ){
                  //fazem parte do setor de informática
+                 require_once "controller/class.os_controller.php";
+                 require_once "controller/class.itemSolicitacaoServico_Controller.php";
+                 $oc = new os_controller();
+                 $ic = new itemSolicitacaoServico_Controller();
+                 $total = $oc->get_total_chamados_aguardando();
+                 $totalServicos = $ic->getTotalMeusServicos( $_SESSION['funcionario'] );
+                 $totalChamados = $oc->getTotalMeusChamados( $_SESSION['usuario'] );
               ?>
                  <li><a href="solicitar.php"><i class="glyphicon glyphicon-record"></i>Solicitar</a></li>
-                 <li><a href="recebimentos.php"><i class="glyphicon glyphicon-pencil"></i>Recebimentos</a></li>
+
+            <?php
+                if( $total > 0 ){
+
+             ?>
+                    <li class="noti"><a href="recebimentos.php"><i class="glyphicon glyphicon-pencil"></i><b>Recebimentos</b>
+                            <span class="num" >
+                                <?= $total ?>
+                            </span></a></li>
+             <?php
+                }else{
+             ?>
+                    <li><a href="recebimentos.php"><i class="glyphicon glyphicon-pencil"></i>Recebimentos</a></li>
+             <?php
+                }
+            ?>
+
+
                  <li><a href="cadastro.php"><i class="glyphicon glyphicon-edit"></i>Cadastrar Chamado</a></li>
+
+             <?php
+               if( $totalChamados > 0 ){
+                ?>
+                   <li class="noti"><a href="meus.php"><i class="glyphicon glyphicon-edit"></i>Meus Chamados
+                           <span class="num" >
+                                <?= $totalChamados ?>
+                            </span>
+                       </a>
+                   </li>
+                <?php
+               }else{
+               ?>
+                   <li><a href="meus.php"><i class="glyphicon glyphicon-edit"></i>Meus Chamados</a></li>
+               <?php
+               }
+             ?>
+
+
+             <?php
+              if( $totalServicos > 0 ){
+                ?>
+                  <li class="noti"><a href="servico.php"><i class="glyphicon glyphicon-edit"></i>Meus Servicos
+                          <span class="num" >
+                                <?= $totalServicos ?>
+                            </span></a>
+                  </li>
+              <?php
+              }
+              else{
+              ?>
+                  <li ><a href="servico.php"><i class="glyphicon glyphicon-edit"></i>Meus Servicos</a></li>
+              <?php
+              }
+             ?>
+
                  <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>
             <?php
              }else{

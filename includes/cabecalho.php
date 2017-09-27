@@ -20,7 +20,7 @@
             <div class="col-md-7">
                 <!-- Logo -->
                 <div class="logo">
-                    <h4><a href="index.html"  style="color: #ffffff"><?php echo $saudacao. $_SESSION['usuario']."!"; ?></a></h4>
+                    <h4><a href="#"  style="color: #ffffff"><?php echo $saudacao. $_SESSION['usuario']."!"; ?></a></h4>
                 </div>
             </div>
             <div class="col-md-3">

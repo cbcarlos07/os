@@ -21,6 +21,46 @@ class itemSolicitacaoServico
     private $tempoMinuto;
     private $tempo;
     private $descricao;
+    private $chamado;
+    private $responsavel;
+
+    /**
+     * @return mixed
+     */
+    public function getResponsavel()
+    {
+        return $this->responsavel;
+    }
+
+    /**
+     * @param mixed $responsavel
+     * @return itemSolicitacaoServico
+     */
+    public function setResponsavel($responsavel)
+    {
+        $this->responsavel = $responsavel;
+        return $this;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getChamado()
+    {
+        return $this->chamado;
+    }
+
+    /**
+     * @param mixed $chamado
+     * @return itemSolicitacaoServico
+     */
+    public function setChamado($chamado)
+    {
+        $this->chamado = $chamado;
+        return $this;
+    }
+
 
     /**
      * @return mixed

@@ -244,7 +244,7 @@
                       <div class="form-group ">
                           <label for="descricao" class="col-md-1 control-label">Descri&ccedil;&atilde;o</label>
                           <div class="col-md-8">
-                              <input type="text" class="form-control" id="descricao" placeholder="Ex.: Impressora com problema" onblur="verificarCampo()" />
+                              <input type="text" class="form-control" id="descricao" placeholder="Ex.: Impressora com problema" onblur="verificarCampo()" disabled/>
                           </div>
                       </div>
                       <div class="form-group ">
@@ -257,7 +257,7 @@
                       <div class="form-group ">
                           <label for="observacao" class="col-md-1 control-label">Observa&ccedil;&atilde;o<span style="color: red">*</span></label>
                           <div class="col-md-11">
-                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)"></textarea>
+                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)" disabled></textarea>
                           </div>
                       </div>
                       <div class="col-md-12"></div>

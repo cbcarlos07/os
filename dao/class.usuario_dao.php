@@ -104,4 +104,30 @@ class usuario_dao
 
         return $retorno;
     }
+
+    public function getCodigoFuncionario ( $usuario ){
+        require_once 'class.connection_factory.php';
+        //    System.out.println("DAO");
+        $teste = 0;
+        $conn = new connection_factory();
+        $conexao = $conn->getConnection();
+        try {
+            $sql_text = "SELECT F.CD_FUNC FROM DBAMV.FUNCIONARIO F WHERE F.NM_FUNC = :usuario";
+
+
+            $stmt =  oci_parse($conexao, $sql_text);
+            oci_bind_by_name($stmt, ":usuario", $usuario);
+            oci_execute($stmt);
+            if($row = oci_fetch_array($stmt, OCI_ASSOC)){
+
+                $teste = $row['CD_FUNC'];
+
+            }
+            $conn->closeConnection($conexao);
+        } catch (PDOException $ex) {
+            echo " Erro: ".$ex->getMessage();
+        }
+
+        return $teste;
+    }
 }

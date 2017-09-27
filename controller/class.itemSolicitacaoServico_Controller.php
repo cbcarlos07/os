@@ -66,4 +66,11 @@ class itemSolicitacaoServico_Controller
         return $retorno;
     }
 
+    public function getTotalMeusServicos( $usuario ){
+        require_once "dao/class.itemSolicitacaoServico_dao.php";
+        $item_dao = new itemSolicitacaoServico_dao();
+        $retorno = $item_dao->getTotalMeusServicos( $usuario );
+        return $retorno;
+    }
+
 }

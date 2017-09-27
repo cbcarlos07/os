@@ -506,6 +506,10 @@ function msgErro( msg ) {
         carregarTabela( usuario );
         setarValorComboStatus( 'A' );
         startCountdown();
+		
+		if( $('#cdos').val() > 0 ){
+			getOs( $('#cdos').val() );
+		}
     });
 
 
@@ -713,6 +717,7 @@ function carregarComboFuncionario( especialidade ){
         }
 
 function carregarComboSolcitante(  ){
+
     var solicitante = $('#solicitante');
     $.ajax({
         url      : 'funcao/usuario.php',
@@ -722,11 +727,11 @@ function carregarComboSolcitante(  ){
             acao   : 'U'
         },
         success : function (data) {
-            var op = $("<option>").val(0).text('Selecione');
+            var op = $("<option>").val('0').text('Selecione');
             $('#solicitante').append(op);
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
-
+             //  console.log( "Usuario: '"+value.usuario+"'" )
                 var option  = $('<option>').val( value.usuario ).text( value.nome ) ;
 
                 solicitante.append(option);
@@ -734,6 +739,35 @@ function carregarComboSolcitante(  ){
             } );
 
             solicitante.trigger("chosen:updated");
+        }
+
+    });
+
+}
+
+function carregarComboSolicitante( soliciante ){
+    $('#solicitante').find('option').remove();
+    var solicitante = $('#solicitante');
+    $.ajax({
+        url      : 'funcao/usuario.php',
+        type     : 'post',
+        dataType : 'json',
+        data : {
+            acao   : 'U'
+        },
+        success : function (data) {
+            var op = $("<option>").val('0').text('Selecione');
+            $('#solicitante').append(op);
+            // console.log(data);
+            $.each( data.usuarios, function (key, value) {
+             //   console.log( "Usuario: '"+value.usuario+"'" )
+                var option  = $('<option>').val( value.usuario ).text( value.nome ) ;
+
+                solicitante.append(option);
+
+            } );
+
+            solicitante.val( soliciante ).trigger("chosen:updated");
         }
 
     });
@@ -1257,7 +1291,9 @@ function getOs( codigoOs ) {
                 $('#dataos').val(data.pedido);
                 //console.log('Previsao: '+data.previsao);
                 $('#previsao').val(data.previsao);
-                $('#solicitante').val(data.solicitante).trigger("chosen:updated");
+                console.log("Cadastro Solicitante: '"+data.solicitante+"'");
+                $('#solicitante').val( data.solicitante ).trigger("chosen:updated");
+                carregarComboSolicitante( data.solicitante );
                 $('#setor').val(data.setor).trigger("chosen:updated");
                 $('#tipoos').val(data.tipoos).trigger("chosen:updated");
 

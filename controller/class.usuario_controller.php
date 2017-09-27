@@ -28,4 +28,11 @@ class usuario_controller
         $teste = $user_dao->verificarLogin($login, $senha);
         return $teste;
     }
+
+    public function getCodigoFuncionario ( $usuario ){
+        require_once '../dao/class.usuario_dao.php';
+        $user_dao = new usuario_dao();
+        $teste = $user_dao->getCodigoFuncionario( $usuario );
+        return $teste;
+    }
 }

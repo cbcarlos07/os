@@ -79,40 +79,61 @@
 
 
 switch ( $acao ){
-
-        case 'L':
-            listar_ultimas_os( $usuario, $inicio, $fim );
-            break;
-        case 'O':
-            getOs( $cdos );
-            break;
-        case 'U':
-            update_solicitacao( $cdos, $solicitante, $setor, $descricao, $observacao, $ramal );
-            break;
-        case 'N':
-            nova_solicitacao( $descricao, $observacao, $solicitante, $setor, $usuario, $ramal );
-             break;
         case 'A':
-            chamados_abertos();
-            break;
+              chamados_abertos();
+              break;
+        case 'B':
+              update_situacao( $status, $cdos );
+              break;
         case 'C':
             update_chamado( $cdos, $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $ramal );
-            break;
-        case 'S':
-            getUltimaSolicitacao( $usuario );
             break;
         case 'D':
             getDadosUltimoSolicitante( $solicitante );
             break;
-        case 'I':
-            insert_chamado( $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $usuario, $ramal );
-            break;
         case 'E':
             getListSolicitacao( $inicio, $fim );
             break;
-        case 'B':
-            update_situacao( $status, $cdos );
+        case 'F':
+            getListaMeusServicos( $cdos, $oficina, $solicitante, $responsavel, $setor );
             break;
+        case 'G':
+            getTotalMeusServicos( $responsavel );
+            break;
+        case 'H':
+            getTotalMeusChamados( $responsavel );
+            break;
+        case 'I':
+            insert_chamado( $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $usuario, $ramal );
+            break;
+        case 'L':
+            listar_ultimas_os( $usuario, $inicio, $fim );
+            break;
+        case 'M':
+            getListaMeusChamados( $cdos, $oficina, $solicitante, $responsavel, $setor );
+            break;
+        case 'N':
+            nova_solicitacao( $descricao, $observacao, $solicitante, $setor, $usuario, $ramal );
+            break;
+        case 'O':
+            getOs( $cdos );
+            break;
+        case 'S':
+            getUltimaSolicitacao( $usuario );
+            break;
+        case 'U':
+            update_solicitacao( $cdos, $solicitante, $setor, $descricao, $observacao, $ramal );
+            break;
+
+
+
+
+
+
+
+
+
+
 
 }
 
@@ -579,6 +600,104 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
         }
 
     }
+
+	    function getListaMeusChamados( $codigo, $oficina, $solicitante, $responsavel, $setor ){
+			require_once "../controller/class.os_controller.php";
+			require_once "../services/class.os_list_iterator.php";
+			require_once "../beans/class.os.php";
+			$osController = new os_controller();
+
+		//	echo "1. Solicitante: ".$solicitante."<br>";
+			$dados['solicitante'] = $solicitante;
+			$dados['setor']       = $setor;
+			$dados['oficina']     = $oficina;
+			$dados['codigo']      = $codigo;
+			$dados['responsavel'] = $responsavel;
+			
+			//echo "2. Solicitante: ".$dados['solicitante']."<br>";
+
+			$teste = $osController->getListaMeusChamados( $dados );
+			$os_list = new os_list_iterator( $teste );
+			$osArray = array();
+			while ( $os_list->hasNextOs() ){
+				$os = $os_list->getNextOs();
+				$osArray[] = array(
+                    "codigo"      => $os->getCdOs(),
+                    "prioridade"  => $os->getPrioridade(),
+                    "setor"       => $os->getSetor()->getNmSetor(),
+                    "servico"     => $os->getDescricao(),
+                    "responsavel" => $os->getResponsavel()->getCdUsuario(),
+                    "solicitacao" => $os->getDataPedido(),
+                    "espera"      => $os->getPrevisao()
+				);
+			}
+
+			echo json_encode( $osArray );
+
+    }
+
+        function getListaMeusServicos( $codigo, $oficina, $solicitante, $responsavel, $setor ){
+            require_once "../controller/class.os_controller.php";
+            require_once "../services/class.itemSolicitacaoServico_list_iterator.php";
+            require_once "../beans/class.os.php";
+            $osController = new os_controller();
+
+            //	echo "1. Solicitante: ".$solicitante."<br>";
+            $dados['solicitante'] = $solicitante;
+            $dados['setor']       = $setor;
+            $dados['oficina']     = $oficina;
+            $dados['codigo']      = $codigo;
+            $dados['responsavel'] = $responsavel;
+
+            //echo "2. Solicitante: ".$dados['solicitante']."<br>";
+
+            $teste = $osController->getListaMeusServicos( $dados );
+            $os_list = new itemSolicitacaoServico_list_iterator( $teste );
+            $osArray = array();
+            while ( $os_list->hasNextItemSolicitacaoServico() ){
+                $os = $os_list->getNextItemSolicitacaoServico();
+                $osArray[] = array(
+                    "codigo"      => $os->getCdOs(),
+                    "chamado"   => $os->getChamado(),
+                    "responsavel" => $os->getResponsavel(),
+                    "servico"     => $os->getManuServ()->getStrNmServico(),
+                    "descricao" => $os->getDescricao(),
+                    "inicio" => $os->getDataInicial(),
+                    "status"      => $os->getTempo()
+                );
+            }
+
+            echo json_encode( $osArray );
+
+        }
+
+        function getTotalMeusServicos( $responsavel ){
+            require_once "../controller/class.itemSolicitacaoServico_Controller.php";
+            $osController = new itemSolicitacaoServico_Controller();
+
+
+            //echo "2. Solicitante: ".$dados['solicitante']."<br>";
+
+            $teste = $osController->getTotalMeusServicos( $responsavel );
+
+
+            echo json_encode( array( "total" => $teste ) );
+
+        }
+
+        function getTotalMeusChamados( $responsavel ){
+            require_once "../controller/class.os_controller.php";
+            $osController = new os_controller();
+
+
+            //echo "2. Solicitante: ".$dados['solicitante']."<br>";
+
+            $teste = $osController->getTotalMeusChamados( $responsavel );
+
+
+            echo json_encode( array( "total" => $teste ) );
+
+        }
 
 
 

@@ -77,6 +77,13 @@ class os_controller
         return $teste;
     }
 
+    public function getListOficinas(){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getListOficinas(  );
+        return $teste;
+    }
+
     public function getListUsuarioOficina( $oficina ){
         require_once '../dao/class.os_dao.php';
         $os_dao = new os_dao();
@@ -179,6 +186,48 @@ class os_controller
         require_once '../dao/class.os_dao.php';
         $os_dao = new os_dao();
         $teste = $os_dao->verificaSeTemSolicitacao( $codigoOs );
+        return $teste;
+    }
+
+    public function getListaResponsaveis(  ){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getListaResponsaveis(  );
+        return $teste;
+    }
+
+    public function get_total_chamados_aguardando(){
+        require_once 'dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->get_total_chamados_aguardando(  );
+        return $teste;
+    }
+	
+	public function getListaMeusChamados( $variavel ){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getListaMeusChamados( $variavel );
+        return $teste;
+    }
+
+    public function getListaMeusServicos( $variavel ){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getListaMeusServicos( $variavel );
+        return $teste;
+    }
+
+    public function getListFuncionario(){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getListFuncionario(  );
+        return $teste;
+    }
+
+    public function getTotalMeusChamados( $usuario ){
+        require_once 'dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getTotalMeusChamados( $usuario );
         return $teste;
     }
 }

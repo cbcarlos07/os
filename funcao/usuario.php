@@ -55,10 +55,12 @@
             $sistema = $osController->verificaPapelUsuario( $usuario );
            // echo "Sistema: ".$sistema;
             $system = $sistema;
+            $cdFunc = $usuarioController->getCodigoFuncionario( $usuario );
 
 
             $_SESSION['sistema'] = $sistema;
             $_SESSION['usuario'] = $usuario;
+            $_SESSION['funcionario'] = $cdFunc;
 
         }
         echo json_encode(array("sucesso" => $teste, "sistema" => $system ));

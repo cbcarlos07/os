@@ -383,4 +383,27 @@ class itemSolicitacaoServico_dao
         return $teste;
     }
 
+    public function getTotalMeusServicos( $usuario ){
+        require_once "class.connection_factory.php";
+
+
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $total = 0;
+        try {
+            $sql = "SELECT count(*) TOTAL FROM DBAMV.V_CHAMADOS_SERVICOS V
+                    WHERE V.CD_FUNC = :usuario";
+            $stmt = oci_parse( $conn, $sql );
+            oci_bind_by_name( $stmt, "usuario", $usuario );
+
+            ociexecute( $stmt );
+            if ( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $total = $row['TOTAL'];
+            }
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+        return $total;
+    }
+
 }
