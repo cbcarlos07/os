@@ -7,7 +7,8 @@
    include "includes/head.php";
 
    $usuario = $_SESSION['usuario'];
-   
+   $funcionario = $_SESSION['funcionario'];
+
    $cdOs = 0;
    if( isset($_POST['cdos']) ){
 		$cdOs = $_POST['cdos'];
@@ -109,15 +110,15 @@
                           <textarea id="desc" class="form-control"></textarea>
                       </div>
                         <div class="row"></div>
-                      <div class="form-group col-md-4" >
+                  <!--    <div class="form-group col-md-4" >
                           <label for="snfeito" >Servi&ccedil;o Feito?</label>
                           &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snfeito" value="S"/>
 
-                      </div>
+                      </div>-->
 
                       <div class="form-group col-md-6" >
-                          <label for="snvisualiza" class="col-md-5">Cliente visualiza?</label>
-                          &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snvisualiza" value="S"/>
+                          <label for="snvisualiza">Cliente n&atilde;o visualiza?</label>
+                          &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snvisualiza" value="S" checked/>
 
                       </div>
 
@@ -179,6 +180,7 @@
 
                       <input type="hidden"  id="cdsetor" />
                       <input type="hidden" value="<?php echo $usuario ; ?>" id="usuario" />
+                      <input type="hidden" value="<?php echo $funcionario ; ?>" id="funcionario" />
                       <div class="col-md-12"></div>
 
 
@@ -311,8 +313,9 @@
                   Servi&ccedil;o <button class="btn-xs btn btn-danger btn-servico" title="Adicionar servi&ccedil;o" ><i class="fa fa-plus"></i></button>
                   <hr />
               </div>
-                  <table class="table table-hover table-responsive tabela table-striped" >
+                  <table class="table table-hover table-responsive tabela " >
                       <thead class="thead">
+                         <th>C&oacute;digo</th>
                          <th>Servi&ccedil;o</th>
                          <th>Funcion&aacute;rio</th>
                          <th>Descri&ccedil;&atilde;o</th>
@@ -328,11 +331,11 @@
 
           </div>
 
-            <div class="col-md-2" style="background: #ffffff">
+           <!-- <div class="col-md-2" style="background: #ffffff">
                 <table class="table table-hover table-striped tabela-chamados">
 
                 </table>
-            </div>
+            </div>-->
 
 		</div>
     </div>

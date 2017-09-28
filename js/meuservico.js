@@ -10,6 +10,7 @@ $(document).ready(function () {
    carregarComboOficina();
    carregarComboSetor();
    carregarTabela();
+   loadTotal();
    
 });
 
@@ -289,7 +290,17 @@ function carregarComboSetor(  ){
 
   }
 
-  function obterCodigoOs( id ){
+
+function loadTotal(  ) {
+    var usuario = $('#usuario').val();
+    var funcion = $('#funcionario').val();
+    carregarTotalRecebimentos();
+    carregarTotalMeusChamados( usuario );
+    carregarTotalMeusServicos( funcion );
+}
+
+
+function obterCodigoOs( id ){
 	  console.log('obterCodigoOs');
 	  var formulario = $('<form action="cadastro.php" method="post">'+
 													'<input type="hidden" name="cdos" value="'+ id +'">'+

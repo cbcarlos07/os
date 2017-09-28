@@ -100,16 +100,15 @@
                           <textarea id="desc" class="form-control"></textarea>
                       </div>
                         <div class="row"></div>
-                      <div class="form-group col-md-4" >
+                    <!--  <div class="form-group col-md-4" >
                           <label for="snfeito" >Servi&ccedil;o Feito?</label>
-                          &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snfeito" value="S"/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snfeito" value="S"/>
 
-                      </div>
+                  </div>-->
 
                       <div class="form-group col-md-7" >
-                          <label for="snvisualiza" class="col-md-5">Cliente &atilde;o visualiza?</label>
-                          &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snvisualiza" value="S"/>
-
+                          <label for="snvisualiza" >Cliente n&atilde;o visualiza?</label>
+                          <input type="checkbox" id="snvisualiza" value="S" checked/>
                       </div>
                       <div class="col-md-12"></div>
 

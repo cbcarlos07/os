@@ -10,6 +10,7 @@ $(document).ready(function () {
    carregarComboOficina();
    carregarComboSetor();
    carregarTabela();
+   loadTotal();
    
 });
 
@@ -302,3 +303,13 @@ function carregarComboSetor(  ){
   $(document).ready(function(){
 		preencherTabela();
 	});
+
+
+
+function loadTotal(  ) {
+    var usuario = $('#usuario').val();
+    var funcion = $('#funcionario').val();
+    carregarTotalRecebimentos();
+    carregarTotalMeusChamados( usuario );
+    carregarTotalMeusServicos( funcion );
+}

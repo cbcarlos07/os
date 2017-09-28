@@ -36,6 +36,14 @@ $('.btn-salvar-servico').on('click', function () {
 });
 
 
+function loadTotal(  ) {
+    var usuario = $('#usuario').val();
+    var funcion = $('#funcionario').val();
+    carregarTotalRecebimentos();
+    carregarTotalMeusChamados( usuario );
+    carregarTotalMeusServicos( funcion );
+}
+
 function salvarOs() {
 
     var cdOs         =  $('#cdos').val();
@@ -86,6 +94,9 @@ function salvarOs() {
         success : function (data) {
           // console.log("Retorno: "+data.sucesso);
             if( data.sucesso == 1 ){
+                if( $('#responsavel').text() != "Selecione" ){
+                    carregarTotalRecebimentos();
+                }
                 $('.loading').fadeOut('slow');
                 $('#cdos').val( data.chamado );
                 corBordaCampo( "input","cdos","" );
@@ -115,20 +126,25 @@ function salvarItem() {
     var cdOs         =  $('#cdos').val();
     var servico      =  $('#servico').val();
     var descricao    =  $('#desc').val();
-    var snfeito      =  document.getElementById('snfeito');
+    var snfeito;//      =  document.getElementById('snfeito');
     var snvisualiza      =  $('#snvisualiza');
     var feito        = "N";
     var acao         = "S";
-    var checado = "Sn Visualiza nao chegado";
+    //var checado = "Sn Visualiza nao chegado";
     if( snvisualiza.is(':checked') ){
         descricao = "#HIDE#"+descricao;
         checado = "Sn Visualiza chegado";
     }
-    console.log( checado );
+   // console.log( checado );
  //   console.log("Data Final: "+horaFinal);
-    if( snfeito.checked ){
+    /*if( snfeito.checked ){
         feito = "S"
+    }*/
+
+    if( horaFinal != "" ){
+        feito = 'S';
     }
+
 
     if( codigoItem > 0 ){
         acao = "U";
@@ -157,14 +173,16 @@ function salvarItem() {
             acao        : acao
         },
         success : function (data) {
-            if( data.retorno == 1 ){
+            var retorno = data.retorno;
+            if( retorno > 0 ){
                 $('.load-modal').fadeOut('slow');
                 sucesso();
                 preencherTabelaServicos('A');
+                $('#codigoItem').val( retorno )
 
             }else{
                 $('.load-modal').fadeOut('slow');
-                msgErro('Ocorreu um erro ao realizar opera&ccedil;&atilde;o');
+                msgErroModal('Ocorreu um erro ao realizar opera&ccedil;&atilde;o');
             }
         }
     })
@@ -198,6 +216,13 @@ function msgErro( msg ) {
     },2000);
 }
 
+function msgErroModal( msg ) {
+    var mensagem = $('.alerta-modal');
+    mensagem.empty().html('<p class="alert alert-danger">'+msg+'</p>').fadeIn("fast");
+    setTimeout(function (){
+        mensagem.fadeOut();
+    },2000);
+}
 
     function sucesso() {
         var mensagem = $('.alerta-modal');
@@ -453,12 +478,39 @@ function msgErro( msg ) {
         var dataFinal = new Date(anoI, mesI-1, diaI, horaI, minII);
         var campoDataF = dataFinal.toLocaleDateString("pt-BR", options)+' '+dataFinal.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
        // console.log('Campo data: '+campoData);
-        $('#datai').val(campoData);
+       // $('#datai').val(campoData);
         $('#dataos').val(campoData);
         $('#previsao').val(campoData);
-        $('#dataf').val( campoDataF );
+        //$('#dataf').val( campoDataF );
+        $('#dataf').val( '' );
+        $('#total').val( '' );
+        //calcularHoras();
+    }
 
-        calcularHoras();
+
+    function carregarDataHoraAtualServico() {
+        var agora = new Date();
+        var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        var campoData = agora.toLocaleDateString("pt-BR", options)+' '+agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        var dataHoraInicial = campoData.split(' ');
+        var dataInicioStr   =  dataHoraInicial[0].split('/');
+        var diaI = dataInicioStr[0];
+        var mesI = dataInicioStr[1];
+        var anoI = dataInicioStr[2];
+        var horaInicialStr  = dataHoraInicial[1].split(':');
+        var horaI = horaInicialStr[0];
+        var minI  = horaInicialStr[1];
+        var minII = parseInt(minI)  + 1;
+        // console.log("Minuto: "+minII);
+        var dataFinal = new Date(anoI, mesI-1, diaI, horaI, minII);
+        var campoDataF = dataFinal.toLocaleDateString("pt-BR", options)+' '+dataFinal.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        // console.log('Campo data: '+campoData);
+         $('#datai').val(campoData);
+         //$('#dataf').val( campoDataF );
+        $('#dataf').val( '' );
+
+        //calcularHoras();
     }
 
     $(document).ready(function () {
@@ -471,6 +523,7 @@ function msgErro( msg ) {
       carregarDataHoraAtual();
       carregarComboFuncionario(31);
       carregarComboSolcitante();
+      loadTotal();
 
 
 
@@ -498,7 +551,7 @@ function msgErro( msg ) {
 
 
 
-               preencherTabelaServicos('A');
+              // preencherTabelaServicos('A');
               // console.log("Tipo OS: "+tipoos);
 
            }
@@ -803,6 +856,8 @@ function carregarComboSolicitante( soliciante ){
              $('select[id="responsavel"]').css('border-color', '');
              $('input[id="descricao"]').css('border-color', '');
              $('textarea[id="observacao"]').css('border-color', '');
+             carregarDataHoraAtualServico(  );
+             verificarCampo(  );
          }else {
              var setor      =    $('#setor').val();
              var solicitante      =    $('#solicitante').val();
@@ -960,9 +1015,9 @@ dataFinal.on('blur', function () {
            }
 
            var horas  = horaStr +":"+minStr;
-           $('#tempoHora').val( horaStr );
-           $('#tempoMinuto').val( minStr );
-           $('#total').val( horas );
+           $( '#tempoHora ').val( horaStr );
+           $( '#tempoMinuto' ).val( minStr );
+           $( '#total' ).val( horas );
        }catch (err){
            console.log("Erro: "+err.message);
        }
@@ -1071,28 +1126,36 @@ dataFinal.on('blur', function () {
                 success : function (data) {
                   //  console.log(data);
                     $.each( data.itens, function (i, j) {
-                   //     console.log("Codigo do item: "+j.codigo);
+                        console.log("Final:  "+j.final);
+                        var string = j.descricao.split( "<br />" );
+
+
                         var linha;
                         if( situacao != 'C'){
-                            linha = "<tr>"
-                                +"  <td>" + j.servico + "</td>"
-                                +"  <td>" + j.funcionario + "</td>"
-                                +"  <td>" + j.descricao + "</td>"
-                                +"  <td>" + j.inicio + "</td>"
-                                +"  <td>" + j.final + "</td>"
-                                +"  <td>" + j.tempo + "</td>"
-                                +"  <td> <a href='#editar' class='btn btn-lg btn-editar'  title='Clique para alterar servico' onclick='abrirTelaAlterarServico("+ j.codigo +")'><i class='fa fa-pencil-square-o'></i></a>"
-                                +        "<a href='#excluir' class='btn btn-lg btn-excluir'  title='Clique para alterar servico' onclick='modalRemoverServico("+ j.codigo +",\""+ j.descricao +"\")'><i class='fa fa-times'></i></a>"
-                                +  "</td>"
-                                +"</tr> ";
+                            var cor = "";
+                            if( j.final != "" )
+                                cor = "#B2EBF2"
+
+                            linha = "<tr bgcolor='" + cor + "'>"
+                                        +"  <td>" + j.codigo + "</td>"
+                                        +"  <td>" + j.servico + "</td>"
+                                        +"  <td>" + j.funcionario + "</td>"
+                                        +"  <td>" + j.descricao + "</td>"
+                                        +"  <td>" + j.inicio + "</td>"
+                                        +"  <td>" + j.final + "</td>"
+                                        +"  <td>" + j.tempo + "</td>"
+                                        +"  <td> <a href='#editar' class='btn btn-lg btn-editar'  title='Clique para alterar servico' onclick='abrirTelaAlterarServico("+ j.codigo +")'><i class='fa fa-pencil-square-o'></i></a>"
+                                        +        "<a href='#excluir' class='btn btn-lg btn-excluir'  title='Clique para alterar servico' onclick='modalRemoverServico("+ j.codigo +",\""+ string[0] + "..." +"\")'><i class='fa fa-times'></i></a>"
+                                        +  "</td>"
+                                        +"</tr> ";
                         }else{
                             linha = "<tr>"
-                                +"  <td>" + j.servico + "</td>"
-                                +"  <td>" + j.funcionario + "</td>"
-                                +"  <td>" + j.descricao + "</td>"
-                                +"  <td>" + j.inicio + "</td>"
-                                +"  <td>" + j.final + "</td>"
-                                +"  <td>" + j.tempo + "</td>"
+                                            +"  <td>" + j.servico + "</td>"
+                                            +"  <td>" + j.funcionario + "</td>"
+                                            +"  <td>" + j.descricao + "</td>"
+                                            +"  <td>" + j.inicio + "</td>"
+                                            +"  <td>" + j.final + "</td>"
+                                            +"  <td>" + j.tempo + "</td>"
                                 +"</tr> ";
                         }
 
@@ -1130,7 +1193,8 @@ dataFinal.on('blur', function () {
                         $('#snvisualiza').removeAttr('checked','checked');
                     }
                     $('#servico').val( data.servico );
-                    $('#desc').val( hide );
+
+                    $('#desc').val( hide.replace(new RegExp('<br />', 'g'), ' ') );
                     if( data.feito == 'S' )
                       $('#snfeito').attr('checked','checked');
                     $('#datai').val( data.inicio );
@@ -1291,7 +1355,7 @@ function getOs( codigoOs ) {
                 $('#dataos').val(data.pedido);
                 //console.log('Previsao: '+data.previsao);
                 $('#previsao').val(data.previsao);
-                console.log("Cadastro Solicitante: '"+data.solicitante+"'");
+              //  console.log("Cadastro Solicitante: '"+data.solicitante+"'");
                 $('#solicitante').val( data.solicitante ).trigger("chosen:updated");
                 carregarComboSolicitante( data.solicitante );
                 $('#setor').val(data.setor).trigger("chosen:updated");
@@ -1420,7 +1484,8 @@ function getOs( codigoOs ) {
     function startCountdown(){
 
                 setTimeout(function () {
-                    preencherTabelaServicos('A');
+                    var status = $('#status').val();
+                    preencherTabelaServicos( status );
                     carregarTabela();
                     startCountdown()
                 }, 30000);
@@ -1434,10 +1499,14 @@ function getOs( codigoOs ) {
             if( statusGlobal != 'C' ){
                 if( status == 'C' ){
 
+
+
                     $('span.titulo-modal-remover').html('Fechar chamado');
                     $('p.msg-delete').html('Deseja realmente fechar o chamado <strong>' + codigo + '</strong> ?');
                     $('.modal-delete').modal('show');
                     $('.btn-sim').on('click', function (){
+
+
                         atualizarStatus( status, codigo );
                     });
                 }
@@ -1464,9 +1533,11 @@ function getOs( codigoOs ) {
                 cdos   : cdos
             },
             success: function ( data ) {
-
+                loadTotal();
+                    console.log( "Chamado finalizado: "+data.retorno );
                     if( data.retorno == 1 ){
-                        sucesso();
+                        $('.loading').fadeOut();
+                        sucessoChamado();
                         $('.modal-delete').modal('hide');
                     }else{
                         msgErro('Ocorreu um erro na opera&ccedil;&atildeo');

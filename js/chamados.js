@@ -77,6 +77,10 @@ function salvarOs() {
         success : function (data) {
           // console.log("Retorno: "+data.sucesso);
             if( data.sucesso == 1 ){
+                if( $('#responsavel').text() != "Selecione" ){
+                    console.log("CarregarTotalRecebimentos");
+                    carregarTotalRecebimentos();
+                }
                 $('.loading').fadeOut('slow');
                 sucessoChamado();
 
@@ -103,7 +107,7 @@ function salvarItem() {
     var cdOs         =  $('#cdos').val();
     var servico      =  $('#servico').val();
     var descricao    =  $('#desc').val();
-    var snfeito      =  document.getElementById('snfeito');
+    var snfeito;//      =  document.getElementById('snfeito');
     var snvisualiza  =  $('#snvisualiza');
     var feito        = "N";
     var acao         = "S";
@@ -114,9 +118,15 @@ function salvarItem() {
 
     }
 
+    if( horaFinal != "" ){
+        feito = "S";
+    }
+/*
+
     if( snfeito.checked){
         feito = "S"
     }
+*/
 
     if( codigoItem > 0 ){
         acao = "U";
@@ -145,10 +155,12 @@ function salvarItem() {
             acao        : acao
         },
         success : function (data) {
-            if( data.retorno == 1 ){
+            var retorno = data.retorno;
+            if( retorno > 0 ){
                 $('.load-modal').fadeOut('slow');
                 sucesso();
                 preencherTabelaServicos();
+                $('#codigoItem').val( retorno );
 
             }else{
                 $('.load-modal').fadeOut('slow');
@@ -386,9 +398,34 @@ $("#datai").datetimepicker({
         $('#datai').val(campoData);
         $('#dataos').val(campoData);
         $('#previsao').val(campoData);
-        $('#dataf').val( campoDataF );
+      //  $('#dataf').val( campoDataF );
+        $('#dataf').val( '' );
+        //calcularHoras();
+    }
 
-        calcularHoras();
+    function carregarDataHoraAtualServico() {
+        var agora = new Date();
+        var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        var campoData = agora.toLocaleDateString("pt-BR", options)+' '+agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        var dataHoraInicial = campoData.split(' ');
+        var dataInicioStr   =  dataHoraInicial[0].split('/');
+        var diaI = dataInicioStr[0];
+        var mesI = dataInicioStr[1];
+        var anoI = dataInicioStr[2];
+        var horaInicialStr  = dataHoraInicial[1].split(':');
+        var horaI = horaInicialStr[0];
+        var minI  = horaInicialStr[1];
+        var minII = parseInt(minI)  + 1;
+        // console.log("Minuto: "+minII);
+        var dataFinal = new Date(anoI, mesI-1, diaI, horaI, minII);
+        var campoDataF = dataFinal.toLocaleDateString("pt-BR", options)+' '+dataFinal.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        $('#datai').val(campoData);
+       // $('#dataf').val( campoDataF );
+        $('#dataf').val( '' );
+
+       // calcularHoras();
     }
 
     $(document).ready(function () {
@@ -674,6 +711,9 @@ function carregarComboFuncionario( especialidade ){
              $('select[id="responsavel"]').css('border-color', '');
              $('input[id="descricao"]').css('border-color', '');
              $('textarea[id="observacao"]').css('border-color', '');
+             verificarCampo();
+             carregarDataHoraAtualServico();
+
          }else {
              var setor      =    $('#setor').val();
              var descricao   =    $('#descricao').val();
@@ -962,8 +1002,10 @@ dataFinal.on('blur', function () {
                     $('#tempoMinuto').val( data.tempoMinuto );
                     $('#codigoItem').val( cdServico );
                     $('#resp').val( data.funcionario );
+                    var hide = data.descricao;
+                    var enc = hide.indexOf("#HIDE#");
                     $('#servico').val( data.servico );
-                    $('#desc').val( data.descricao );
+                    $('#desc').val( hide.replace(new RegExp('<br />', 'g'), ' ') );
                     if( data.feito == 'S' )
                       $('#snfeito').attr('checked','checked');
                     $('#datai').val( data.inicio );

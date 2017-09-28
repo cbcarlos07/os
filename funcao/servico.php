@@ -107,14 +107,14 @@ switch ($acao){
       $item->getFuncionario()->setCdFuncionario( $funcionario );
       $item->setManuServ( new manuServ() );
       $item->getManuServ()->setCdServico( $manuServ );
-      $item->setDescricao( $descricao );
+      $item->setDescricao( nl2br( $descricao ) );
       $item->setTempoMinuto( $tempoMinuto );
       $item->setSnFeito( $feito );
 
       $teste = $itemController->salvarItemOs( $item );
 
-      if($teste){
-          echo json_encode( array("retorno" => 1) );
+      if($teste > 0){
+          echo json_encode( array("retorno" => $teste) );
       }
       else{
           echo json_encode( array("retorno" => 0) );
@@ -138,7 +138,7 @@ switch ($acao){
       $item->getFuncionario()->setCdFuncionario( $funcionario );
       $item->setManuServ( new manuServ() );
       $item->getManuServ()->setCdServico( $manuServ );
-      $item->setDescricao( $descricao );
+      $item->setDescricao( nl2br( $descricao ));
       $item->setTempoMinuto( $tempoMinuto );
       $item->setSnFeito( $feito );
       $item->setCdItem( $codigo );
@@ -146,7 +146,7 @@ switch ($acao){
       $teste = $itemController->updateItemOs( $item );
 
       if($teste){
-          echo json_encode( array( "retorno" => 1 ) );
+          echo json_encode( array( "retorno" => $codigo ) );
       }else{
           echo json_encode( array( "retorno" => 0 ) );
       }

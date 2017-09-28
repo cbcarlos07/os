@@ -7,7 +7,8 @@
    include "includes/head.php";
 
 
-   $usuario = $_SESSION['usuario'];
+   $usuario     = $_SESSION['usuario'];
+   $funcionario = $_SESSION['funcionario'];
 
 
 
@@ -94,7 +95,57 @@
       </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
 
+  <!-- Modal informações adicionais -->
+  <div id="addInf" class="modal fade" role="dialog">
+      <div class="modal-dialog">
 
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="linear-progress-material small load-modal">
+                  <div class="bar bar1"></div>
+                  <div class="bar bar2"></div>
+              </div>
+              <p class="alerta-modal"></p>
+              <div class="modal-header">
+
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Informa&ccedil;&otilde;es Adicionais</h4>
+              </div>
+              <div class="modal-body">
+                  <div class="col-md-12">
+                      <!-- 222 = No produção
+                      -->
+                      <div class="form-group ">
+                          <input type="hidden" id="tempoHora">
+                          <input type="hidden" id="tempoMinuto">
+                          <input type="hidden" id="codigoItem">
+                          <input type="hidden" id="resp" value="<?= $funcionario ?>">
+                          <input type="hidden" id="servico" value="222">
+                          <input type="hidden" id="datai">
+                          <input type="hidden" id="dataf">
+                          <input type="hidden" id="total">
+                          <input type="hidden" id="codOs">
+                      </div>
+
+                      <div class="form-group col-lg-12">
+                          <label for="desc">Descreva as informa&ccedil;&otilde;es que queira adicionar</label>
+                          <textarea id="desc" class="form-control"></textarea>
+                      </div>
+
+                      <div class="row "></div>
+
+
+                  </div>
+              </div>
+              <div class="row"></div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary btn-add-inf">Salvar</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+              </div>
+          </div>
+
+      </div>
+  </div>
 
 
 
@@ -106,7 +157,10 @@
                   <h4 class="modal-title">Status do Chamado</h4>
               </div>
               <div class="modal-body">
-                  <div class="col-md-12">
+
+
+
+                  <div class="col-md-12" style="height: 600px; overflow: auto; font-size: small;">
                       <div class="form-group">
                           <label for="descos" class="col-md-4">Descri&ccedil;&atilde;o do Chamado:</label>
                           <div class="col-md-8">
@@ -143,7 +197,7 @@
                               <table class="table table-responsive table-hover">
                                   <thead>
                                     <th>Atendente</th>
-                                    <th>Servi&ccedil;o</th>
+                                    <th>Descri&ccedil;&atilde;o do Servi&ccedil;o</th>
                                     <th>Data</th>
                                   </thead>
                                   <tbody id="tbody-serv"></tbody>
@@ -152,6 +206,15 @@
                       </div>
                       <div class="row "></div>
 
+                      <div class="form-group col-md-12">
+                          <label for="servicos"><a href="#inf" class="lnk-add-inf">Adicionar Informa&ccedil;&otilde;es</a></label>
+                          <div class="table" style="height: 150px; overflow: auto; font-size: small;">
+                              <table class="table table-responsive table-hover table-inf">
+                                  <thead id="theadInf"></thead>
+                                  <tbody id="tbodyInf"></tbody>
+                              </table>
+                          </div>
+                      </div>
 
                   </div>
               </div>
@@ -184,6 +247,7 @@
 
                       <input type="hidden" id="cdsetor" />
                       <input type="hidden" value="<?php echo $usuario ; ?>" id="usuario" />
+                      <input type="hidden" value="<?php echo $funcionario ; ?>" id="funcionario" />
                       <div class="row"></div>
                       <div class="form-group ">
                           <label for="cdos" class="col-md-1 control-label">Cd OS</label>
@@ -243,7 +307,7 @@ Meu IP: 192.168.1.1" onkeydown="verificarCampo()"></textarea>
                   <h4>Minhas Solicita&ccedil;&otilde;es</h4>
                   <hr />
 
-                  <table class="table table-hover table-responsive table-striped tabela" >
+                  <table class="table table-hover table-responsive tabela" >
                       <thead class="thead">
                          <th>#</th>
                          <th>Setor</th>

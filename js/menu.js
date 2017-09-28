@@ -20,3 +20,71 @@ $(document).ready(function () {
     });
 });
 
+function carregarTotalRecebimentos() {
+
+    var total = $('span.total-recebimentos');
+
+    total.text('');
+
+    $.ajax({
+        url  : 'funcao/os.php',
+        type : 'post',
+        dataType: 'json',
+        data : {
+            acao : 'P'
+        },
+        success : function (data) {
+
+            total.text( data.aguardando );
+        }
+    });
+
+}
+
+
+
+function carregarTotalMeusChamados( usuario ) {
+
+    var total = $('span.total-chamados');
+
+    //console.log("Usuario Menus: "+usuario);
+
+    total.text('');
+
+    $.ajax({
+        url  : 'funcao/os.php',
+        type : 'post',
+        dataType: 'json',
+        data : {
+            acao : 'H',
+            responsavel : usuario
+        },
+        success : function (data) {
+            total.text( data.meuschamados );
+        }
+    });
+
+}
+
+
+function carregarTotalMeusServicos( usuario ) {
+
+    var total = $('span.total-servicos');
+
+    total.text('');
+
+    $.ajax({
+        url  : 'funcao/os.php',
+        type : 'post',
+        dataType: 'json',
+        data : {
+            acao : 'G',
+            responsavel : usuario
+        },
+        success : function (data) {
+            total.text( data.meuservicos );
+        }
+    });
+
+}
+

@@ -106,6 +106,9 @@ switch ( $acao ){
         case 'I':
             insert_chamado( $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $usuario, $ramal );
             break;
+        case 'J':
+            getListServicoInf( $cdos );
+            break;
         case 'L':
             listar_ultimas_os( $usuario, $inicio, $fim );
             break;
@@ -118,24 +121,28 @@ switch ( $acao ){
         case 'O':
             getOs( $cdos );
             break;
+         case 'P':
+            getTotalAReceber(  );
+            break;
         case 'S':
             getUltimaSolicitacao( $usuario );
             break;
         case 'U':
             update_solicitacao( $cdos, $solicitante, $setor, $descricao, $observacao, $ramal );
             break;
-
-
-
-
-
-
-
-
-
-
-
 }
+
+    function getTotalAReceber(  ){
+        require_once "../controller/class.os_controller.php";
+        $osController = new os_controller();
+
+        $totalReceber = $osController->get_total_chamados_aguardando1();
+
+
+        echo json_encode( array( "aguardando" => $totalReceber ) );
+    }
+
+
 
 
     function listar_ultimas_os( $usuario, $inicio, $fim ){
@@ -153,8 +160,10 @@ switch ( $acao ){
         while ( $osList->hasNextOs() ){
             $ordem = $osList->getNextOs();
             $situacao = "Aguardando";
-            if( $ordem->getResponsavel()->getCdUsuario() != "" )
-               $situacao = "Em atendimento";
+            if( $ordem->getResponsavel()->getCdUsuario() != "" ){
+                $situacao = "Em atendimento";
+            }
+
 
 
             if( $ordem->getSituacao() == 'C' ){
@@ -170,6 +179,7 @@ switch ( $acao ){
                 "pedido"     => $ordem->getDataPedido(),
                 "situacao"   => $situacao,
                 "observacao" => $ordem->getObservacao(),
+                "status"   => $ordem->getSituacao()
 
             );
 
@@ -267,6 +277,7 @@ switch ( $acao ){
              $chamado['status']     = returnStatusAcento($ordem->getSituacao());
              $chamado['situacao']   = $ordem->getSituacao();
              $chamado['servicos']   = getListServico( $codOs );
+             $chamado['informacoes']= getListServicoInf( $codOs );
              $chamado['resolucao']  = $ordem->getResolucao();
              $chamado['especialidade']  = $ordem->getEspecialidade()->getCdEspec();
 
@@ -293,15 +304,19 @@ switch ( $acao ){
             case 'C':
                 $retorno = "Concluída";
                 break;
+            case 'D':
+                $retorno = "Cancelada";
+                break;
+            case 'E':
+                $retorno = "Conserto Externo";
+                break;
             case 'N':
                 $retorno = "Não Atendida";
                 break;
             case 'M':
                 $retorno = "Aguardando Material";
                 break;
-            case 'E':
-                $retorno = "Conserto Externo";
-                break;
+
             case 'S':
                 $retorno = "Solicitação";
                 break;
@@ -311,9 +326,7 @@ switch ( $acao ){
             case 'F':
                 $retorno = "Agendar";
                 break;
-            case 'D':
-                $retorno = "Cancelada";
-                break;
+
         }
         return $retorno;
     }
@@ -339,6 +352,7 @@ switch ( $acao ){
                 $servicos[] = array(
                     "usuario"   => $item->getFuncionario()->getNmFuncionario(),
                     "servico"   => $item->getManuServ()->getStrNmServico(),
+                    "descricao"   => $item->getDescricao(),
                     "data"      => $item->getHoraInicial(),
 
                 );
@@ -347,6 +361,40 @@ switch ( $acao ){
         }
 
        return $servicos;
+
+    }
+
+    function getListServicoInf( $cdOs ){
+        require_once "../controller/class.itemSolicitacaoServico_Controller.php";
+        require_once "../beans/class.itemSolicitacaoServico.php";
+        require_once "../services/class.itemSolicitacaoServico_list_iterator.php";
+
+        $item_controller = new itemSolicitacaoServico_Controller();
+
+        $lista = $item_controller->getListItensInfAdd( $cdOs );
+
+        $itemLista = new itemSolicitacaoServico_list_iterator( $lista );
+
+        $servicos = array();
+        while ( $itemLista->hasNextItemSolicitacaoServico() ){
+            $item = $itemLista->getNextItemSolicitacaoServico();
+            $hide = "#HIDE#";
+            $texto = $item->getDescricao();
+            $post = strripos( $texto, $hide );
+            if( $post == false ){
+                $servicos[] = array(
+                    "codigo"    => $item->getCdItem(),
+                    "usuario"   => $item->getFuncionario()->getNmFuncionario(),
+                    "servico"   => $item->getManuServ()->getStrNmServico(),
+                    "descricao" => $item->getDescricao(),
+                    "data"      => $item->getHoraInicial(),
+
+                );
+            }
+
+        }
+
+        return $servicos;
 
     }
 
@@ -678,10 +726,10 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
 
             //echo "2. Solicitante: ".$dados['solicitante']."<br>";
 
-            $teste = $osController->getTotalMeusServicos( $responsavel );
+            $teste = $osController->getTotalMeusServico( $responsavel );
 
 
-            echo json_encode( array( "total" => $teste ) );
+            echo json_encode( array( "meuservicos" => $teste ) );
 
         }
 
@@ -692,10 +740,10 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
 
             //echo "2. Solicitante: ".$dados['solicitante']."<br>";
 
-            $teste = $osController->getTotalMeusChamados( $responsavel );
+            $teste = $osController->getTotalMeusChamado( $responsavel );
 
 
-            echo json_encode( array( "total" => $teste ) );
+            echo json_encode( array( "meuschamados" => $teste ) );
 
         }
 

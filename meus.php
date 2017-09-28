@@ -10,6 +10,7 @@
   include "includes/head.php" ;
 
   $_usuario = $_SESSION['usuario'];
+  $_funcionario= $_SESSION['funcionario'];
 
 
   ?>
@@ -47,6 +48,7 @@
             <?php include "includes/barra_menu.php" ?>
 		  <div class="col-md-10">
             <input type="hidden" id="usuario" value="<?= $_usuario ?>"/>
+            <input type="hidden" id="funcionario" value="<?= $_funcionario ?>"/>
   			<div class="content-box-large">
   				<div class="panel-heading">
 					<div class="panel-title">Meus chamados <button class="btn btn-default btn-limpar" title="Limpar pesquisa"><i class="fa fa-paint-brush" aria-hidden="true"></i></div>

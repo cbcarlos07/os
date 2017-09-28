@@ -202,6 +202,14 @@ class os_controller
         $teste = $os_dao->get_total_chamados_aguardando(  );
         return $teste;
     }
+
+
+    public function get_total_chamados_aguardando1(){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->get_total_chamados_aguardando(  );
+        return $teste;
+    }
 	
 	public function getListaMeusChamados( $variavel ){
         require_once '../dao/class.os_dao.php';
@@ -226,6 +234,13 @@ class os_controller
 
     public function getTotalMeusChamados( $usuario ){
         require_once 'dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getTotalMeusChamados( $usuario );
+        return $teste;
+    }
+
+    public function getTotalMeusChamado( $usuario ){
+        require_once '../dao/class.os_dao.php';
         $os_dao = new os_dao();
         $teste = $os_dao->getTotalMeusChamados( $usuario );
         return $teste;

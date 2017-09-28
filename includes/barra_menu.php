@@ -38,7 +38,7 @@
 
              ?>
                     <li class="noti"><a href="recebimentos.php"><i class="glyphicon glyphicon-pencil"></i><b>Recebimentos</b>
-                            <span class="num" >
+                            <span class="num total-recebimentos" >
                                 <?= $total ?>
                             </span></a></li>
              <?php
@@ -55,8 +55,8 @@
              <?php
                if( $totalChamados > 0 ){
                 ?>
-                   <li class="noti"><a href="meus.php"><i class="glyphicon glyphicon-edit"></i>Meus Chamados
-                           <span class="num" >
+                   <li class="noti"><a href="meus.php"><i class="glyphicon glyphicon-tags" aria-hidden="true"></i></i>Meus Chamados
+                           <span class="num total-chamados" >
                                 <?= $totalChamados ?>
                             </span>
                        </a>
@@ -73,8 +73,8 @@
              <?php
               if( $totalServicos > 0 ){
                 ?>
-                  <li class="noti"><a href="servico.php"><i class="glyphicon glyphicon-edit"></i>Meus Servicos
-                          <span class="num" >
+                  <li class="noti"><a href="servico.php"><i class="glyphicon glyphicon-paperclip"></i>Meus Servicos
+                          <span class="num total-servicos" >
                                 <?= $totalServicos ?>
                             </span></a>
                   </li>
@@ -82,12 +82,12 @@
               }
               else{
               ?>
-                  <li ><a href="servico.php"><i class="glyphicon glyphicon-edit"></i>Meus Servicos</a></li>
+                  <li ><a href="servico.php"><i class="glyphicon glyphicon-paperclip"></i>Meus Servicos</a></li>
               <?php
               }
              ?>
 
-                 <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>
+                <!-- <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>-->
             <?php
              }else{
                  //nao fazem parte do setor de informática

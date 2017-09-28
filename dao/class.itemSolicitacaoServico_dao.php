@@ -145,9 +145,72 @@ class itemSolicitacaoServico_dao
         return $lista;
     }
 
+
+    public function getListItensInfAdd( $cdOs ){
+        require_once "class.connection_factory.php";
+        require_once "../beans/class.itemSolicitacaoServico.php";
+        require_once "../beans/class.manuServ.php";
+        require_once "../beans/class.funcionario.php";
+        require_once "../services/class.itemSolicitacaoServico_list.php";
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $sql = "SELECT * FROM DBAMV.VIEW_HAM_LISTA_ITOS_INF V WHERE V.CD_OS = :os";
+
+        $lista = new itemSolicitacaoServico_list();
+        try{
+            $stmt = ociparse( $conn, $sql );
+            ocibindbyname( $stmt, ":os", $cdOs );
+            ociexecute( $stmt );
+            while ( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $fim = "";
+                if( isset( $row['FIM'] ) ){
+                    $fim = $row['FIM'];
+                }
+
+                $hora = "";
+                if( isset( $row['HORA'] ) ){
+                    $hora = $row['HORA'];
+                }
+                $minuto = "";
+
+                if( isset( $row['MINUTO'] ) ){
+                    $minuto = $row['MINUTO'];
+                }
+
+                $servico = "";
+                if( isset( $row['DS_SERVICO'] ) )
+                    $servico = $row['DS_SERVICO'];
+
+                $item = new itemSolicitacaoServico();
+                $item->setCdItem( $row['CD_ITSOLICITACAO_OS'] );
+                $item->setManuServ( new manuServ() );
+                $item->getManuServ()->setCdServico( $row['CD_SERVICO'] );
+                $item->getManuServ()->setStrNmServico( $row['NM_SERVICO'] );
+                $item->setFuncionario( new funcionario() );
+                $item->getFuncionario()->setCdFuncionario( $row['CD_FUNC'] );
+                $item->getFuncionario()->setNmFuncionario( $row['NM_FUNC'] );
+                $item->setSnFeito( $row['FEITO'] );
+                $item->setHoraInicial( $row['INICIO'] );
+                $item->setHoraFinal( $fim );
+                $item->setTempo( $row['TEMPO'] );
+                $item->setTempoHora( $hora );
+                $item->setTempoMinuto( $minuto );
+                $item->setDescricao( $servico );
+                $lista->addItemSolicitacaoServico( $item );
+
+            }
+            $con->closeConnection( $conn );
+        }catch (PDOException $e){
+            echo "Erro: ".$e->getMessage();
+        }
+
+        return $lista;
+    }
+
+
     public function salvarItemOs( itemSolicitacaoServico $item ){
         require_once "class.connection_factory.php";
-        $teste = false;
+        $teste = 0;
         $codigo = $this->getItOs();
         $con = new connection_factory();
         $conn = $con->getConnection();
@@ -190,6 +253,7 @@ class itemSolicitacaoServico_dao
                  :funcionario, :servico, :descricao, :minuto, :feito,
                  0,0 ) ";
                 $stmt = ociparse( $conn, $sql );
+
                 $hfinal   = $item->getHoraFinal();
                 $hinicio  = $item->getHoraInicial();
                 $tempo    = $item->getTempoHora();
@@ -199,6 +263,15 @@ class itemSolicitacaoServico_dao
                 $descricao = $item->getDescricao();
                 $minuto   = $item->getTempoMinuto();
                 $feito    = $item->getSnFeito();
+
+                 /*echo "Hora Final: $hfinal \n";
+                 echo "Hora inicial: $hinicio \n";
+                 echo "Tempo: $tempo \n";
+                 echo "Cd OS: $cdOs \n";
+                 echo "Funcionario: $func \n";*/
+
+
+
                 ocibindbyname( $stmt, ":codigo", $codigo );
                 ocibindbyname( $stmt, ":hfinal", $hfinal  );
                 ocibindbyname( $stmt, ":hinicio", $hinicio );
@@ -215,7 +288,7 @@ class itemSolicitacaoServico_dao
         try{
 
             ociexecute( $stmt, OCI_COMMIT_ON_SUCCESS );
-            $teste = true;
+            $teste = $codigo;
 
         }catch ( PDOException $e ){
             echo "Erro: ".$e->getMessage();

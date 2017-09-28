@@ -5,20 +5,29 @@
 $(document).ready(function () {
 
   var usuario = document.getElementById('usuario').value;
-
+    verificarInformAdd();
   $('#descricao').focus();
   carregarComboSolcitante();
   carregarComboSetor();
  // buscarLastSolicitante( $('#solicitante').chosen().val() );
-  carregarTabela( usuario );
+ // carregarTabela( usuario );
   carregarTemplates( usuario );
   startCountdown();
   buscarLastSolicitante( usuario );
+   loadTotal();
 
 
 
 
 });
+
+function loadTotal(  ) {
+    var usuario = $('#usuario').val();
+    var funcion = $('#funcionario').val();
+    carregarTotalRecebimentos();
+    carregarTotalMeusChamados( usuario );
+    carregarTotalMeusServicos( funcion );
+}
 
 
 $('.btn-salvar').on('click', function () {
@@ -123,6 +132,14 @@ function mensagemSucesso() {
         $('.btn-salvar').addClass('btn-danger');
 
         carregarTemplates( $('#usuario').val() );
+    },2000);
+}
+
+function mensagemSucessoModal() {
+    var mensagem = $('.alerta-modal');
+    mensagem.empty().html('<p class="alert alert-success">Opera&ccedil;&atilde;o realizada com sucesso</p>').fadeIn("fast");
+    setTimeout(function (){
+        $('#addInf').fadeOut('slow');
     },2000);
 }
 
@@ -373,7 +390,8 @@ function aguardandoProcessamento() {
 
 
 function carregarTabela ( usuario ) {
-    $('#tabela').fadeOut('slow');
+    //$('#tabela').fadeOut('slow');
+
     $('.tbody').find('tr').remove();
 
 
@@ -390,21 +408,42 @@ function carregarTabela ( usuario ) {
         success : function (data) {
 
             //$('.tbody').find('tr').remove();
-            $('#tabela').fadeIn(3000);
+          //  $('#tabela').fadeIn(3000);
 
 
             $.each(data.chamados, function (key, value) {
+                var cor = "";
+                console.log("Chamado: "+value.cdos+" - Status: "+value.status);
+                if( value.status == 'C' ){
+                    cor = "#E0F7FA";
+                    console.log("Cor verde");
 
-                linhas = "<tr class='linha'>"
-                            +"<td>" + value.cdos + "</td>"
-                            +"<td>" + value.setor + "</td>"
-                            +"<td>" + value.descricao + "</td>"
-                            +"<td>" + value.pedido + "</td>"
-                            +"<td>" + value.situacao + "</td>"
-                           // +"<td><a href='#editar' title='Clique para editar' class='btn-lg' onclick='editar("+value.cdos+")'><i class='fa fa-pencil-square-o'></i></a></td>"
-                            +"<td><a href='#servicos' title='Clique para visualizar' class='btn-lg' onclick='ver("+value.cdos+")'><i class='fa fa-eye'></i></a></td>"
+                }
+                var lines;
+                if( value.status == 'C' ){
+                    lines = "<tr class='linha' bgcolor='"+ cor +"'>"
+                        +"<td>" + value.cdos + "</td>"
+                        +"<td>" + value.setor + "</td>"
+                        +"<td>" + value.descricao + "</td>"
+                        +"<td>" + value.pedido + "</td>"
+                        +"<td>" + value.situacao + "</td>"
+                        // +"<td><a href='#editar' title='Clique para editar' class='btn-lg' onclick='editar("+value.cdos+")'><i class='fa fa-pencil-square-o'></i></a></td>"
+                        +"<td><a href='#servicos' title='Clique para visualizar' class='btn-lg' onclick='ver("+value.cdos+")'><i class='fa fa-eye'></i></a></td>"
                         +"</tr>";
-                $('.tbody').append(linhas);
+                }else{
+                    lines = "<tr class='linha' >"
+                        +"<td>" + value.cdos + "</td>"
+                        +"<td>" + value.setor + "</td>"
+                        +"<td>" + value.descricao + "</td>"
+                        +"<td>" + value.pedido + "</td>"
+                        +"<td>" + value.situacao + "</td>"
+                        // +"<td><a href='#editar' title='Clique para editar' class='btn-lg' onclick='editar("+value.cdos+")'><i class='fa fa-pencil-square-o'></i></a></td>"
+                        +"<td><a href='#servicos' title='Clique para visualizar' class='btn-lg' onclick='ver("+value.cdos+")'><i class='fa fa-eye'></i></a></td>"
+                        +"</tr>";
+                }
+
+
+                $('.tbody').append(lines);
             });
 
 
@@ -503,8 +542,11 @@ function editar(codigoOs) {
 }
 
 
+
+
 var eachRow = "";
 function ver( codos ) {
+    $('#codOs').val( "" );
     $('#descos').val("");
     $('#obs').val("");
     $('#nmusuario').val(0);
@@ -512,6 +554,11 @@ function ver( codos ) {
 
     var tbody = $('#tbody-serv');
     tbody.find('tr').remove();
+    var tabelaInf = $('.table-inf');
+    var theadInf = $('#theadInf');
+    var tbodyInf = $('#tbodyInf');
+    theadInf.find('th').remove();
+    tbodyInf.find('tr').remove();
     var nao = "";
     $.ajax({
         type : 'post',
@@ -522,7 +569,7 @@ function ver( codos ) {
             cdos : codos
         },
         success : function (data) {
-
+            $('#codOs').val( codos );
             $('#descos').val(data.descricao);
             $('#obs').val(data.observacao);
             $('#nmusuario').val(data.atendente);
@@ -532,15 +579,35 @@ function ver( codos ) {
                      nao = value.nao;
                      eachRow = "<tr>"
                                  +"<td>" + value.usuario + "</td>"
-                                 +"<td>" + value.servico + "</td>"
+                                 +"<td>" + value.descricao + "</td>"
                                  +"<td>" + value.data + "</td>"
-                             +"</tr>"
+                             +"</tr>";
                 tbody.append(eachRow);
-
-
-              //  console.log(nao);
             });
+            console.log(data.informacoes);
+            if( data.informacoes != ""){
+                console.log("Tipo de dado informaoces: "+ typeof data.informacoes );
 
+                theadInf.append(
+
+                    "<th>Usu&aacute;rio</th><th>Descri&ccedil;&atilde;o</th><th>Data</th>"
+                );
+
+                $.each( data.informacoes, function ( i, j ) {
+                    tbodyInf.append(
+                        "<tr>"+
+                            "<td>"+ j.usuario +"</td>"+
+                            "<td>"+ j.descricao +"</td>"+
+                            "<td>"+ j.data +"</td>"+
+                            "<td> <a href='#editar' class='btn-editar'  title='Clique para alterar informa&ccedil;&atilde;o' onclick='abrirTelaAlterarServico("+ j.codigo +")'><i class='fa fa-pencil-square-o'></i></a>"+
+                        "</tr>"
+                    );
+                } );
+
+            }
+
+             tabelaInf.append( theadInf );
+             tabelaInf.append( tbodyInf );
 
             $('#tela-ordem').modal('show');
         }
@@ -550,6 +617,42 @@ function ver( codos ) {
 
 }
 
+
+function abrirTelaAlterarServico( cdServico ) {
+
+    $.ajax({
+        type    : 'post',
+        dataType: 'json',
+        url     : 'funcao/servico.php',
+        data    : {
+            acao   : 'I',
+            codigo : cdServico
+        },
+        success : function (data) {
+
+            $('#tempoHora').val( data.tempoHora );
+            $('#tempoMinuto').val( data.tempoMinuto );
+            $('#codigoItem').val( cdServico );
+            $('#resp').val( data.funcionario );
+            var hide = data.descricao;
+
+            $('#servico').val( data.servico );
+
+            $('#desc').val( hide.replace(new RegExp('<br />', 'g'), ' ') );
+
+            $('#datai').val( data.inicio );
+            $('#dataf').val( data.final );
+            $('#total').val( data.tempo );
+
+            $('#addInf').modal('show');
+            verificarCampo();
+
+        }
+
+
+    });
+
+}
 
 function sucessoModal() {
     var mensagem = $('.alerta-modal');
@@ -658,3 +761,201 @@ $('#solicitante').on('change', function () {
 });
 
 
+
+function salvarItem() {
+    var codigoItem   =  $('#codigoItem').val();
+    var horaFinal    =  $('#dataf').val();
+    var horaInicio   =  $('#datai').val();
+    var responsavel  =  $('#resp').val();
+    var tempoHora    =  $('#tempoHora').val();
+    var tempoMinuto  =  $('#tempoMinuto').val();
+    var cdOs         =  $('#codOs').val();
+    var servico      =  $('#servico').val();
+    var descricao    =  $('#desc').val();
+    var snfeito;//      =  document.getElementById('snfeito');
+    //var snvisualiza      =  $('#snvisualiza');
+    var feito        = "S";
+    var acao         = "S";
+    //var checado = "Sn Visualiza nao chegado";
+    /*if( snvisualiza.is(':checked') ){
+        descricao = "#HIDE#"+descricao;
+        checado = "Sn Visualiza chegado";
+    }*/
+    // console.log( checado );
+    //   console.log("Data Final: "+horaFinal);
+    /*if( snfeito.checked ){
+     feito = "S"
+     }*/
+
+
+
+    if( codigoItem > 0 ){
+        acao = "U";
+    }
+
+
+    //  console.log("Feito: "+feito);
+    //  console.log("Codigo do funcionario: "+responsavel);
+
+    $.ajax({
+        url  : 'funcao/servico.php',
+        type : 'post',
+        dataType : 'json',
+        beforeSend : aguardandoProcessamento,
+        data : {
+            horaFinal   : horaFinal,
+            horaInicio  : horaInicio,
+            tempoHora   : tempoHora,
+            cdOs        : cdOs,
+            funcionario : responsavel,
+            servico     : servico,
+            descricao   : descricao,
+            tempoMinuto : tempoMinuto,
+            feito       : feito,
+            codigo      : codigoItem,
+            acao        : acao
+        },
+        success : function (data) {
+            var retorno = data.retorno;
+            if( retorno > 0 ){
+                $('.load-modal').fadeOut('slow');
+                mensagemSucessoModal();
+                ver( cdOs );
+                $('#codigoItem').val( retorno )
+
+            }else{
+                $('.load-modal').fadeOut('slow');
+                msgErroModal('Ocorreu um erro ao realizar opera&ccedil;&atilde;o');
+            }
+        }
+    })
+
+
+
+}
+
+
+
+
+$('.lnk-add-inf').on('click', function () {
+
+    $('#addInf').modal('show');
+
+    carregarDataHoraAtualServico();
+
+});
+
+$('.btn-add-inf').on('click', function () {
+    salvarItem();
+});
+
+ $('#desc').on('input', function () {
+     verificarInformAdd();
+ });
+
+ function verificarInformAdd() {
+
+     var campo = $('#desc').val();
+    // console.log("Campo descricao informacoes adicionais");
+     var botaoAttr = $('.btn-add-inf');
+     if( campo  == "" ){
+     //    console.log("Campo descricao informacoes adicionais em branco");
+         botaoAttr.removeClass("btn-primary");
+         botaoAttr.addClass("btn-danger");
+         botaoAttr.attr( "disabled",true );
+     }else{
+       //  console.log("Campo descricao informacoes adicionais não está em branco");
+         botaoAttr.removeClass("btn-danger");
+         botaoAttr.addClass("btn-primary");
+         botaoAttr.attr( "disabled",false );
+     }
+
+
+ }
+
+function calcularHoras () {
+
+    try{
+        var tempo = 0;
+        var data1 = $('#datai').val().trim();
+        //console.log("Data1; "+data1);
+        var data2 = $('#dataf').val().trim();
+
+        //console.log("Data inicio: '"+data1+"' Data fim: '"+data2+"'.");
+        /** Transformando data hora inicial **/
+        var dataHoraInicial = data1.split(' ');
+        var dataInicioStr   =  dataHoraInicial[0].split('/');
+        var diaI = dataInicioStr[0];
+        //console.log("Dia inicial: "+diaI);
+        var mesI = dataInicioStr[1];
+        var anoI = dataInicioStr[2];
+        var horaInicialStr  = dataHoraInicial[1].split(':');
+        var horaI = horaInicialStr[0];
+        var minI  = horaInicialStr[1];
+        var dataInicial = new Date(anoI, mesI, diaI, horaI, minI);
+
+        /** Transformando data hora final **/
+        var dataHoraFinal = data2.split(' ');
+        var dataFinalStr   =  dataHoraFinal[0].split('/');
+        var diaf = dataFinalStr[0];
+        var mesf = dataFinalStr[1];
+        var anof = dataFinalStr[2];
+        var horaFinalStr  = dataHoraFinal[1].split(':');
+        var horaf = horaFinalStr[0];
+        var minf  = horaFinalStr[1];
+        var dataFinal = new Date(anof, mesf, diaf, horaf, minf);
+
+        var diffMilissegundos  = dataFinal - dataInicial;
+        tempo +=  diffMilissegundos;
+
+        var diffSegundos = tempo / 1000;
+        var diffMinutos = diffSegundos / 60;
+        var diffHoras = Math.floor(diffMinutos / 60);
+        var minutos = diffMinutos % 60;
+
+        var horaStr = diffHoras;
+        if( diffHoras < 10 ){
+            horaStr =  "0"+diffHoras;
+        }
+
+        var minStr = minutos;
+        if( minutos < 10 ){
+            minStr = "0"+minutos;
+        }
+
+        var horas  = horaStr +":"+minStr;
+        $( '#tempoHora ').val( horaStr );
+        $( '#tempoMinuto' ).val( minStr );
+        $( '#total' ).val( horas );
+    }catch (err){
+        console.log("Erro: "+err.message);
+    }
+
+
+}
+
+
+        function carregarDataHoraAtualServico() {
+            var agora = new Date();
+            var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            var campoData = agora.toLocaleDateString("pt-BR", options)+' '+agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            var dataHoraInicial = campoData.split(' ');
+            var dataInicioStr   =  dataHoraInicial[0].split('/');
+            var diaI = dataInicioStr[0];
+            var mesI = dataInicioStr[1];
+            var anoI = dataInicioStr[2];
+            var horaInicialStr  = dataHoraInicial[1].split(':');
+            var horaI = horaInicialStr[0];
+            var minI  = horaInicialStr[1];
+            var minII = parseInt(minI)  + 1;
+            // console.log("Minuto: "+minII);
+            var dataFinal = new Date(anoI, mesI-1, diaI, horaI, minII);
+            var campoDataF = dataFinal.toLocaleDateString("pt-BR", options)+' '+dataFinal.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            // console.log('Campo data: '+campoData);
+            $('#datai').val(campoData);
+            $('#dataf').val( campoDataF );
+          //  $('#dataf').val( '' );
+
+            calcularHoras();
+        }

@@ -28,3 +28,11 @@
     /* display: none;*/
 }
 
+
+#addInf:nth-of-type(even) {
+    z-index: 1042 !important;
+}
+#addInf-backdrop.in:nth-of-type(even) {
+    z-index: 1041 !important;
+}
+
