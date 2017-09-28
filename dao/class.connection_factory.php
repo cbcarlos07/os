@@ -8,14 +8,14 @@
  */
 class connection_factory
 {
-    private $ora_user = "usuraio";
+    private $ora_user = "usuario";
     private $ora_senha = "senha";
     private $ora_bd = "(DESCRIPTION=
                         (ADDRESS_LIST=
-                        (ADDRESS=(PROTOCOL=TCP)(HOST=ip-server)(PORT=1521))
+                        (ADDRESS=(PROTOCOL=TCP)(HOST=ip-do-server)(PORT=1521))
                         )
                         (CONNECT_DATA=
-                        (SERVICE_NAME=servico)
+                        (SERVICE_NAME=prdmv)
                         )
                         )";
     public  function  getConnection(){

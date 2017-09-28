@@ -175,6 +175,7 @@ function salvarItem() {
         success : function (data) {
             var retorno = data.retorno;
             if( retorno > 0 ){
+                loadTotal();
                 $('.load-modal').fadeOut('slow');
                 sucesso();
                 preencherTabelaServicos('A');

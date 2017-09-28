@@ -96,6 +96,74 @@ function salvarOs() {
 
 }
 
+$('#status').on('change', function () {
+    var status = $(this).val();
+    var codigo = $('#cdos').val();
+
+    if( ( codigo > 0) || ( codigo != "" ) ){
+        if( statusGlobal != 'C' ){
+            if( status == 'C' ){
+
+
+
+                $('span.titulo-modal-remover').html('Fechar chamado');
+                $('p.msg-delete').html('Deseja realmente fechar o chamado <strong>' + codigo + '</strong> ?');
+                $('.modal-fechar-chamado').modal('show');
+                $('.btn-sim').on('click', function (){
+
+
+                    atualizarStatus( status, codigo );
+                });
+            }
+        }
+
+    }else{
+        msgAvisoChamado('Para alterar o status do chamado primeiro salve-o');
+        $(this).val('A');
+
+    }
+
+
+});
+
+var statusGlobal;
+function setarValorComboStatus( status ) {
+    statusGlobal =  status;
+}
+function atualizarStatus( situacao, cdos ) {
+    $.ajax({
+        url   : 'funcao/os.php',
+        dataType: 'json',
+        type: 'post',
+        beforeSend : aguardando,
+        data :{
+            acao : 'B',
+            status : situacao,
+            cdos   : cdos
+        },
+        success: function ( data ) {
+            loadTotal();
+            console.log( "Chamado finalizado: "+data.retorno );
+            if( data.retorno == 1 ){
+                $('.loading').fadeOut();
+                sucessoChamado();
+                $('.modal-fechar-chamado').modal('hide');
+            }else{
+                msgErro('Ocorreu um erro na opera&ccedil;&atildeo');
+            }
+
+        }
+    });
+
+}
+
+function loadTotal(  ) {
+    var usuario = $('#usuario').val();
+    var funcion = $('#funcionario').val();
+    carregarTotalRecebimentos();
+    carregarTotalMeusChamados( usuario );
+    carregarTotalMeusServicos( funcion );
+}
 
 function salvarItem() {
     var codigoItem   =  $('#codigoItem').val();
@@ -157,6 +225,7 @@ function salvarItem() {
         success : function (data) {
             var retorno = data.retorno;
             if( retorno > 0 ){
+                loadTotal();
                 $('.load-modal').fadeOut('slow');
                 sucesso();
                 preencherTabelaServicos();

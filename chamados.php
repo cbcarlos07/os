@@ -38,6 +38,32 @@
 
   <!-- modal pergunta -->
 
+
+  <div class="modal fade modal-fechar-chamado" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="linear-progress-material small load-modal">
+                  <div class="bar bar1"></div>
+                  <div class="bar bar2"></div>
+              </div>
+              <p class="alerta-modal"></p>
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title"><span class="titulo-modal-remover"></span></h4>
+              </div>
+              <div class="modal-body">
+                  <p class="msg-delete"></span></p>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary btn-sim">Sim</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">N&atilde;o</button>
+              </div>
+          </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+
   <div class="modal fade modal-delete" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -332,6 +358,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.datetimepicker.full.js"></script>
     <script src="js/chosen.jquery.js"></script>
+    <script src="js/menu.js"></script>
     <script src="js/chamados.js"></script>
     <script>
         $("#setor").chosen();
