@@ -8,11 +8,23 @@ var boolNovoServico = false;
 $('.btn-salvar-servico').on('click', function () {
 
     if( boolServico ){
-        salvarItem();
-        $('select[id="resp"]').css("border-color","");
-        $('select[id="servico"]').css("border-color","");
-        $('input[id="datai"]').css("border-color","");
 
+        if( $('#cdos').val() > 0 ) {
+            console.log("Apenas salvar item");
+            salvarItem();
+            $('select[id="resp"]').css("border-color", "");
+            $('select[id="servico"]').css("border-color", "");
+            $('input[id="datai"]').css("border-color", "");
+        }else{
+            console.log("Salvar OS");
+            console.log("Salvar item");
+            saveOs( salvarItem ) ;
+
+
+
+
+
+        }
     }else{
         msgAviso('Verifique os campos que faltam ser preenchidos');
         var resp    = $('#resp').val();
@@ -98,10 +110,89 @@ function salvarOs() {
                     carregarTotalRecebimentos();
                 }
                 $('.loading').fadeOut('slow');
+                console.log("Chamado salvo: "+ data.chamado);
                 $('#cdos').val( data.chamado );
                 corBordaCampo( "input","cdos","" );
                 sucessoChamado();
                 carregarTabela();
+
+            }else{
+                $('.loading').fadeOut('slow');
+                msgErro('Ocorreu um erro ao realizar opera&ccedil;&atilde;o');
+            }
+        }
+    });
+
+
+
+
+}
+
+
+
+function saveOs( saveItem ) {
+
+    var cdOs         =  $('#cdos').val();
+    var dataos       =  $('#dataos').val();
+    var previsao     =  $('#previsao').val();
+    var solicitante  =  $('#solicitante').val();
+    var setor        =  $('#setor').val();
+    var tipoos       =  $('#tipoos').val();
+    var motivo       =  $('#motivo').val();
+    var descricao    =  $('#descricao').val();
+    var observacao   =  $('#observacao').val();
+    var responsavel  =  $('#responsavel').val();
+    var status       =  $('#status').val();
+    var resolucao    =  $('#resolucao').val();
+    var oficina      =  $('#oficina').val();
+    var usuario      =  $('#usuario').val();
+    var acao = "I";
+    var codOs = 0;
+    if( cdOs > 0 ){
+        codOs = cdOs;
+        acao = "C";
+    }else{
+
+    }
+    //console.log("Codigo da Os: "+cdOs);
+    $.ajax({
+        type      :  'post',
+        dataType  :  'json',
+        url       :  'funcao/os.php',
+        beforeSend : aguardando,
+        data      : {
+            cdos         : codOs,
+            pedido       : dataos,
+            previsao     : previsao,
+            solicitante : solicitante,
+            setor       : setor,
+            tipoos      : tipoos,
+            motivo      : motivo,
+            descricao   : descricao,
+            observacao  : observacao,
+            responsavel : responsavel,
+            status      : status,
+            resolucao   : resolucao,
+            oficina     : oficina,
+            usuario     : usuario,
+            acao        : acao
+        },
+        success : function (data) {
+            // console.log("Retorno: "+data.sucesso);
+            if( data.sucesso == 1 ){
+                if( $('#responsavel').text() != "Selecione" ){
+                    carregarTotalRecebimentos();
+                }
+                $('.loading').fadeOut('slow');
+                console.log("Chamado salvo: "+ data.chamado);
+                $('#cdos').val( data.chamado );
+                corBordaCampo( "input","cdos","" );
+                sucessoChamado();
+                carregarTabela();
+                setTimeout(function() {
+                    console.log("Final da função 1");
+                    saveItem();
+                }, 500);
 
             }else{
                 $('.loading').fadeOut('slow');
@@ -131,6 +222,8 @@ function salvarItem() {
     var feito        = "N";
     var acao         = "S";
     //var checado = "Sn Visualiza nao chegado";
+
+    console.log("Codigo da OS para salvar item: "+cdOs);
     if( snvisualiza.is(':checked') ){
         descricao = "#HIDE#"+descricao;
         checado = "Sn Visualiza chegado";
@@ -179,7 +272,7 @@ function salvarItem() {
                 $('.load-modal').fadeOut('slow');
                 sucesso();
                 preencherTabelaServicos('A');
-                $('#codigoItem').val( retorno )
+                $('#codigoItem').val( retorno );
 
             }else{
                 $('.load-modal').fadeOut('slow');
@@ -371,7 +464,16 @@ function msgErroModal( msg ) {
     });
 
     $('#tipoos').on('change', function () {
-        carregarComboMotivo( $(this).val() );
+        var id = $(this).val();
+        console.log("Tipo os: "+id);
+        if( id > 0 ) {
+            console.log("Carregar combo motivo "+id);
+            carregarComboMotivo($(this).val());
+        }else{
+            console.log("Carregar combo motivo 1 "+id);
+            $('#motivo').find('option').remove();
+            $('#motivo').trigger( "chosen:updated" );
+        }
     });
 
     $('#responsavel').on('change', function () {
@@ -392,7 +494,7 @@ function msgErroModal( msg ) {
         var observacao  =    $('#observacao').val();
         var btn = $('.btn-servico');
         var btnSalvar = $('.btn-salvar');
-        console.log("setor: "+setor);
+       /// console.log("setor: "+setor);
         if( ( setor != 0) && ( descricao != "" ) && ( observacao != "" ) && ( responsavel != 0 ) && ( solicitante != 0 )
             && ( tipoos != 0 )
           ){
@@ -542,8 +644,8 @@ function msgErroModal( msg ) {
            },
            success : function (data) {
                var tipoos = data.tipoos;
-               carregarComboMotivo( tipoos );
-               carregarComboTipoOs( tipoos );
+               carregarComboMotivo( 0 );
+               carregarComboTipoOs( 0 );
                carregarComboResponsavel( data.oficina, usuario );
 
 
@@ -577,8 +679,8 @@ function carregarComboSetor( setor ){
             acao : 'S'
         },
         success : function (data) {
-            var op = "<option value='0'>Selecione um setor</option>";
-            $('#setor').append(op);
+           /* var op = "<option value='0'>Selecione um setor</option>";
+            $('#setor').append(op);*/
 
             $.each( data.setor, function (key, value) {
 
@@ -697,8 +799,8 @@ function carregarComboResponsavel( oficina, usuario ){
             oficina : oficina
         },
         success : function (data) {
-            var op = "<option value='0'>Selecione</option>";
-            $('#responsavel').append(op);
+     /*       var op = "<option value='0'>Selecione</option>";
+            $('#responsavel').append(op);*/
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
 
@@ -729,8 +831,8 @@ function carregarComboFuncionario( especialidade ){
             especialidade : especialidade
         },
         success : function (data) {
-            var op = "<option value='0'>Selecione</option>";
-            $('#resp').append(op);
+            /*var op = "<option value='0'>Selecione</option>";
+            $('#resp').append(op);*/
             // console.log(data);
             $.each( data.funcionarios, function (key, value) {
 
@@ -754,8 +856,8 @@ function carregarComboFuncionario( especialidade ){
                     acao   : 'M'
                 },
                 success : function (data) {
-                    var op = $("<option>").val(0).text('Selecione');
-                    $('#servico').append(op);
+                    /*var op = $("<option>").val(0).text('Selecione');
+                    $('#servico').append(op);*/
                     // console.log(data);
                     $.each( data.servicos, function (key, value) {
 
@@ -1130,7 +1232,7 @@ dataFinal.on('blur', function () {
                         console.log("Final:  "+j.final);
                         var string = j.descricao.split( "<br />" );
 
-
+                        var descricao = j.descricao.replace("#HIDE#","");
                         var linha;
                         if( situacao != 'C'){
                             var cor = "";
@@ -1141,19 +1243,19 @@ dataFinal.on('blur', function () {
                                         +"  <td>" + j.codigo + "</td>"
                                         +"  <td>" + j.servico + "</td>"
                                         +"  <td>" + j.funcionario + "</td>"
-                                        +"  <td>" + j.descricao + "</td>"
+                                        +"  <td>" + descricao + "</td>"
                                         +"  <td>" + j.inicio + "</td>"
                                         +"  <td>" + j.final + "</td>"
                                         +"  <td>" + j.tempo + "</td>"
-                                        +"  <td> <a href='#editar' class='btn btn-lg btn-editar'  title='Clique para alterar servico' onclick='abrirTelaAlterarServico("+ j.codigo +")'><i class='fa fa-pencil-square-o'></i></a>"
-                                        +        "<a href='#excluir' class='btn btn-lg btn-excluir'  title='Clique para alterar servico' onclick='modalRemoverServico("+ j.codigo +",\""+ string[0] + "..." +"\")'><i class='fa fa-times'></i></a>"
+                                        +"  <td> <a href='#editar' title='Clique para alterar servico' onclick='abrirTelaAlterarServico("+ j.codigo +")'><i class='fa fa-pencil-square-o'></i></a>"
+                                        +        "<a href='#excluir'  title='Clique para alterar servico' onclick='modalRemoverServico("+ j.codigo +",\""+ string[0] + "..." +"\")'><i class='fa fa-times'></i></a>"
                                         +  "</td>"
                                         +"</tr> ";
                         }else{
                             linha = "<tr>"
                                             +"  <td>" + j.servico + "</td>"
                                             +"  <td>" + j.funcionario + "</td>"
-                                            +"  <td>" + j.descricao + "</td>"
+                                            +"  <td>" + descricao + "</td>"
                                             +"  <td>" + j.inicio + "</td>"
                                             +"  <td>" + j.final + "</td>"
                                             +"  <td>" + j.tempo + "</td>"

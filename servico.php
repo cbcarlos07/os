@@ -62,24 +62,28 @@
                         </div>
                         <div class="form-group col-lg-2">
                             <label for="oficina">Oficina</label>
-                            <select id="oficina" class="form-control " >
+                            <select id="oficina" class="form-control "  data-placeholder="Selecione">
+                                <option value="%"></option>
                             </select>
                         </div>
                         <div class="form-group col-lg-3">
                             <label for="solicitante">Solicitante</label>
-                            <select id="solicitante" class="form-control " >
+                            <select data-placeholder="Selecione" id="solicitante" class="form-control " >
+                                <option value="%"></option>
                             </select>
                         </div>
                         <div class="form-group col-lg-3" >
                             <label for="responsavel">Respons&aacute;vel </label>
-                            <select id="responsavel" class="form-control " >
+                            <select data-placeholder="Selecione" id="responsavel" class="form-control " >
+                                <option value="%"></option>
                             </select>
                         </div>
 
 
                         <div class="form-group col-lg-3">
                             <label for="setor">Setor</label>
-                            <select id="setor" class="form-control " >
+                            <select id="setor" class="form-control " data-placeholder="Selecione" >
+                                <option value="%"></option>
                             </select>
                         </div>
 
@@ -125,10 +129,10 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/chosen.jquery.js"></script>
     <script>
-        $('#responsavel').chosen();
-        $('#oficina').chosen();
-        $('#solicitante').chosen();
-        $('#setor').chosen();
+        $('#responsavel').chosen( {allow_single_deselect: true} );
+        $('#oficina').chosen( {allow_single_deselect: true} );
+        $('#solicitante').chosen( {allow_single_deselect: true} );
+        $('#setor').chosen( {allow_single_deselect: true} );
     </script>
 
 

@@ -261,14 +261,18 @@
                       <div class="form-group ">
                           <label for="solicitante" class="col-md-1 control-label">Solicitante<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control" id="solicitante" ></select>
+                              <select  class="form-control" id="solicitante" data-placeholder="Selecione o solicitante">
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
 
                       <div class="form-group ">
                           <label for="setor" class="col-md-1 control-label">Setor</label>
                           <div class="col-md-6">
-                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" ></select>
+                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" >
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
                       <div class="col-lg-12"></div>
@@ -298,7 +302,7 @@ Meu IP: 192.168.1.1" onkeydown="verificarCampo()"></textarea>
                       <label for="inputEmail3" class="col-md-3 control-label"></label>
                       <button class="btn btn-danger btn-salvar" ><i class="fa fa-save"></i></button>
                       <button class="btn btn-primary btn-limpar" ><i class="fa fa-paint-brush"></i></button>
-                      <button class="btn btn-primary btn-template" ><i class="fa fa-folder-open"></i></button>
+                    <!--  <button class="btn btn-primary btn-template" ><i class="fa fa-folder-open"></i></button>-->
                   </div>
               </div>
 
@@ -306,19 +310,20 @@ Meu IP: 192.168.1.1" onkeydown="verificarCampo()"></textarea>
 
                   <h4>Minhas Solicita&ccedil;&otilde;es</h4>
                   <hr />
-
-                  <table class="table table-hover table-responsive tabela" >
-                      <thead class="thead">
-                         <th>#</th>
-                         <th>Setor</th>
-                         <th>Descri&ccedil;&atilde;o</th>
-                         <th>Data Solicita&ccedil;&atilde;o</th>
-                         <th>Status</th>
-                         <th class='c1'></th>
-                      </thead >
-                      <tbody class="tbody">
-                      </tbody>
-                  </table>
+                  <div  style="height: 400px; overflow: auto; font-size: small;">
+                      <table class="table table-hover table-responsive tabela" >
+                          <thead class="thead">
+                             <th>#</th>
+                             <th>Setor</th>
+                             <th>Descri&ccedil;&atilde;o</th>
+                             <th>Data Solicita&ccedil;&atilde;o</th>
+                             <th>Status</th>
+                             <th class='c1'></th>
+                          </thead >
+                          <tbody class="tbody">
+                          </tbody>
+                      </table>
+                  </div>
 
               </div>
           </div>
@@ -342,8 +347,8 @@ Meu IP: 192.168.1.1" onkeydown="verificarCampo()"></textarea>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/chosen.jquery.js"></script>
       <script>
-          $('#setor').chosen();
-          $('#solicitante').chosen();
+          $('#setor').chosen( {allow_single_deselect: true} );
+          $('#solicitante').chosen( {allow_single_deselect: true} );
       </script>
     <script src="js/solicitar.js"></script>
       <script>

@@ -230,6 +230,7 @@ function salvarItem() {
                 sucesso();
                 preencherTabelaServicos();
                 $('#codigoItem').val( retorno );
+                salvarOs();
 
             }else{
                 $('.load-modal').fadeOut('slow');
@@ -501,7 +502,7 @@ $("#datai").datetimepicker({
 
       var usuario = $('#usuario').val().trim();
       $('.tabela').fadeOut();
-      carregarComboSetor();
+
       carregarComboServico(  );
       carregarComboOficina( usuario );
       carregarDataHoraAtual();
@@ -530,7 +531,8 @@ $("#datai").datetimepicker({
 
                $('#dataos').val(data.pedido);
                $('#previsao').val(data.previsao);
-               $('#setor').val( data.setor );
+           //    $('#setor').val(  ).trigger("chosen:updated");
+               carregarComboSetor( data.setor );
                $('#descricao').val( data.descricao );
                $('#ramal').val( data.ramal );
                $('#observacao').val( data.observacao );
@@ -547,8 +549,10 @@ $("#datai").datetimepicker({
     });
 
 
-function carregarComboSetor( ){
+function carregarComboSetor( cdsetor ){
+    console.log("Combo setor: "+cdsetor);
     var setor = $('#setor');
+    setor.find('option').remove();
     $.ajax({
         url      : 'funcao/setor.php',
         type     : 'post',
@@ -557,19 +561,25 @@ function carregarComboSetor( ){
             acao : 'S'
         },
         success : function (data) {
-            var op = "<option value='0'>Selecione um setor</option>";
-            setor.append(op);
+            /*var op = "<option value='0'>Selecione um setor</option>";
+            setor.append(op); */
 
             $.each( data.setor, function (key, value) {
 
                 var option  = "<option value='"+ value.codsetor +"'>"
                         + value.nmsetor
-                        +"</option> ";
+                        +"</option>";
 
                 setor.append(option);
 
             } );
-            setor.trigger("chosen:updated");
+            if( cdsetor > 0 ) {
+                setor.val( cdsetor ).trigger("chosen:updated");
+
+            }
+            else{
+                setor.trigger("chosen:updated");
+            }
         }
 
     });
@@ -604,6 +614,11 @@ function carregarComboOficina( usuario ){
     });
 
 }
+
+
+$('#oficina').on('change', function () {
+    verificarCampoChamado();
+});
 
 function carregarComboTipoOs( tipoOs ){
     $.ajax({
@@ -673,8 +688,8 @@ function carregarComboResponsavel( oficina, usuario ){
             oficina : oficina
         },
         success : function (data) {
-            var op = "<option value='0'>Selecione</option>";
-            $('#responsavel').append(op);
+            /*var op = "<option value='0'>Selecione</option>";
+            $('#responsavel').append(op);*/
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
 
@@ -1035,11 +1050,15 @@ dataFinal.on('blur', function () {
                 success : function (data) {
                   //  console.log(data);
                     $.each( data.itens, function (i, j) {
+                        var descricao = j.descricao;
+                        if( descricao != "" ){
+                            descricao = descricao.replace("#HIDE#","");
+                        }
                    //     console.log("Codigo do item: "+j.codigo);
                         var linha = "<tr>"
                                         +"  <td>" + j.servico + "</td>"
                                         +"  <td>" + j.funcionario + "</td>"
-                                        +"  <td>" + j.descricao + "</td>"
+                                        +"  <td>" + descricao + "</td>"
                                         +"  <td>" + j.inicio + "</td>"
                                         +"  <td>" + j.final + "</td>"
                                         +"  <td>" + j.tempo + "</td>"

@@ -11,7 +11,7 @@ $(document).ready(function () {
   carregarComboSetor();
  // buscarLastSolicitante( $('#solicitante').chosen().val() );
  // carregarTabela( usuario );
-  carregarTemplates( usuario );
+  carregarTemplates(  );
   startCountdown();
   buscarLastSolicitante( usuario );
    loadTotal();
@@ -37,19 +37,23 @@ $('.btn-salvar').on('click', function () {
 
 
     if(enviar){
+        var usuario = "";
         var codigo      = $('#cdos').val();
         var ramal       = $('#ramal').val();
         solicitante     = $('#solicitante').val();
         var setor       = $('#setor').val();
         descricao       = $('#descricao').val();
         observacao      = $('#observacao').val();
-        var usuario     = $('#usuario').val();
+        usuario         = $('#usuario').val();
         var acao;
         if( codigo > 0 ){
             acao = 'U';
         }else {
             acao = 'N';
         }
+
+        console.log("Solicitante: "+solicitante);
+        console.log("usuario: "+usuario);
 
         $.ajax({
             type   : 'post',
@@ -76,6 +80,8 @@ $('.btn-salvar').on('click', function () {
                     $('#tabela').fadeOut(3000);
                     carregarTabela( usuario );
                     limparCampos();
+                    loadTotal();
+
 
 
                 }
@@ -139,7 +145,7 @@ function mensagemSucessoModal() {
     var mensagem = $('.alerta-modal');
     mensagem.empty().html('<p class="alert alert-success">Opera&ccedil;&atilde;o realizada com sucesso</p>').fadeIn("fast");
     setTimeout(function (){
-        $('#addInf').fadeOut('slow');
+        $('#addInf').modal('hide');
     },2000);
 }
 
@@ -153,8 +159,8 @@ function carregarComboSolcitante(  ){
             acao   : 'U'
         },
         success : function (data) {
-            var op = $("<option>").val(0).text('Selecione');
-            $('#solicitante').append(op);
+            /*var op = $("<option>").val(0).text('Selecione');
+            $('#solicitante').append(op); */
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
 
@@ -184,8 +190,8 @@ function carregarComboSetor(  ){
           },
           success : function (data) {
 
-              var op = "<option value='0'>Selecione um setor</option>";
-              $('#setor').append(op);
+              /*var op = "<option value='0'>Selecione um setor</option>";
+              $('#setor').append(op);*/
 
               $.each( data.setor, function (key, value) {
 
@@ -209,7 +215,7 @@ function carregarComboSetor(  ){
 }
 var linhas = "";
 
-function carregarTemplates( usuario ) {
+function carregarTemplates(  ) {
     var tabela_templates = $('.tabela-template');
     tabela_templates.fadeOut( 'slow' );
     tabela_templates.find('tr').remove();
@@ -218,18 +224,15 @@ function carregarTemplates( usuario ) {
         type  : 'post',
         dataType : 'json',
         data : {
-            usuario : usuario,
-            inicio  : 0,
-            fim     : 15,
             acao    : 'L'
         },
         success : function (data) {
-
+            //console.log( data );
             $.each( data.templates, function (i, j) {
                   tabela_templates.append(
                       "<tr class='line-template'>" +
                           "<td><a href='#titulo' onclick='carregarTemplateNosCampos(" + j.codigo + ")'>"+ j.titulo +"</a></td>"+
-                          "<td class='td-remove'> <a href='#excluir'  title='Salvar exemplo' onclick='removerExemplo( " + j.codigo + ", \""+ j.titulo +"\" ) '><i class='fa fa-times'></i></a></td>"+
+                          //"<td class='td-remove'> <a href='#excluir'  title='Salvar exemplo' onclick='removerExemplo( " + j.codigo + ", \""+ j.titulo +"\" ) '><i class='fa fa-times'></i></a></td>"+
                       "</tr>"
                   );
             } )
@@ -277,6 +280,7 @@ function msgErro() {
 
 
 function carregarTemplateNosCampos( codigo ) {
+       console.log("Codigo: "+codigo);
         $.ajax({
             url    : 'funcao/template.php',
             dataType : 'json',
@@ -286,11 +290,8 @@ function carregarTemplateNosCampos( codigo ) {
                 codigo : codigo
             },
             success : function (data) {
-                $('#setor').val( data.setor );
                 $('#descricao').val( data.descricao );
-                $('#observacao').val( data.observacao );
-                $('#titulo-template').val( data.titulo );
-                $('#cdtemplate').val( data.codigo );
+                $('#observacao').val( data.observacao.replace(new RegExp('<br />', 'g'), ' ') );
                 verificarCampo();
 
 
@@ -413,10 +414,10 @@ function carregarTabela ( usuario ) {
 
             $.each(data.chamados, function (key, value) {
                 var cor = "";
-                console.log("Chamado: "+value.cdos+" - Status: "+value.status);
+                //console.log("Chamado: "+value.cdos+" - Status: "+value.status);
                 if( value.status == 'C' ){
                     cor = "#E0F7FA";
-                    console.log("Cor verde");
+                 //   console.log("Cor verde");
 
                 }
                 var lines;
@@ -576,17 +577,22 @@ function ver( codos ) {
             $('#status').val(data.status);
 
             $.each(data.servicos, function (key, value) {
-                     nao = value.nao;
-                     eachRow = "<tr>"
-                                 +"<td>" + value.usuario + "</td>"
-                                 +"<td>" + value.descricao + "</td>"
-                                 +"<td>" + value.data + "</td>"
+                     var hide = value.descricao;
+                     var enc = hide.indexOf("#HIDE#");
+                    // console.log("Nao: "+nao);
+                     if( enc != 0 ){
+                         eachRow = "<tr>"
+                             +"<td>" + value.usuario + "</td>"
+                             +"<td>" + value.descricao + "</td>"
+                             +"<td>" + value.data + "</td>"
                              +"</tr>";
+                     }
+
                 tbody.append(eachRow);
             });
             console.log(data.informacoes);
             if( data.informacoes != ""){
-                console.log("Tipo de dado informaoces: "+ typeof data.informacoes );
+             //   console.log("Tipo de dado informaoces: "+ typeof data.informacoes );
 
                 theadInf.append(
 
@@ -713,7 +719,7 @@ function buscarLastSolicitante( usuario ) {
     //var solicitante = $('#solicitante').val();
 
     console.log("Solicitante: "+usuario);
-    $('#usuario').val( usuario );
+  //  $('#usuario').val( usuario );
     carregarTabela( usuario );
     var cdsetor = 0;
     $.ajax({
@@ -959,3 +965,5 @@ function calcularHoras () {
 
             calcularHoras();
         }
+
+

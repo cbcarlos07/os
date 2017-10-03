@@ -51,7 +51,7 @@
         switch ( $acao ){
 
             case 'L':
-                getListTemplate( $usuario, $inicio, $fim );
+                getListTemplate(  );
                 break;
             case 'T':
                 getTemplate( $codigo );
@@ -68,23 +68,23 @@
 
         }
 
-        function getListTemplate( $usuario, $inicio, $fim ){
+        function getListTemplate(  ){
+            require_once "../includes/error.php";
             require_once "../controller/class.template_controller.php";
             require_once "../beans/class.template.php";
             require_once "../services/class.template_list_iterator.php";
 
             $templateController = new template_controller();
-            $lista = $templateController->get_list_template( $usuario, $inicio, $fim );
+            $lista = $templateController->get_list_template(  );
             $tempList = new template_list_iterator( $lista );
             $templates =  array();
+
             while ( $tempList->hasNextTemplate() ){
                 $template = $tempList->getNextTemplate();
+            //    echo "codigo ".$template->getCdTemplate() ;
                 $templates[] = array(
                     "codigo"     => $template->getCdTemplate(),
-                    "setor"      => $template->getCdTemplate(),
-                    "descricao"  => $template->getDsServico(),
-                    "observacao" => $template->getDsObservacao(),
-                    "titulo"     => $template->getDsTitulo()
+                    "titulo"     =>  $template->getDsTitulo()
                 );
             }
             echo json_encode( array( "templates" => $templates ) );
@@ -95,12 +95,10 @@
 
             $templateController = new template_controller();
             $template = $templateController->get_template( $codigo );
+            //echo $template->getDsObservacao()->load();
             $templates = array(
-                    "codigo"      => $template->getCdTemplate(),
-                    "titulo"      => $template->getDsTitulo(),
-                    "setor"      => $template->getCdSetor(),
                     "descricao"  => $template->getDsServico(),
-                    "observacao" => $template->getDsObservacao()
+                    "observacao" => $template->getDsObservacao()->load()
                 );
 
             echo json_encode( $templates );
@@ -115,7 +113,7 @@
             $template->setDsTitulo( $titulo );
             $template->setCdSetor( $setor );
             $template->setDsServico( $servico );
-            $template->setDsObservacao( $observacao );
+            $template->setDsObservacao( nl2br( $observacao )  );
             $template->setNmUsuario( $usuario );
 
             $retorno = $templateController->insert_template( $template );
@@ -137,7 +135,7 @@
             $template->setDsTitulo( $titulo );
             $template->setCdSetor( $setor );
             $template->setDsServico( $servico );
-            $template->setDsObservacao( $observacao );
+            $template->setDsObservacao( nl2br( $observacao ) );
             $template->setNmUsuario( $usuario );
             $template->setCdTemplate( $codigo );
 

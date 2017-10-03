@@ -94,14 +94,16 @@
                           <input type="hidden" id="codigoItem">
                           <label for="resp" class="col-md-2 control-label">Respons&aacute;vel <span style="color: red;">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control"  tabindex="2" id="resp" ></select>
+                              <select  class="form-control"  tabindex="2" id="resp" data-placeholder="Selecione um funcion&aacute;rio"><option value="0"></option></select>
                           </div>
                       </div>
                       <div class="row"></div>
                       <div class="form-group ">
                           <label for="servico" class="col-md-2 control-label" title="Tipo de Servi&ccedil;o">Servi&ccedil;o <span style="color: red;">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control"  tabindex="2" id="servico" ></select>
+                              <select  class="form-control"  tabindex="2" id="servico" data-placeholder="Escolha um servi&ccedil;o">
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
                       <div class="form-group col-lg-12"></div>
@@ -210,14 +212,16 @@
                       <div class="form-group ">
                           <label for="solicitante" class="col-md-1 control-label">Solicitante<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control" id="solicitante" ></select>
+                              <select   data-placeholder="Selecione o solicitante" class="form-control" id="solicitante" >>
+                                  <option value="0"></option></select>
                           </div>
                       </div>
 
                       <div class="form-group ">
                           <label for="setor" class="col-md-1 control-label">Setor<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" ></select>
+                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" >
+                                  <option value="0"></option></select>
                           </div>
                       </div>
 
@@ -228,14 +232,15 @@
                       <div class="form-group ">
                           <label for="tipoos" class="col-md-1 control-label">Tipo OS</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="tipoos" ></select>
+                              <select  class="form-control"  tabindex="2" id="tipoos" data-placeholder="Selecione o tipo de OS">
+                                  <option value="0"></option></select>
                           </div>
                       </div>
 
                       <div class="form-group ">
                           <label for="motivo" class="col-md-1 control-label">Motivo</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  data-placeholder="Selecione o Motivo" tabindex="2" id="motivo" ></select>
+                              <select  class="form-control"  data-placeholder="Selecione o Motivo" tabindex="2" id="motivo" ><option value="%"></option></select></select>
                           </div>
                       </div>
 
@@ -243,7 +248,8 @@
                       <div class="form-group ">
                           <label for="oficina" class="col-md-1 control-label">Oficina</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="oficina" ></select>
+                              <select  class="form-control"  tabindex="2" id="oficina" data-placeholder="Selecione" >
+                                  <option value="0"></option></select>
                           </div>
                       </div>
 
@@ -271,7 +277,8 @@
                       <div class="form-group ">
                           <label for="responsavel" class="col-md-1 control-label" title="Respons&aacute;vel">Respons&aacute;vel<span style="color: red">*</span></label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="responsavel" ></select>
+                              <select  class="form-control"  tabindex="2" id="responsavel" data-placeholder="Selecione" >
+                                  <option value="%"></option></select>
                           </div>
                       </div>
 
@@ -354,16 +361,16 @@
     <script src="js/chosen.jquery.js"></script>
     <script src="js/cadastro.js"></script>
     <script>
-          $('#solicitante').chosen();
-          $('#setor').chosen();
-          $('#tipoos').chosen();
-          $('#motivo').chosen();
-          $('#oficina').chosen();
-          $('#responsavel').chosen();
-          $('#status').chosen();
+          $('#solicitante').chosen( {allow_single_deselect: true} );
+          $('#setor').chosen( {allow_single_deselect: true} );
+          $('#tipoos').chosen( {allow_single_deselect: true} );
+          $('#motivo').chosen( {allow_single_deselect: true} );
+          $('#oficina').chosen( {allow_single_deselect: true} );
+          $('#responsavel').chosen( {allow_single_deselect: true} );
+          $('#status').chosen( {allow_single_deselect: true} );
           $('.modal-servico').on('shown.bs.modal', function () {
-              $('#resp', this).chosen('destroy').chosen();
-              $('#servico', this).chosen('destroy').chosen();
+              $('#resp', this).chosen('destroy').chosen( {allow_single_deselect: true} );
+              $('#servico', this).chosen('destroy').chosen( {allow_single_deselect: true} );
               // console.log("User: "+$('#usuario').val());
               // $('#resp').text( $('#usuario').val() ).trigger("chosen:updated");
           });

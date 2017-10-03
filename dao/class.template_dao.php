@@ -10,7 +10,7 @@ class template_dao
 {
 
 
-    public function get_list_template($usuario, $inicio, $fim){
+    public function get_list_template( ){
         require_once 'class.connection_factory.php';
         require_once '../services/class.template_list.php';
         $con = new connection_factory();
@@ -18,15 +18,12 @@ class template_dao
 
         $template_list = new template_list();
 
-        $query = "  SELECT * 
-                      FROM VIEW_OS_TEMPLATE V
-                     WHERE V.NM_SOLICITANTE = :solicitante
-                       AND V.LINHA > :inicio  AND V.LINHA < :fim";
+        $query = "  SELECT * FROM DBAADV.HAM_OS_TEMPLATE";
         try{
             $stmt = oci_parse($conn, $query);
-            oci_bind_by_name($stmt, ":solicitante", $usuario, -1);
+        /*    oci_bind_by_name($stmt, ":solicitante", $usuario, -1);
             oci_bind_by_name($stmt, ":inicio", $inicio, -1);
-            oci_bind_by_name($stmt, ":fim", $fim, -1);
+            oci_bind_by_name($stmt, ":fim", $fim, -1);*/
             oci_execute($stmt);
             while ( $row = oci_fetch_array($stmt, OCI_ASSOC) ){
                 $template =  new template();
@@ -37,11 +34,7 @@ class template_dao
 
 
                 $template->setCdTemplate( $row['CD_TEMPLATE'] );
-                $template->setNmSolicitante( $row['NM_SOLICITANTE'] );
                 $template->setDsTitulo( $row['DS_TITULO'] );
-                $template->setNmUsuario( $row['NM_USUARIO'] );
-                $template->setDsServico( $row['DS_SERVICO'] );
-                $template->setCdSetor( $row['CD_SETOR'] );
                 $template->setDsObservacao( $observacao );;
 
                 $template_list->addTemplate( $template );
@@ -80,11 +73,8 @@ class template_dao
 
 
                 $template->setCdTemplate( $row['CD_TEMPLATE'] );
-                $template->setNmSolicitante( $row['NM_SOLICITANTE'] );
                 $template->setDsTitulo( $row['DS_TITULO'] );
-                $template->setNmUsuario( $row['NM_USUARIO'] );
                 $template->setDsServico( $row['DS_SERVICO'] );
-                $template->setCdSetor( $row['CD_SETOR'] );
                 $template->setDsObservacao( $observacao );;
 
 

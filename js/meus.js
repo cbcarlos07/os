@@ -49,7 +49,7 @@ function carregarComboResponsavel( usuario ){
         success : function (data) {
 
             // console.log(data);
-            $('#responsavel').append( $('<option />').val( '%' ).text( "SELECIONE" ) );
+//            $('#responsavel').append( $('<option />').val( '%' ).text( "SELECIONE" ) );
 			
             $.each( data.usuarios, function (key, value) {
 
@@ -81,7 +81,7 @@ function carregarComboOficina(  ){
             acao : 'L'
         },
         success : function (data) {
-			oficina.append( $('<option />').val( '%' ).text('SELECIONE') );
+			//oficina.append( $('<option />').val( '%' ).text('SELECIONE') );
             $.each( data.oficinas, function (key, value) {
 
                 var option  = "<option value='"+ value.codigo +"'>"
@@ -114,8 +114,8 @@ function carregarComboSolcitante(  ){
             acao   : 'U'
         },
         success : function (data) {
-            var op = $("<option>").val('%').text('SELECIONE');
-            $('#solicitante').append(op);
+            /*var op = $("<option>").val('%').text('SELECIONE');
+            $('#solicitante').append(op);*/
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
 
@@ -146,8 +146,8 @@ function carregarComboSetor(  ){
             acao : 'S'
         },
         success : function (data) {
-            var op = $("<option>").val('%').text('SELECIONE');
-            setor.append(op);
+          /*  var op = $("<option>").val('%').text('SELECIONE');
+            setor.append(op);*/
 
             $.each( data.setor, function (key, value) {
 
@@ -228,6 +228,7 @@ function carregarComboSetor(  ){
   function carregarTabela(  ){
 	  
 	  var usuario = $('#usuario').val();
+
 	  $.ajax({
 		  url : 'funcao/os.php',
 		  type : 'post',
@@ -300,9 +301,6 @@ function carregarComboSetor(  ){
       return campo;
   }
   
-  $(document).ready(function(){
-		preencherTabela();
-	});
 
 
 

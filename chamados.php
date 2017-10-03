@@ -234,7 +234,9 @@
                       <div class="form-group ">
                           <label for="setor" class="col-md-1 control-label">Setor<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" ></select>
+                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" >
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
 
@@ -245,14 +247,18 @@
                       <div class="form-group ">
                           <label for="tipoos" class="col-md-1 control-label">Tipo OS</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="tipoos" ></select>
+                              <select  class="form-control"  tabindex="2" id="tipoos" data-placeholder="Selecione o tipo de Os">
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
 
                       <div class="form-group ">
                           <label for="motivo" class="col-md-1 control-label">Motivo</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  data-placeholder="Selecione o Motivo" tabindex="2" id="motivo" ></select>
+                              <select  class="form-control"  data-placeholder="Selecione o Motivo" tabindex="2" id="motivo" >
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
 
@@ -260,7 +266,9 @@
                       <div class="form-group ">
                           <label for="oficina" class="col-md-1 control-label">Oficina</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="oficina" ></select>
+                              <select  class="form-control"  tabindex="2" id="oficina" data-placeholder="Selecione a oficina">
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
 
@@ -289,7 +297,9 @@
                       <div class="form-group ">
                           <label for="responsavel" class="col-md-1 control-label" title="Respons&aacute;vel">Respons&aacute;vel<span style="color: red">*</span></label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="responsavel" ></select>
+                              <select  class="form-control"  tabindex="2" id="responsavel" data-placeholder="Selecione o respons&aacute;vel">
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
 
@@ -361,15 +371,15 @@
     <script src="js/menu.js"></script>
     <script src="js/chamados.js"></script>
     <script>
-        $("#setor").chosen();
-        $("#tipoos").chosen();
-        $("#motivo").chosen();
-        $("#oficina").chosen();
-        $("#responsavel").chosen();
-        $("#status").chosen();
+        $("#setor").chosen( {allow_single_deselect: true} );
+        $("#tipoos").chosen( {allow_single_deselect: true} );
+        $("#motivo").chosen( {allow_single_deselect: true} );
+        $("#oficina").chosen( {allow_single_deselect: true} );
+        $("#responsavel").chosen( {allow_single_deselect: true} );
+        $("#status").chosen( {allow_single_deselect: true} );
         $('.modal-servico').on('shown.bs.modal', function () {
-            $('#resp', this).chosen('destroy').chosen();
-            $('#servico', this).chosen('destroy').chosen();
+            $('#resp', this).chosen('destroy').chosen( {allow_single_deselect: true} );
+            $('#servico', this).chosen('destroy').chosen( {allow_single_deselect: true} );
            // console.log("User: "+$('#usuario').val());
            // $('#resp').text( $('#usuario').val() ).trigger("chosen:updated");
         });

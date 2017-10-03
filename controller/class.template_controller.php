@@ -8,10 +8,10 @@
  */
 class template_controller
 {
-    public function get_list_template($usuario, $inicio, $fim){
+    public function get_list_template( ){
         require_once "../dao/class.template_dao.php";
         $template_dao = new template_dao();
-        $template = $template_dao->get_list_template($usuario, $inicio, $fim);
+        $template = $template_dao->get_list_template( );
         return $template;
     }
 

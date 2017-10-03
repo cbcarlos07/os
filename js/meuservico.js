@@ -9,7 +9,7 @@ $(document).ready(function () {
    carregarComboSolcitante();
    carregarComboOficina();
    carregarComboSetor();
-   carregarTabela();
+    carregarTabela();
    loadTotal();
    
 });
@@ -49,7 +49,7 @@ function carregarComboResponsavel( usuario ){
         success : function (data) {
             var codigo = 0;
             // console.log(data);
-            $('#responsavel').append( $('<option />').val( '%' ).text( "SELECIONE" ) );
+          //  $('#responsavel').append( $('<option />').val( '' ) );
 			
             $.each( data.funcionarios, function (key, value) {
                 if( usuario == value.nome )
@@ -82,7 +82,7 @@ function carregarComboOficina(  ){
             acao : 'L'
         },
         success : function (data) {
-			oficina.append( $('<option />').val( '%' ).text('SELECIONE') );
+			//oficina.append( $('<option />').val( '%' ).text('SELECIONE') );
             $.each( data.oficinas, function (key, value) {
 
                 var option  = "<option value='"+ value.codigo +"'>"
@@ -115,8 +115,8 @@ function carregarComboSolcitante(  ){
             acao   : 'U'
         },
         success : function (data) {
-            var op = $("<option>").val('%').text('SELECIONE');
-            $('#solicitante').append(op);
+          //  var op = $("<option>").val('%').text('SELECIONE');
+        //    $('#solicitante').append(op);
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
 
@@ -147,8 +147,8 @@ function carregarComboSetor(  ){
             acao : 'S'
         },
         success : function (data) {
-            var op = $("<option>").val('%').text('SELECIONE');
-            setor.append(op);
+          //  var op = $("<option>").val('%').text('SELECIONE');
+         //   setor.append(op);
 
             $.each( data.setor, function (key, value) {
 
@@ -219,7 +219,7 @@ function carregarComboSetor(  ){
                                "<td>"+ j.chamado + "</td>"+
                                "<td>"+ j.responsavel + "</td>"+
                                "<td>"+ j.servico + "</td>"+
-                               "<td>"+ j.descricao + "</td>"+
+                               "<td>"+ j.descricao.replace("#HIDE#","") + "</td>"+
                                "<td>"+ j.inicio + "</td>"+
                                "<td align='center'>"+ status + "</td>"+
                            "</tr>"
@@ -275,7 +275,7 @@ function carregarComboSetor(  ){
                                        "<td>"+ j.chamado + "</td>"+
                                        "<td>"+ j.responsavel + "</td>"+
                                        "<td>"+ j.servico + "</td>"+
-                                       "<td>"+ j.descricao + "</td>"+
+                                       "<td>"+ j.descricao.replace("#HIDE#","") + "</td>"+
                                        "<td>"+ j.inicio + "</td>"+
                                        "<td>"+ status + "</td>"+
 								   "</tr>"
@@ -319,6 +319,4 @@ function obterCodigoOs( id ){
       return campo;
   }
   
-  $(document).ready(function(){
-		preencherTabela();
-	});
+

@@ -273,7 +273,7 @@ switch ( $acao ){
              $chamado['descricao']  = $ordem->getDescricao();
              $chamado['observacao'] = $ordem->getObservacao();
              $chamado['atendente']  = $ordem->getResponsavel()->getCdUsuario();
-             $chamado['ramal']    = $ordem->getDsRamal();
+             $chamado['ramal']      = $ordem->getDsRamal();
              $chamado['status']     = returnStatusAcento($ordem->getSituacao());
              $chamado['situacao']   = $ordem->getSituacao();
              $chamado['servicos']   = getListServico( $codOs );
@@ -546,6 +546,10 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
         require_once "../beans/class.usuario.php";
         require_once "../beans/class.setor.php";
         $osController = new os_controller();
+
+        /*echo "Solicitante: $solicitante \n";
+        echo "Usuario: $usuario \n";*/
+
         $ordem = new os();
         $ordem->setSolicitante( new usuario() );
         $ordem->getSolicitante()->setCdUsuario( $solicitante );

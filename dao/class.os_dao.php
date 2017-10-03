@@ -485,7 +485,8 @@ class os_dao
         $conn = $con->getConnection();
 
         $sql =   " SELECT * 
-                     FROM DBASGU.USUARIOS 
+                     FROM DBASGU.USUARIOS U
+                     WHERE U.SN_ATIVO = 'S'
                      ORDER BY 1 ";
         $list = new usuario_list();
         try {
@@ -707,6 +708,7 @@ class os_dao
         try {
 
             $stmt = ociparse($conn, $sql);
+
             $dataPedido   = $os->getDataPedido();
             $descricao    = $os->getDescricao();
             $observacao   = $os->getObservacao();
@@ -715,6 +717,9 @@ class os_dao
             $usuario      = $os->getUsuario()->getCdUsuario();
             $prioridade   = $os->getPrioridade();
             $ramal        = $os->getDsRamal();
+/*
+            echo "Solicitante: $solicitante \n";
+            echo "Usuario: $usuario \n";*/
             ocibindbyname( $stmt, ":codigo", $codigo );
             ocibindbyname( $stmt, ":servico", $descricao );
             ocibindbyname( $stmt, ":observacao", $observacao );
@@ -938,7 +943,7 @@ class os_dao
         $os =  null;
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $sql =  "SELECT * FROM VIEW_HAM_GETSOLICITACAO V WHERE V.CODIGO = :codigo";
+        $sql =  "SELECT * FROM DBAMV.VIEW_HAM_GETSOLICITACAO V WHERE V.CODIGO = :codigo";
         try {
             $stmt = ociparse( $conn, $sql );
             ocibindbyname( $stmt, ":codigo", $codigoOs );
@@ -974,6 +979,13 @@ class os_dao
                     $resolucao = $row["RESOLUCAO"];
                 }
 
+                $ramal = "";
+                if( isset( $row['DS_RAMAL'] ) ){
+                    $ramal = $row['DS_RAMAL'];
+                }
+
+              //  echo "Ramal : $ramal";
+
                 $os->setUsuario( new usuario() );
                 $os->getUsuario()->setCdUsuario( $row['USUARIO'] );
                 $os->setDescricao( $row["SERVICO"]);
@@ -998,6 +1010,7 @@ class os_dao
                 $os->setPrevisao( $previsao );
                 $os->setObservacao( $observacao );
                 $os->setResolucao( $resolucao );
+                $os->setDsRamal( $ramal );
 
 
 
@@ -1095,6 +1108,14 @@ class os_dao
                 if( isset( $row["RESOLUCAO"] ) ){
                     $resolucao = $row["RESOLUCAO"];
                 }
+
+                $ramal = "";
+                if( isset( $row['DS_RAMAL'] ) ){
+                    $ramal = $row['DS_RAMAL'];
+                }
+
+
+
                 $os->setCdOs( $row['CODIGO'] );
                 $os->setUsuario( new usuario() );
                 $os->getUsuario()->setCdUsuario( $row['USUARIO'] );
@@ -1120,6 +1141,7 @@ class os_dao
                 $os->setPrevisao( $previsao );
                 $os->setObservacao( $observacao );
                 $os->setResolucao( $resolucao );
+                $os->setDsRamal( $ramal );
 
                 $osList->addOs( $os );
 
