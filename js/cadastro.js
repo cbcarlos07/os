@@ -11,14 +11,57 @@ $('.btn-salvar-servico').on('click', function () {
 
         if( $('#cdos').val() > 0 ) {
             console.log("Apenas salvar item");
-            salvarItem();
+            salvarItem( 'F' );
             $('select[id="resp"]').css("border-color", "");
             $('select[id="servico"]').css("border-color", "");
             $('input[id="datai"]').css("border-color", "");
         }else{
             console.log("Salvar OS");
             console.log("Salvar item");
-            saveOs( salvarItem ) ;
+            saveOs( salvarItem, 'F' ) ;
+
+
+
+
+
+        }
+    }else{
+        msgAviso('Verifique os campos que faltam ser preenchidos');
+        var resp    = $('#resp').val();
+        var servico = $('#servico').val();
+        var datai   = $('#datai').val();
+        if( ( resp == 0 ) || ( servico == 0 ) || ( datai == "" ) ){
+            if( resp == 0 ){
+                $('select[id="resp"]').css("border-color","red");
+            }
+            if( servico == 0 ){
+                $('select[id="servico"]').css("border-color","red");
+            }
+            if( datai == "" ){
+                $('input[id="datai"]').css("border-color","red");
+            }
+        }
+
+
+    }
+
+});
+
+
+$('.btn-salvar-novo').on('click', function () {
+
+    if( boolServico ){
+
+        if( $('#cdos').val() > 0 ) {
+            console.log("Apenas salvar item");
+            salvarItem( 'C' );
+            $('select[id="resp"]').css("border-color", "");
+            $('select[id="servico"]').css("border-color", "");
+            $('input[id="datai"]').css("border-color", "");
+        }else{
+            console.log("Salvar OS");
+            console.log("Salvar item");
+            saveOs( salvarItem, 'C' ) ;
 
 
 
@@ -130,7 +173,7 @@ function salvarOs() {
 
 
 
-function saveOs( saveItem ) {
+function saveOs( saveItem, action ) {
 
     var cdOs         =  $('#cdos').val();
     var dataos       =  $('#dataos').val();
@@ -192,6 +235,9 @@ function saveOs( saveItem ) {
                 setTimeout(function() {
                     console.log("Final da função 1");
                     saveItem();
+                    if( action == 'F' ){
+                        $('#tela-servico').modal('hide');
+                    }
                 }, 500);
 
             }else{
@@ -201,13 +247,16 @@ function saveOs( saveItem ) {
         }
     });
 
-
-
-
 }
 
+$('.btn-limpar').on('click', function () {
+  limparCampos();
+});
 
-function salvarItem() {
+
+
+
+function salvarItem( action ) {
     var codigoItem   =  $('#codigoItem').val();
     var horaFinal    =  $('#dataf').val();
     var horaInicio   =  $('#datai').val();
@@ -270,10 +319,25 @@ function salvarItem() {
             if( retorno > 0 ){
                 loadTotal();
                 $('.load-modal').fadeOut('slow');
-                sucesso();
+
+                sucesso(  );
                 preencherTabelaServicos('A');
                 $('#codigoItem').val( retorno );
+                //tela-servico
+                if( action == 'F' ){
+                    setTimeout( function () {
+                        $('#tela-servico').modal('hide');
+                    },1000 );
+                }else{
+                    $('#codigoItem').val( "" );
+                    $('#resp').val( $('#funcionario').val() ).trigger( "chosen:updated" );
+                    $('#servico').val( 0 ).trigger( "chosen:updated" );
+                    $('#desc').val( "" );
+                    $('#snvisualiza').attr("checked","chekced");
+                    carregarDataHoraAtualServico();
 
+
+                }
             }else{
                 $('.load-modal').fadeOut('slow');
                 msgErroModal('Ocorreu um erro ao realizar opera&ccedil;&atilde;o');
@@ -392,23 +456,33 @@ function msgErroModal( msg ) {
         var data        = $('#datai').val();
         var dataf       = dataFinal.val();
         var btn = $('.btn-salvar-servico');
+        var btnNovo = $('.btn-salvar-novo');
         if( (responsavel != 0) && ( servico != 0 ) && ( data != "" ) ){
             if( dataf == "" ) {
                 boolServico = true;
 
 
                 btn.removeAttr('disabled');
+                btnNovo.removeAttr('disabled');
                 btn.removeClass('btn-danger');
+                btnNovo.removeClass('btn-danger');
                 btn.addClass('btn-success');
+                btnNovo.addClass('btn-success');
                 btn.attr("title", "Pronto para salvar");
+                btnNovo.attr("title", "Pronto para salvar e continuar");
+
             }else if ( verificarData() ) {
                 boolServico = true;
 
 
                 btn.removeAttr('disabled');
+                btnNovo.removeAttr('disabled');
                 btn.removeClass('btn-danger');
+                btnNovo.removeClass('btn-danger');
                 btn.addClass('btn-success');
+                btnNovo.addClass('btn-success');
                 btn.attr("title", "Pronto para salvar");
+                btnNovo.attr("title", "Pronto para salvar e continuar");
             }else{
                 msgAviso( 'Verique o campos a serem preenchidos' );
             }
@@ -422,9 +496,13 @@ function msgErroModal( msg ) {
 
 
             btn.attr("title","Preencha todos campos obrigatorios");
+            btnNovo.attr("title","Preencha todos campos obrigatorios");
             btn.attr('disabled');
+            btnNovo.attr('disabled');
             btn.removeClass('btn-success');
+            btnNovo.removeClass('btn-success');
             btn.addClass('btn-danger');
+            btnNovo.addClass('btn-danger');
             boolServico = false;
         }
 
@@ -458,6 +536,9 @@ function msgErroModal( msg ) {
     });
 
 
+    $('#solicitante').on('click', function () {
+        $('select[id="solicitante"]').css( "display","block" );
+    });
 
     $('#descricao').on('blur', function () {
        verificarCampoChamado();
@@ -883,8 +964,8 @@ function carregarComboSolcitante(  ){
             acao   : 'U'
         },
         success : function (data) {
-            var op = $("<option>").val('0').text('Selecione');
-            $('#solicitante').append(op);
+            /*var op = $("<option>").val('0').text('Selecione');
+            $('#solicitante').append(op); */
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
              //  console.log( "Usuario: '"+value.usuario+"'" )
@@ -1018,16 +1099,22 @@ function validarCamposChamado() {
         var responsavel =    $('#responsavel').val();
         var observacao  =    $('#observacao').val();
 
-        if( ( setor == 0) || ( descricao == "" ) || ( observacao == "" ) || ( responsavel == 0 ) || ( solicitante != 0 ) ){
+        if( ( setor == 0) || ( descricao == "" ) || ( observacao == "" ) || ( responsavel == 0 ) || ( solicitante == 0 ) ){
             if( setor == 0 ){
                 $('select[id="setor"]').css('border-color', 'red');
+                $('select[id="setor"]').addClass('errorCampo');
             }
             if( responsavel == 0 ){
                 $('select[id="responsavel"]').css('border-color', 'red');
+                $('select[id="responsavel"]').addClass('errorCampo');
             }
 
             if( solicitante == 0 ){
-                $('select[id="solicitante"]').css('border-color', 'red');
+                console.log("solicitante: "+solicitante);
+                $('select[id="solicitante"]').css({"border-color":"#EE0000", "display":"block"});
+              //  $('select[id="solicitante"]').css("display","none");
+
+
             }
             if( descricao == "" ){
                 $('input[id="descricao"]').css('border-color', 'red');
@@ -1036,11 +1123,15 @@ function validarCamposChamado() {
                 $('textarea[id="observacao"]').css('border-color', 'red');
             }
 
+
+
         }
 
 
     }
 }
+
+
 
 
 var dataInicial = $('#datai');
@@ -1287,17 +1378,24 @@ dataFinal.on('blur', function () {
                     $('#codigoItem').val( cdServico );
                     $('#resp').val( data.funcionario );
                     var hide = data.descricao;
-                    var enc = hide.indexOf("#HIDE#");
-                    console.log("Encontrou hide "+ enc);
-                    if( enc === 0 ){
-                        hide = hide.replace("#HIDE#","");
-                        $('#snvisualiza').attr('checked','checked');
-                    }else{
-                        $('#snvisualiza').removeAttr('checked','checked');
-                    }
-                    $('#servico').val( data.servico );
 
-                    $('#desc').val( hide.replace(new RegExp('<br />', 'g'), ' ') );
+                    if( hide != ""){
+                        var enc = hide.indexOf("#HIDE#");
+                        console.log("Encontrou hide "+ enc);
+                        if( enc === 0 ){
+                            hide = hide.replace("#HIDE#","");
+                            $('#snvisualiza').attr('checked','checked');
+                        }else{
+                            $('#snvisualiza').removeAttr('checked','checked');
+                        }
+                        $('#desc').val( hide.replace(new RegExp('<br />', 'g'), ' ') );
+                    }else{
+                        $('#desc').val("");
+                    }
+
+
+
+                    $('#servico').val( data.servico );
                     if( data.feito == 'S' )
                       $('#snfeito').attr('checked','checked');
                     $('#datai').val( data.inicio );
@@ -1562,13 +1660,17 @@ function getOs( codigoOs ) {
 
 
     function limparCampos() {
-        $('#cdos').val("");
+        $('#cdos').val("0");
         $('#descricao').val("");
         $('#observacao').val("");
-        $('#solicitante').val(0);
+        $('#solicitante').val(0).trigger("chosen:updated");
         $('#setor').val(0);
         var cdsetor = document.getElementById('cdsetor').value;
         carregarComboSetor( cdsetor );
+        $('#tipoos').val( 0 ).trigger("chosen:updated");
+        $('#motivo').val( 0 ).trigger("chosen:updated");
+        $('#oficina').val( 0 ).trigger("chosen:updated");
+        $('#status').val( 'A' ).trigger("chosen:updated");
         enviar = false;
         $('input[id="solicitante"]').css("border-color","");
         $('input[id="descricao"]').css("border-color","");

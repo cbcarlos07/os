@@ -157,7 +157,11 @@
               </div>
               <div class="row"></div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-danger btn-salvar-servico" title="Preencha todos campos obrigat&oacute;rios" disabled>Salvar</button>
+                  <div class="btn-group">
+                      <button type="button" class="btn btn-danger btn-salvar-servico" title="Preencha todos campos obrigat&oacute;rios" disabled>Salvar</button>
+                      <button type="button" class="btn btn-danger btn-salvar-novo" title="Salvar e adicionar outro">+</button>
+                  </div>
+
                   <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 
               </div>
@@ -212,7 +216,7 @@
                       <div class="form-group ">
                           <label for="solicitante" class="col-md-1 control-label">Solicitante<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select   data-placeholder="Selecione o solicitante" class="form-control" id="solicitante" >>
+                              <select   data-placeholder="Selecione o solicitante" class="form-control" id="solicitante" >
                                   <option value="0"></option></select>
                           </div>
                       </div>

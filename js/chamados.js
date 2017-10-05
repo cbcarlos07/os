@@ -8,7 +8,7 @@ var boolNovoServico = false;
 $('.btn-salvar-servico').on('click', function () {
 
     if( boolServico ){
-        salvarItem();
+        salvarItem('F');
         $('select[id="resp"]').css("border-color","");
         $('select[id="servico"]').css("border-color","");
         $('input[id="datai"]').css("border-color","");
@@ -34,6 +34,38 @@ $('.btn-salvar-servico').on('click', function () {
     }
 
 });
+
+
+$('.btn-salvar-servico-continuar').on('click', function () {
+
+    if( boolServico ){
+        salvarItem( 'C' );
+        $('select[id="resp"]').css("border-color","");
+        $('select[id="servico"]').css("border-color","");
+        $('input[id="datai"]').css("border-color","");
+
+    }else{
+        msgAviso('Verifique os campos que faltam ser preenchidos');
+        var resp    = $('#resp').val();
+        var servico = $('#servico').val();
+        var datai   = $('#datai').val();
+        if( ( resp == 0 ) || ( servico == 0 ) || ( datai == "" ) ){
+            if( resp == 0 ){
+                $('select[id="resp"]').css("border-color","red");
+            }
+            if( servico == 0 ){
+                $('select[id="servico"]').css("border-color","red");
+            }
+            if( datai == "" ){
+                $('input[id="datai"]').css("border-color","red");
+            }
+        }
+
+
+    }
+
+});
+
 
 
 function salvarOs() {
@@ -165,7 +197,7 @@ function loadTotal(  ) {
     carregarTotalMeusServicos( funcion );
 }
 
-function salvarItem() {
+function salvarItem( action ) {
     var codigoItem   =  $('#codigoItem').val();
     var horaFinal    =  $('#dataf').val();
     var horaInicio   =  $('#datai').val();
@@ -231,6 +263,23 @@ function salvarItem() {
                 preencherTabelaServicos();
                 $('#codigoItem').val( retorno );
                 salvarOs();
+                if( action == 'F' ){
+
+                    setTimeout( function () {
+                        $('.modal-servico').modal('hide');
+                    },500 );
+                }else{
+                    $('#tempoHora').val("");
+                    $('#tempoMinuto').val("");
+                    $('#codigoItem').val(0);
+                    $('#resp').val( $('#funcionario').val() ).trigger( "chosen:updated" );
+                    $('#servico').val( 0 ).trigger( "chosen:updated" );
+                    $('#desc').val( "" );
+                    $('#snvisualiza').attr("checked","chekced");
+                    carregarDataHoraAtualServico();
+                    saveOs();
+
+                }
 
             }else{
                 $('.load-modal').fadeOut('slow');
@@ -321,23 +370,29 @@ function msgErro() {
         var data        = $('#datai').val();
         var dataf       = dataFinal.val();
         var btn = $('.btn-salvar-servico');
+        var btnNovo = $('.btn-salvar-servico-continuar');
         if( (responsavel != 0) && ( servico != 0 ) && ( data != "" ) ){
             if( dataf == "" ) {
                 boolServico = true;
 
 
                 btn.removeAttr('disabled');
+                btnNovo.removeAttr('disabled');
                 btn.removeClass('btn-danger');
+                btnNovo.removeClass('btn-danger');
                 btn.addClass('btn-success');
+                btnNovo.addClass('btn-success');
                 btn.attr("title", "Pronto para salvar");
+                btnNovo.attr("title", "Pronto para salvar e continuar");
             }else if ( verificarData() ) {
                 boolServico = true;
 
 
                 btn.removeAttr('disabled');
-                btn.removeClass('btn-danger');
-                btn.addClass('btn-success');
-                btn.attr("title", "Pronto para salvar");
+                btnNovo.removeAttr('disabled');
+                btnNovo.removeClass('btn-danger');
+                btnNovo.addClass('btn-success');
+                btnNovo.attr("title", "Pronto para salvar");
             }else{
                 msgAviso( 'Verique o campos a serem preenchidos' );
             }
@@ -351,9 +406,13 @@ function msgErro() {
 
 
             btn.attr("title","Preencha todos campos obrigatorios");
+            btnNovo.attr("title","Preencha todos campos obrigatorios");
             btn.attr('disabled');
+            btnNovo.attr('disabled');
             btn.removeClass('btn-success');
+            btnNovo.removeClass('btn-success');
             btn.addClass('btn-danger');
+            btnNovo.addClass('btn-danger');
             boolServico = false;
         }
 
@@ -506,7 +565,7 @@ $("#datai").datetimepicker({
       carregarComboServico(  );
       carregarComboOficina( usuario );
       carregarDataHoraAtual();
-      carregarComboFuncionario(31);
+      carregarComboFuncionario(31, 0);
       carregarComboServico();
 
       $('.load-modal').fadeOut();
@@ -537,6 +596,8 @@ $("#datai").datetimepicker({
                $('#ramal').val( data.ramal );
                $('#observacao').val( data.observacao );
                $('#solicitante').val( data.solicitante );
+               $('#oficina').val(data.oficina).trigger("chosen:updated");
+               $('#responsavel').val(data.atendente).trigger("chosen:updated");
 
 
                verificarCampoChamado();
@@ -710,8 +771,9 @@ function carregarComboResponsavel( oficina, usuario ){
 
 }
 
-function carregarComboFuncionario( especialidade ){
+function carregarComboFuncionario( especialidade, funcionario ){
     var resp = $('#resp');
+    resp.find('option').remove();
     $.ajax({
         url      : 'funcao/responsavel.php',
         type     : 'post',
@@ -721,7 +783,7 @@ function carregarComboFuncionario( especialidade ){
             especialidade : especialidade
         },
         success : function (data) {
-            var op = "<option value='0'>Selecione</option>";
+            var op = "<option value='0'></option>";
             resp.append(op);
             // console.log(data);
             $.each( data.funcionarios, function (key, value) {
@@ -731,7 +793,7 @@ function carregarComboFuncionario( especialidade ){
                 resp.append(option);
 
             } );
-            resp.trigger("chosen.updated")
+            resp.val( funcionario ).trigger("chosen.updated")
         }
 
     });
@@ -783,7 +845,8 @@ function carregarComboFuncionario( especialidade ){
              //$('#resp').val(0);
              //$('#resp').text( $('#usuario').val() ).trigger("chosen:updated");
              //$("#resp").find("option[text=" + $('#usuario').val().trim() + "]").attr("selected", true);
-             $("#resp option:contains(" + $('#usuario').val().trim() +")").attr("selected", true);
+             //$("#resp option:contains(" + $('#usuario').val().trim() +")").attr("selected", true);
+             carregarComboFuncionario( 31, $('#funcionario').val() );
              $('#servico').val(0);
              $('#desc').val("");
              $('#snfeito').attr('checked',false);
@@ -1091,9 +1154,27 @@ dataFinal.on('blur', function () {
                     $('#codigoItem').val( cdServico );
                     $('#resp').val( data.funcionario );
                     var hide = data.descricao;
-                    var enc = hide.indexOf("#HIDE#");
+
+                    if( hide != "" ){
+                        var enc = hide.indexOf("#HIDE#");
+                        console.log("Hide? "+enc);
+                        if( enc === 0 ){
+                            hide = hide.replace("#HIDE#","");
+                            $('#snvisualiza').attr('checked','checked');
+                        }else{
+                            $('#snvisualiza').removeAttr('checked','checked');
+                        }
+                        $('#desc').val( hide.replace(new RegExp('<br />', 'g'), ' ') );
+                    }else{
+                        $('#desc').val("");
+                    }
+
+
+
                     $('#servico').val( data.servico );
-                    $('#desc').val( hide.replace(new RegExp('<br />', 'g'), ' ') );
+
+
+
                     if( data.feito == 'S' )
                       $('#snfeito').attr('checked','checked');
                     $('#datai').val( data.inicio );

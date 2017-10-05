@@ -5,8 +5,9 @@
    <?php
    echo "<title>Ordem de Servi&ccedil;o - Solicitar Chamado</title>";
    include "includes/head.php";
-   $_cdOs = $_POST['cdos'];
-   $usuario = $_SESSION['usuario'];
+   $_cdOs       = $_POST['cdos'];
+   $usuario     = $_SESSION['usuario'];
+   $func = $_SESSION['funcionario'];
 
 
    ?>
@@ -110,7 +111,9 @@
 
                           <label for="resp" class="col-md-2 control-label">Respons&aacute;vel <span style="color: red;">*</span></label>
                           <div class="col-md-5">
-                              <select  class="form-control"   id="resp" ></select>
+                              <select  class="form-control"   id="resp" data-placeholder="Escolha o respons&aacute;vel">
+
+                              </select>
                           </div>
                       </div>
                       <div class="row"></div>
@@ -169,7 +172,11 @@
               </div>
               <div class="row"></div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-danger btn-salvar-servico" title="Preencha todos campos obrigat&oacute;rios" disabled>Salvar</button>
+                  <div class="btn-group">
+                      <button type="button" class="btn btn-danger btn-salvar-servico" title="Preencha todos campos obrigat&oacute;rios" disabled>Salvar</button>
+                      <button type="button" class="btn btn-danger btn-salvar-servico-continuar" title="Preencha todos campos obrigat&oacute;rios" disabled>+</button>
+                  </div>
+
                   <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 
               </div>
@@ -198,6 +205,7 @@
 
                       <input type="hidden"  id="cdsetor" />
                       <input type="hidden" value="<?php echo $usuario ; ?>" id="usuario" />
+                      <input type="hidden" value="<?= $func ; ?>" id="funcionario" />
                       <div class="col-md-12"></div>
 
 
