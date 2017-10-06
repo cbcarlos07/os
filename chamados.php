@@ -120,7 +120,7 @@
                       <div class="form-group ">
                           <label for="servico" class="col-md-2 control-label" title="Tipo de Servi&ccedil;o">Servi&ccedil;o <span style="color: red;">*</span></label>
                           <div class="col-md-5">
-                              <select  class="form-control"  id="servico" ></select>
+                              <select  class="form-control"  id="servico" data-placeholder="Selecione o servi&ccedil;o" ></select>
                           </div>
                       </div>
                       <div class="form-group col-lg-12"></div>
@@ -144,7 +144,11 @@
                       <div class="form-group ">
                           <label for="datai" class="col-md-2 control-label">In&iacute;cio Servi&ccedil;o <span style="color: red;">*</span></label>
                           <div class="col-md-4">
-                              <input type="text" class="form-control" id="datai" >
+                              <input type="text" class="form-control" id="datai"
+                                     data-toggle="tooltip"
+                                     data-placement="left"
+                                     data-html="true"
+                              >
                           </div>
                       </div>
 
@@ -331,7 +335,7 @@
                       <div class="form-group ">
                           <label for="resolucao" class="col-md-1 control-label" title="Resolu&ccedil;&atilde;o Final">Res. Final</label>
                           <div class="col-md-3">
-                              <input type="text" class="form-control" id="resolucao" placeholder="Ex.: Atendimento finalizado com sucesso" >
+                              <input type="text" class="form-control" id="resolucao" placeholder="Ex.: Atendimento finalizado com sucesso" tabindex="3">
                           </div>
                       </div>
 
@@ -376,7 +380,6 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.datetimepicker.full.js"></script>
     <script src="js/chosen.jquery.js"></script>
-    <script src="js/menu.js"></script>
     <script src="js/chamados.js"></script>
     <script>
         $("#setor").chosen( {allow_single_deselect: true} );
@@ -391,6 +394,17 @@
            // console.log("User: "+$('#usuario').val());
            // $('#resp').text( $('#usuario').val() ).trigger("chosen:updated");
         });
+
+        function chamarTooltip( id ) {
+            $('#'+id).tooltip('show');
+
+            /* $('#datai').tooltip({
+             'trigger': 'manual',    // chamada manual
+             'title': 'A data do servi&ccedil;o n&atilde;o pode ser menor do que a data da cria&ccedil;&atilde;o da ordem de servi&ccedil;o',  // texto da tooltip
+             'placement': 'left'      // localização da tooltip
+
+             }).tooltip('show')*/;
+        }
 
     </script>
 

@@ -72,7 +72,7 @@
 
 
 
-  <div class="modal fade modal-servico" id="tela-servico" tabindex="-1" role="dialog" data-backdrop="static">
+  <div class="modal fade modal-servico" id="tela-servico" role="dialog" data-backdrop="static">
       <div class="modal-dialog" role="document">
 
           <div class="modal-content">
@@ -94,22 +94,23 @@
                           <input type="hidden" id="codigoItem">
                           <label for="resp" class="col-md-2 control-label">Respons&aacute;vel <span style="color: red;">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control"  tabindex="2" id="resp" data-placeholder="Selecione um funcion&aacute;rio"><option value="0"></option></select>
+                              <select  class="form-control"   tabindex="14" id="resp" data-placeholder="Selecione um funcion&aacute;rio"><option value="0"></option></select>
                           </div>
                       </div>
                       <div class="row"></div>
                       <div class="form-group ">
                           <label for="servico" class="col-md-2 control-label" title="Tipo de Servi&ccedil;o">Servi&ccedil;o <span style="color: red;">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control"  tabindex="2" id="servico" data-placeholder="Escolha um servi&ccedil;o">
+                              <select  class="form-control"  tabindex="15" id="servico" data-placeholder="Escolha um servi&ccedil;o">
                                   <option value="0"></option>
                               </select>
                           </div>
                       </div>
                       <div class="form-group col-lg-12"></div>
+                      <div class="row"></div>
                       <div class="form-group col-lg-12">
                           <label for="desc">Descri&ccedil;&atilde;o</label>
-                          <textarea id="desc" class="form-control"></textarea>
+                          <textarea id="desc" class="form-control" tabindex="16"></textarea>
                       </div>
                         <div class="row"></div>
                   <!--    <div class="form-group col-md-4" >
@@ -120,7 +121,7 @@
 
                       <div class="form-group col-md-6" >
                           <label for="snvisualiza">Cliente n&atilde;o visualiza?</label>
-                          &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snvisualiza" value="S" checked/>
+                          &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="snvisualiza" value="S" checked tabindex="17"/>
 
                       </div>
 
@@ -129,14 +130,14 @@
                       <div class="form-group ">
                           <label for="datai" class="col-md-2 control-label">In&iacute;cio Servi&ccedil;o <span style="color: red;">*</span></label>
                           <div class="col-md-4">
-                              <input type="text" class="form-control" id="datai" >
+                              <input type="text" class="form-control" id="datai" data-toggle="tooltip" data-html="true" data-placement="left" tabindex="18">
                           </div>
                       </div>
 
                       <div class="form-group ">
                           <label for="dataf" class="col-md-2 control-label">Fim do Servi&ccedil;o</label>
                           <div class="col-md-4">
-                              <input type="text" class="form-control" id="dataf" >
+                              <input type="text" class="form-control" id="dataf" tabindex="19">
                           </div>
                       </div>
                       <div class="row"></div>
@@ -159,7 +160,7 @@
               <div class="modal-footer">
                   <div class="btn-group">
                       <button type="button" class="btn btn-danger btn-salvar-servico" title="Preencha todos campos obrigat&oacute;rios" disabled>Salvar</button>
-                      <button type="button" class="btn btn-danger btn-salvar-novo" title="Salvar e adicionar outro">+</button>
+                      <button type="button" class="btn btn-danger btn-salvar-novo" title="Salvar e adicionar outro" disabled>+</button>
                   </div>
 
                   <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
@@ -200,31 +201,33 @@
                       <div class="form-group ">
                           <label for="dataos" class="col-md-1 control-label">Data Os</label>
                           <div class="col-md-3">
-                              <input type="text" class="form-control" id="dataos" disabled>
+                              <input type="text" class="form-control" id="dataos" >
                           </div>
                       </div>
 
                       <div class="form-group ">
                           <label for="previsao" class="col-md-2 control-label" title="Previs&atilde;o de entrega">Prev de Entrega</label>
                           <div class="col-md-3">
-                              <input type="text" class="form-control" id="previsao" >
+                              <input type="text" class="form-control" id="previsao" tabindex="1">
                           </div>
                       </div>
 
                       <div class="col-md-12"></div>
 
                       <div class="form-group ">
-                          <label for="solicitante" class="col-md-1 control-label">Solicitante<span style="color: red">*</span></label>
+                          <label for="solicitante" class="col-md-1 control-label" id="labelsolicitante" data-toggle="tooltip" data-placement="top" data-html="true">Solicitante<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select   data-placeholder="Selecione o solicitante" class="form-control" id="solicitante" >
-                                  <option value="0"></option></select>
+                              <select   data-placeholder="Selecione o solicitante" class="form-control" id="solicitante" tabindex="2"
+                              data-toggle="tooltip" data-placement="top" data-html="true">
+                                  <option value="0"></option>
+                              </select>
                           </div>
                       </div>
 
                       <div class="form-group ">
                           <label for="setor" class="col-md-1 control-label">Setor<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" >
+                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="3" id="setor" >
                                   <option value="0"></option></select>
                           </div>
                       </div>
@@ -236,7 +239,7 @@
                       <div class="form-group ">
                           <label for="tipoos" class="col-md-1 control-label">Tipo OS</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="tipoos" data-placeholder="Selecione o tipo de OS">
+                              <select  class="form-control"  tabindex="4" id="tipoos" data-placeholder="Selecione o tipo de OS">
                                   <option value="0"></option></select>
                           </div>
                       </div>
@@ -244,7 +247,7 @@
                       <div class="form-group ">
                           <label for="motivo" class="col-md-1 control-label">Motivo</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  data-placeholder="Selecione o Motivo" tabindex="2" id="motivo" ><option value="%"></option></select></select>
+                              <select  class="form-control"  data-placeholder="Selecione o Motivo" tabindex="5" id="motivo" ><option value="%"></option></select></select>
                           </div>
                       </div>
 
@@ -252,7 +255,7 @@
                       <div class="form-group ">
                           <label for="oficina" class="col-md-1 control-label">Oficina</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="oficina" data-placeholder="Selecione" >
+                              <select  class="form-control"  tabindex="6" id="oficina" data-placeholder="Selecione" >
                                   <option value="0"></option></select>
                           </div>
                       </div>
@@ -261,27 +264,27 @@
                       <div class="form-group ">
                           <label for="descricao" class="col-md-1 control-label">Descri&ccedil;&atilde;o</label>
                           <div class="col-md-8">
-                              <input type="text" class="form-control" id="descricao" placeholder="Ex.: Impressora com problema" onblur="verificarCampo()" />
+                              <input type="text" class="form-control" id="descricao" tabindex="7" placeholder="Ex.: Impressora com problema"  />
                           </div>
                       </div>
                       <div class="form-group ">
                           <label for="ramal" class="col-md-1 control-label">Ramal</label>
                           <div class="col-md-2">
-                              <input type="text" class="form-control" id="ramal" placeholder="1404"  />
+                              <input type="text" class="form-control" id="ramal" placeholder="1404"  tabindex="8"/>
                           </div>
                       </div>
                       <div class="col-md-12"></div>
                       <div class="form-group ">
                           <label for="observacao" class="col-md-1 control-label">Observa&ccedil;&atilde;o<span style="color: red">*</span></label>
                           <div class="col-md-11">
-                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)"></textarea>
+                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)" tabindex="9"></textarea>
                           </div>
                       </div>
                       <div class="col-md-12"></div>
                       <div class="form-group ">
                           <label for="responsavel" class="col-md-1 control-label" title="Respons&aacute;vel">Respons&aacute;vel<span style="color: red">*</span></label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="responsavel" data-placeholder="Selecione" >
+                              <select  class="form-control"  tabindex="10" id="responsavel" data-placeholder="Selecione" >
                                   <option value="%"></option></select>
                           </div>
                       </div>
@@ -289,7 +292,7 @@
                       <div class="form-group ">
                           <label for="status" class="col-md-1 control-label">Status</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="2" id="status" >
+                              <select  class="form-control"  tabindex="11" id="status" >
                                   <option value="A">Aberto</option>
                                   <option value="C">Conclu&iacute;do</option>
                                   <option value="N">N&atilde;o Atendido</option>
@@ -306,7 +309,7 @@
                       <div class="form-group ">
                           <label for="resolucao" class="col-md-1 control-label" title="Resolu&ccedil;&atilde;o Final">Res. Final</label>
                           <div class="col-md-3">
-                              <input type="text" class="form-control" id="resolucao" placeholder="Ex.: Atendimento finalizado com sucesso" >
+                              <input type="text" class="form-control" id="resolucao" placeholder="Ex.: Atendimento finalizado com sucesso" tabindex="12">
                           </div>
                       </div>
 
@@ -365,7 +368,11 @@
     <script src="js/chosen.jquery.js"></script>
     <script src="js/cadastro.js"></script>
     <script>
-          $('#solicitante').chosen( {allow_single_deselect: true} );
+          $('#solicitante').chosen( {
+              allow_single_deselect: true,
+              search_contains: true,
+              no_results_text: "Nenhum resultado enontrado!"
+          } );
           $('#setor').chosen( {allow_single_deselect: true} );
           $('#tipoos').chosen( {allow_single_deselect: true} );
           $('#motivo').chosen( {allow_single_deselect: true} );
@@ -375,9 +382,21 @@
           $('.modal-servico').on('shown.bs.modal', function () {
               $('#resp', this).chosen('destroy').chosen( {allow_single_deselect: true} );
               $('#servico', this).chosen('destroy').chosen( {allow_single_deselect: true} );
+              $('#servico').trigger('chosen:activate');
               // console.log("User: "+$('#usuario').val());
               // $('#resp').text( $('#usuario').val() ).trigger("chosen:updated");
           });
+
+          function chamarTooltip( id ) {
+              $('#'+id).tooltip('show');
+
+              /* $('#datai').tooltip({
+               'trigger': 'manual',    // chamada manual
+               'title': 'A data do servi&ccedil;o n&atilde;o pode ser menor do que a data da cria&ccedil;&atilde;o da ordem de servi&ccedil;o',  // texto da tooltip
+               'placement': 'left'      // localização da tooltip
+
+               }).tooltip('show')*/;
+          }
 
     </script>
 

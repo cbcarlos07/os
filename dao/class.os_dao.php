@@ -105,6 +105,7 @@ class os_dao
                 $os->getSetor()->setNmSetor( $row['NM_SETOR'] );
                 $os->setSolicitante( new usuario() );
                 $os->getSolicitante()->setCdUsuario( $row['NM_SOLICITANTE'] );
+            $os->setObservacao( $row['NM_USUARIO'] );;
                 $os_list->addOs($os);
             }
 

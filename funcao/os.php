@@ -600,7 +600,8 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
                 "data"        => $ordem->getDataPedido(),
                 "descricao"   => $ordem->getDescricao(),
                 "setor"       => $ordem->getSetor()->getNmSetor(),
-                "solicitante" => $ordem->getSolicitante()->getCdUsuario()
+                "solicitante" => $ordem->getSolicitante()->getCdUsuario(),
+                "criacao"     => $ordem->getObservacao()
 
             );
         }

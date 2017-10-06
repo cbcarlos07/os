@@ -59,6 +59,7 @@
                   <th>Descri&ccedil;&atilde;o</th>
                   <th>Setor</th>
                   <th>Solicitante</th>
+                  <th>Criado por</th>
                   <th></th>
                   </thead >
                   <tbody class="tbody">

@@ -18,7 +18,7 @@ $('.btn-salvar-servico').on('click', function () {
         var resp    = $('#resp').val();
         var servico = $('#servico').val();
         var datai   = $('#datai').val();
-        if( ( resp == 0 ) || ( servico == 0 ) || ( datai == "" ) ){
+        if( ( resp == 0 ) || ( servico == 0 ) || ( datai == "" ) || ( !validaIntevaloTempo() ) ){
             if( resp == 0 ){
                 $('select[id="resp"]').css("border-color","red");
             }
@@ -27,6 +27,11 @@ $('.btn-salvar-servico').on('click', function () {
             }
             if( datai == "" ){
                 $('input[id="datai"]').css("border-color","red");
+            }
+            if( !validaIntevaloTempo() ){
+                $('input[id="datai"]').css("border-color","red").focus();
+                $('#datai').attr("title","A data do servi&ccedil;o n&atilde;o pode ser menor do que a data da cria&ccedil;&atilde;o da ordem de servi&ccedil;o");
+                chamarTooltip( "datai" );
             }
         }
 
@@ -356,6 +361,7 @@ function msgErro() {
 
 
     $('#datai').on('blur', function () {
+        console.log("Datai");
         verificarCampo();
     });
 
@@ -371,7 +377,7 @@ function msgErro() {
         var dataf       = dataFinal.val();
         var btn = $('.btn-salvar-servico');
         var btnNovo = $('.btn-salvar-servico-continuar');
-        if( (responsavel != 0) && ( servico != 0 ) && ( data != "" ) ){
+        if( (responsavel != 0) && ( servico != 0 ) && ( data != "" ) && ( validaIntevaloTempo()  )){
             if( dataf == "" ) {
                 boolServico = true;
 
@@ -387,12 +393,26 @@ function msgErro() {
             }else if ( verificarData() ) {
                 boolServico = true;
 
+                btn.removeAttr('disabled');
+                btnNovo.removeAttr('disabled');
+                btn.removeClass('btn-danger');
+                btnNovo.removeClass('btn-danger');
+                btn.addClass('btn-success');
+                btnNovo.addClass('btn-success');
+                btn.attr("title", "Pronto para salvar");
+                btnNovo.attr("title", "Pronto para salvar e continuar");
+            }else if ( validaIntevaloTempo() ){
+                boolServico = true;
+
 
                 btn.removeAttr('disabled');
                 btnNovo.removeAttr('disabled');
+                btn.removeClass('btn-danger');
                 btnNovo.removeClass('btn-danger');
+                btn.addClass('btn-success');
                 btnNovo.addClass('btn-success');
-                btnNovo.attr("title", "Pronto para salvar");
+                btn.attr("title", "Pronto para salvar");
+                btnNovo.attr("title", "Pronto para salvar e continuar");
             }else{
                 msgAviso( 'Verique o campos a serem preenchidos' );
             }
@@ -429,6 +449,10 @@ function msgErro() {
 
         if( verificarData() ){
             $('input[id="descricao"]').css('border-color', '');
+        }
+
+        if( validaIntevaloTempo() ){
+            $('input[id="datai"]').css('border-color', '');
         }
 
     }
@@ -809,7 +833,7 @@ function carregarComboFuncionario( especialidade, funcionario ){
                     acao   : 'M'
                 },
                 success : function (data) {
-                    var op = $("<option>").val(0).text('Selecione');
+                    var op = $("<option>").val(0);
                     $('#servico').append(op);
                     // console.log(data);
                     $.each( data.servicos, function (key, value) {
@@ -819,6 +843,8 @@ function carregarComboFuncionario( especialidade, funcionario ){
                         $('#servico').append(option);
 
                     } );
+                    $('#servico').trigger("chosen:updated");
+
                 }
 
             });
@@ -858,8 +884,10 @@ function carregarComboFuncionario( especialidade, funcionario ){
              $('select[id="responsavel"]').css('border-color', '');
              $('input[id="descricao"]').css('border-color', '');
              $('textarea[id="observacao"]').css('border-color', '');
+
              verificarCampo();
              carregarDataHoraAtualServico();
+             validaIntevaloTempo();
 
          }else {
              var setor      =    $('#setor').val();
@@ -1095,6 +1123,87 @@ dataFinal.on('blur', function () {
 
 
 
+function validaIntevaloTempo() {
+
+    var strDataInicial = $('#dataos').val();
+    var dataInicial    = new Date(strDataInicial);
+    var strDataFinal   = $('#datai').val();
+    var dataFinal      =  new Date(strDataFinal);
+
+    /*
+
+     Obtendo dados da data inicial
+
+     */
+
+    var arrayDataInicio = strDataInicial.split("/"); //separando onde tiver a barrra
+    var idia     = arrayDataInicio[0];  //pegando domente o dia da data inicial 16
+    var imes     = arrayDataInicio[1];  //pegando domente o mes da data inicial 41
+    /*
+     como deois do ano tem espaço e a hora, pego todo o final
+     2017 19:45
+     */
+    var istrAno  = arrayDataInicio[2];
+
+    var iarrayAno = istrAno.split(" "); //separando onde tiver espaço
+    var iano = iarrayAno[0]; //pegando somente o ano data inicial
+    var istrHoras = iarrayAno[1]; //pegando as horas da data inicial 16:47
+
+    /*
+     aqui vou separar as horas para pegar as horas e minutos onde for localizado o :
+     */
+    var iarrayHoras = istrHoras.split(":")
+    var ihora     = iarrayHoras[0]; //aqui eu pego somente as horas da data inicial
+    var iminutos  = iarrayHoras[1]; //aqui eu pego os minutos do campo data inicial
+
+    /*
+
+     Obtendo dados da data final
+
+     */
+    var arrayDataFinal = strDataFinal.split("/"); //separando onde tiver a barrra
+    var fdia     = arrayDataFinal[0];  //pegando domente o dia da data final 16
+    var fmes     = arrayDataFinal[1];  //pegando domente o mes da data final 41
+    /*
+     como deois do ano tem espaço e a hora, pego todo o final
+     2017 19:45
+     */
+    var fstrAno  = arrayDataFinal[2];
+
+    var farrayAno = fstrAno.split(" "); //separando onde tiver espaço
+    var fano = farrayAno[0]; //pegando somente o ano data final
+    var fstrHoras = farrayAno[1]; //pegando as horas da data final 16:47
+
+    /*
+     aqui vou separar as horas para pegar as horas e minutos onde for localizado o :
+     */
+    var farrayHoras = fstrHoras.split(":")
+    var fhora     = farrayHoras[0]; //aqui eu pego somente as horas da data finaç
+    var fminutos  = farrayHoras[1]; //aqui eu pego os minutos do campo data final
+
+    var vDataInicial = new Date(iano, imes - 1, idia, ihora, iminutos);
+    var vDataFinal   = new Date(fano, fmes - 1, fdia, fhora, fminutos);
+
+    var testeData = true;
+
+    var mensagem = $('.mensagem');
+   // console.log("Data os: "+strDataInicial);
+   // console.log("Data do servico: "+strDataFinal);
+    if(vDataFinal < vDataInicial){
+        //  chamarModal('Atenção!','A data inicial não pode ser maior ou igual a data final',2 );
+
+        console.log("Data é menor ");
+
+        return false;
+    }
+    else{
+        console.log("Data é maior ou igual");
+        return true;
+    }
+
+}
+
+
 
         function preencherTabelaServicos() {
             $('.tabela').fadeOut();
@@ -1136,6 +1245,10 @@ dataFinal.on('blur', function () {
 
             });
         }
+
+
+
+
 
         function abrirTelaAlterarServico( cdServico ) {
 

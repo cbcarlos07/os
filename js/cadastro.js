@@ -30,7 +30,7 @@ $('.btn-salvar-servico').on('click', function () {
         var resp    = $('#resp').val();
         var servico = $('#servico').val();
         var datai   = $('#datai').val();
-        if( ( resp == 0 ) || ( servico == 0 ) || ( datai == "" ) ){
+        if( ( resp == 0 ) || ( servico == 0 ) || ( datai == "" ) || ( !validaIntevaloTempo() ) ){
             if( resp == 0 ){
                 $('select[id="resp"]').css("border-color","red");
             }
@@ -39,6 +39,11 @@ $('.btn-salvar-servico').on('click', function () {
             }
             if( datai == "" ){
                 $('input[id="datai"]').css("border-color","red");
+            }
+            if( !validaIntevaloTempo() ){
+                $('input[id="datai"]').css("border-color","red").focus();
+                $('#datai').attr("title","A data do servi&ccedil;o n&atilde;o pode ser menor do que a data da cria&ccedil;&atilde;o da ordem de servi&ccedil;o");
+                chamarTooltip( "datai" );
             }
         }
 
@@ -448,6 +453,11 @@ function msgErroModal( msg ) {
 
 
 
+function   verifyField() {
+
+
+}
+
 
 
     function verificarCampo() {
@@ -457,8 +467,8 @@ function msgErroModal( msg ) {
         var dataf       = dataFinal.val();
         var btn = $('.btn-salvar-servico');
         var btnNovo = $('.btn-salvar-novo');
-        if( (responsavel != 0) && ( servico != 0 ) && ( data != "" ) ){
-            if( dataf == "" ) {
+        if( (responsavel != 0) && ( servico != 0 ) && ( data != "" ) && ( validaIntevaloTempo()  ) ) {
+            if (dataf == "") {
                 boolServico = true;
 
 
@@ -471,7 +481,20 @@ function msgErroModal( msg ) {
                 btn.attr("title", "Pronto para salvar");
                 btnNovo.attr("title", "Pronto para salvar e continuar");
 
-            }else if ( verificarData() ) {
+            } else if (verificarData()) {
+            } else if (verificarData()) {
+                boolServico = true;
+
+
+                btn.removeAttr('disabled');
+                btnNovo.removeAttr('disabled');
+                btn.removeClass('btn-danger');
+                btnNovo.removeClass('btn-danger');
+                btn.addClass('btn-success');
+                btnNovo.addClass('btn-success');
+                btn.attr("title", "Pronto para salvar");
+                btnNovo.attr("title", "Pronto para salvar e continuar");
+            } else if ( validaIntevaloTempo() ){
                 boolServico = true;
 
 
@@ -521,6 +544,10 @@ function msgErroModal( msg ) {
             $('input[id="descricao"]').css('border-color', '');
         }
 
+        if( validaIntevaloTempo() ){
+            $('input[id="datai"]').css('border-color', '');
+        }
+
     }
 
 
@@ -540,7 +567,7 @@ function msgErroModal( msg ) {
         $('select[id="solicitante"]').css( "display","block" );
     });
 
-    $('#descricao').on('blur', function () {
+    $('#descricao').on('input', function () {
        verificarCampoChamado();
     });
 
@@ -561,7 +588,7 @@ function msgErroModal( msg ) {
        verificarCampoChamado();
     });
 
-    $('#observacao').on('keydown', function () {
+    $('#observacao').on('input', function () {
        verificarCampoChamado();
 
     });
@@ -705,7 +732,7 @@ function msgErroModal( msg ) {
       carregarComboServico(  );
       carregarComboOficina( usuario );
       carregarDataHoraAtual();
-      carregarComboFuncionario(31);
+      carregarComboFuncionario(31, $('#funcionario').val() );
       carregarComboSolcitante();
       loadTotal();
 
@@ -902,7 +929,9 @@ function carregarComboResponsavel( oficina, usuario ){
 
 }
 
-function carregarComboFuncionario( especialidade ){
+function carregarComboFuncionario( especialidade, func ){
+    var resp = $('#resp');
+    resp.find('option').remove();
     $.ajax({
         url      : 'funcao/responsavel.php',
         type     : 'post',
@@ -912,16 +941,19 @@ function carregarComboFuncionario( especialidade ){
             especialidade : especialidade
         },
         success : function (data) {
-            /*var op = "<option value='0'>Selecione</option>";
-            $('#resp').append(op);*/
+
+            var op = "<option value='0'></option>";
+            resp.append(op);
             // console.log(data);
             $.each( data.funcionarios, function (key, value) {
 
                 var option  = $('<option>').val( value.codigo ).text( value.nome ) ;
 
-                $('#resp').append(option);
+                resp.append(option);
 
             } );
+
+            resp.val( func ).trigger( "chosen:updated" );
         }
 
     });
@@ -1019,19 +1051,27 @@ function carregarComboSolicitante( soliciante ){
     $('.btn-servico').on('click', function () {
 
 
-        validarCamposServico(  );
+        //verifyField(  );
+        validarCamposServico();
 
     });
+/*$('#tela-servico').on('shown.bs.modal', function () {
+    //
+    $('#servico').trigger('chosen:activate');
+});*/
 
      function validarCamposServico() {
          if( boolNovoServico ){
              //console.log('Abrir modal');
+
              $('#tela-servico').modal('show');
+             /*$('#servico').trigger('chosen:activate');*/
              //$('#resp').val(0);
-             $("#resp option:contains(" + $('#usuario').val().trim() +")").attr("selected", true);
+             carregarComboFuncionario( 31, $('#funcionario').val() );
              $('#servico').val(0);
              $('#desc').val("");
              $('#snfeito').attr('checked',false);
+
             /* $('#datai').val("");
              $('#dataf').val("");*/
 
@@ -1042,6 +1082,7 @@ function carregarComboSolicitante( soliciante ){
              $('textarea[id="observacao"]').css('border-color', '');
              carregarDataHoraAtualServico(  );
              verificarCampo(  );
+             validaIntevaloTempo();
          }else {
              var setor      =    $('#setor').val();
              var solicitante      =    $('#solicitante').val();
@@ -1103,15 +1144,22 @@ function validarCamposChamado() {
             if( setor == 0 ){
                 $('select[id="setor"]').css('border-color', 'red');
                 $('select[id="setor"]').addClass('errorCampo');
+                $('#setor').trigger('chosen:activate');
             }
             if( responsavel == 0 ){
                 $('select[id="responsavel"]').css('border-color', 'red');
                 $('select[id="responsavel"]').addClass('errorCampo');
+                $('#responsavel').trigger('chosen:activate');
             }
 
             if( solicitante == 0 ){
                 console.log("solicitante: "+solicitante);
-                $('select[id="solicitante"]').css({"border-color":"#EE0000", "display":"block"});
+
+                $('#labelsolicitante').attr("title","Escolha um solicitante");
+                $('#solicitante').trigger('chosen:activate');
+                chamarTooltip( "labelsolicitante" );
+                $('select[id="solicitante"]').css({"border-color":"#EE0000"}).attr("title","Escolha um solicitante").popup();
+
               //  $('select[id="solicitante"]').css("display","none");
 
 
@@ -1157,6 +1205,86 @@ dataFinal.on('blur', function () {
     }
 
 });
+
+
+   function validaIntevaloTempo() {
+
+       var strDataInicial = $('#dataos').val();
+       var dataInicial    = new Date(strDataInicial);
+       var strDataFinal   = $('#datai').val();
+       var dataFinal      =  new Date(strDataFinal);
+
+       /*
+
+        Obtendo dados da data inicial
+
+        */
+
+       var arrayDataInicio = strDataInicial.split("/"); //separando onde tiver a barrra
+       var idia     = arrayDataInicio[0];  //pegando domente o dia da data inicial 16
+       var imes     = arrayDataInicio[1];  //pegando domente o mes da data inicial 41
+       /*
+        como deois do ano tem espaço e a hora, pego todo o final
+        2017 19:45
+        */
+       var istrAno  = arrayDataInicio[2];
+
+       var iarrayAno = istrAno.split(" "); //separando onde tiver espaço
+       var iano = iarrayAno[0]; //pegando somente o ano data inicial
+       var istrHoras = iarrayAno[1]; //pegando as horas da data inicial 16:47
+
+       /*
+        aqui vou separar as horas para pegar as horas e minutos onde for localizado o :
+        */
+       var iarrayHoras = istrHoras.split(":")
+       var ihora     = iarrayHoras[0]; //aqui eu pego somente as horas da data inicial
+       var iminutos  = iarrayHoras[1]; //aqui eu pego os minutos do campo data inicial
+
+       /*
+
+        Obtendo dados da data final
+
+        */
+       var arrayDataFinal = strDataFinal.split("/"); //separando onde tiver a barrra
+       var fdia     = arrayDataFinal[0];  //pegando domente o dia da data final 16
+       var fmes     = arrayDataFinal[1];  //pegando domente o mes da data final 41
+       /*
+        como deois do ano tem espaço e a hora, pego todo o final
+        2017 19:45
+        */
+       var fstrAno  = arrayDataFinal[2];
+
+       var farrayAno = fstrAno.split(" "); //separando onde tiver espaço
+       var fano = farrayAno[0]; //pegando somente o ano data final
+       var fstrHoras = farrayAno[1]; //pegando as horas da data final 16:47
+
+       /*
+        aqui vou separar as horas para pegar as horas e minutos onde for localizado o :
+        */
+       var farrayHoras = fstrHoras.split(":")
+       var fhora     = farrayHoras[0]; //aqui eu pego somente as horas da data finaç
+       var fminutos  = farrayHoras[1]; //aqui eu pego os minutos do campo data final
+
+       var vDataInicial = new Date(iano, imes - 1, idia, ihora, iminutos);
+       var vDataFinal   = new Date(fano, fmes - 1, fdia, fhora, fminutos);
+
+       var testeData = true;
+
+       var mensagem = $('.mensagem');
+       if(vDataFinal < vDataInicial){
+           //  chamarModal('Atenção!','A data inicial não pode ser maior ou igual a data final',2 );
+
+           console.log("Data é menor ");
+
+           return false;
+       }
+       else{
+           console.log("Data é maior ou igual");
+           return true;
+       }
+
+   }
+
 
     function calcularHoras () {
 
@@ -1607,6 +1735,7 @@ function getOs( codigoOs ) {
 
         limparCampos();
         if( $(this).find('i').hasClass('fa-check') ){
+
             setAtributes( "#cdos", "disabled", true );
             $('.btn-pesquisar').find('i').removeClass('fa-check');
             $('.btn-pesquisar').find('i').addClass('fa-search');
@@ -1623,6 +1752,7 @@ function getOs( codigoOs ) {
             setAtributes( "#status", "disabled", false );
             setAtributes( "#resolucao", "disabled", false );
         }else{
+            $('#cdos').val("");
             setAtributes( "#cdos", "disabled", false );
             $(this).find('i').removeClass('fa-search');
             $(this).find('i').addClass('fa-check');

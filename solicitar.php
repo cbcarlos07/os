@@ -261,7 +261,7 @@
                       <div class="form-group ">
                           <label for="solicitante" class="col-md-1 control-label">Solicitante<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control" id="solicitante" data-placeholder="Selecione o solicitante">
+                              <select  class="form-control" id="solicitante" data-placeholder="Selecione o solicitante" tabindex="1">
                                   <option value="0"></option>
                               </select>
                           </div>
@@ -270,7 +270,7 @@
                       <div class="form-group ">
                           <label for="setor" class="col-md-1 control-label">Setor</label>
                           <div class="col-md-6">
-                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor" >
+                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="2" id="setor">
                                   <option value="0"></option>
                               </select>
                           </div>
@@ -279,20 +279,20 @@
                       <div class="form-group ">
                           <label for="descricao" class="col-md-1 control-label">Descri&ccedil;&atilde;o</label>
                           <div class="col-md-8">
-                              <input type="text" class="form-control" id="descricao" placeholder="Ex.: Impressora com problema" onblur="verificarCampo()" />
+                              <input type="text" class="form-control" id="descricao" placeholder="Ex.: Impressora com problema" onblur="verificarCampo()" tabindex="3" />
                           </div>
                       </div>
                       <div class="form-group ">
                           <label for="ramal" class="col-md-1 control-label">Ramal</label>
                           <div class="col-md-2">
-                              <input type="text" class="form-control" id="ramal" placeholder="1404"  />
+                              <input type="text" class="form-control" id="ramal" placeholder="1404"  tabindex="4"/>
                           </div>
                       </div>
                       <div class="col-lg-12"></div>
                       <div class="form-group ">
                           <label for="observacao" class="col-md-1 control-label">Observa&ccedil;&atilde;o</label>
                           <div class="col-md-11">
-                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)
+                              <textarea tabindex="5" id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)
 Meu IP: 192.168.1.1" onkeydown="verificarCampo()"></textarea>
                           </div>
                       </div>

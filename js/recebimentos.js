@@ -24,6 +24,7 @@ function preencherTabela() {
                                  "<td>" + j.descricao + "</td>"+
                                  "<td>" + j.setor + "</td>"+
                                  "<td>" + j.solicitante + "</td>"+
+                                 "<td>" + j.criacao + "</td>"+
                                  "<td> <a href='#rec' class='btn btn-primary btn-rec btn-xs' onclick='receber("+ j.codigo +")'>Receber</a>  </td>"+
                              "</tr>";
                  $('.tbody').append( tbody );
