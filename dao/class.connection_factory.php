@@ -15,7 +15,7 @@ class connection_factory
                         (ADDRESS=(PROTOCOL=TCP)(HOST=IP-DO-SERVIDOR)(PORT=1521))
                         )
                         (CONNECT_DATA=
-                        (SERVICE_NAME=prdmv)
+                        (SERVICE_NAME=servico)
                         )
                         )";
     public  function  getConnection(){
