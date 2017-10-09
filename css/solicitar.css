@@ -35,3 +35,8 @@
 #addInf-backdrop.in:nth-of-type(even) {
     z-index: 1041 !important;
 }
+
+
+.required .chosen-single {
+    border: 1px solid #EE0000 !important;
+}

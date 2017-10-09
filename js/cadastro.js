@@ -32,10 +32,10 @@ $('.btn-salvar-servico').on('click', function () {
         var datai   = $('#datai').val();
         if( ( resp == 0 ) || ( servico == 0 ) || ( datai == "" ) || ( !validaIntevaloTempo() ) ){
             if( resp == 0 ){
-                $('select[id="resp"]').css("border-color","red");
+                $('#resp_chosen').addClass('required');
             }
             if( servico == 0 ){
-                $('select[id="servico"]').css("border-color","red");
+                $('#servico_chosen').addClass('required');
             }
             if( datai == "" ){
                 $('input[id="datai"]').css("border-color","red");
@@ -52,7 +52,11 @@ $('.btn-salvar-servico').on('click', function () {
 
 });
 
-
+$('#servico').on('change', function () {
+    if( $(this).val() > 0 ){
+        $('#servico_chosen').removeClass( 'required' );
+    }
+});
 $('.btn-salvar-novo').on('click', function () {
 
     if( boolServico ){
@@ -415,7 +419,13 @@ function msgErroModal( msg ) {
     var boolServico = false;
 
     $('#resp').on('change', function () {
+        console.log("Funcionario: "+$(this).val());
+        if( $(this).val() > 0 ){
+            $('#resp_chosen').removeClass( 'required' );
+        }
         verificarCampo();
+
+
     });
 
 
@@ -556,11 +566,29 @@ function   verifyField() {
     });
 
     $('#solicitante').on('change', function () {
-        verificarCampoChamado();
-        buscarUltimoSolicitante();
+        //console.log("Solicitante mudou: "+$(this).val());
+        if( $(this).val() != 0 ){
+          //  console.log("Solicitante maior do que zero");
+            $("#solicitante_chosen").removeClass("required");
+            verificarCampoChamado();
+            buscarUltimoSolicitante();
+        }
+
 
 
     });
+
+$('#oficina').on('change', function () {
+    //console.log("Solicitante mudou: "+$(this).val());
+    if( $(this).val() != 0 ){
+        //  console.log("Solicitante maior do que zero");
+        $("#oficina_chosen").removeClass("required");
+        verificarCampoChamado();
+    }
+
+
+
+});
 
 
     $('#solicitante').on('click', function () {
@@ -573,12 +601,13 @@ function   verifyField() {
 
     $('#tipoos').on('change', function () {
         var id = $(this).val();
-        console.log("Tipo os: "+id);
+        //console.log("Tipo os: "+id);
         if( id > 0 ) {
             console.log("Carregar combo motivo "+id);
+            $('#tipoos_chosen').removeClass("required");
             carregarComboMotivo($(this).val());
         }else{
-            console.log("Carregar combo motivo 1 "+id);
+           // console.log("Carregar combo motivo 1 "+id);
             $('#motivo').find('option').remove();
             $('#motivo').trigger( "chosen:updated" );
         }
@@ -600,11 +629,12 @@ function   verifyField() {
         var responsavel =    $('#responsavel').val();
         var solicitante =    $('#solicitante').val();
         var observacao  =    $('#observacao').val();
+        var oficina     =    $('#oficina').val();
         var btn = $('.btn-servico');
         var btnSalvar = $('.btn-salvar');
        /// console.log("setor: "+setor);
         if( ( setor != 0) && ( descricao != "" ) && ( observacao != "" ) && ( responsavel != 0 ) && ( solicitante != 0 )
-            && ( tipoos != 0 )
+            && ( tipoos != 0 ) && ( oficina != 0 )
           ){
             boolNovoServico = true;
             btnSalvar.removeClass('btn-danger');
@@ -1139,8 +1169,10 @@ function validarCamposChamado() {
         var solicitante =    $('#solicitante').val();
         var responsavel =    $('#responsavel').val();
         var observacao  =    $('#observacao').val();
+        var tipoos      =    $('#tipoos').val();
+        var oficina     =    $('#oficina').val();
 
-        if( ( setor == 0) || ( descricao == "" ) || ( observacao == "" ) || ( responsavel == 0 ) || ( solicitante == 0 ) ){
+        if( ( setor == 0) || ( descricao == "" ) || ( observacao == "" ) || ( responsavel == 0 ) || ( solicitante == 0 ) || ( tipoos == 0 ) || ( oficina == 0 ) ){
             if( setor == 0 ){
                 $('select[id="setor"]').css('border-color', 'red');
                 $('select[id="setor"]').addClass('errorCampo');
@@ -1155,12 +1187,44 @@ function validarCamposChamado() {
             if( solicitante == 0 ){
                 console.log("solicitante: "+solicitante);
 
-                $('#labelsolicitante').attr("title","Escolha um solicitante");
+
+                $("#solicitante_chosen").addClass("required");
                 $('#solicitante').trigger('chosen:activate');
-                chamarTooltip( "labelsolicitante" );
-                $('select[id="solicitante"]').css({"border-color":"#EE0000"}).attr("title","Escolha um solicitante").popup();
+
+                chamarTooltip( "solicitante_chosen" );
+
 
               //  $('select[id="solicitante"]').css("display","none");
+
+
+            }
+
+            if( tipoos == 0 ){
+                console.log("solicitante: "+solicitante);
+
+
+                $("#tipoos_chosen").addClass("required");
+                $('#tipoos').trigger('chosen:activate');
+
+                chamarTooltip( "tipoos_chosen" );
+
+
+                //  $('select[id="solicitante"]').css("display","none");
+
+
+            }
+
+            if( oficina == 0 ){
+                console.log("solicitante: "+solicitante);
+
+
+                $("#oficina_chosen").addClass("required");
+                $('#oficina').trigger('chosen:activate').popup();
+
+                chamarTooltip( "oficina_chosen" );
+
+
+                //  $('select[id="solicitante"]').css("display","none");
 
 
             }
@@ -1170,6 +1234,8 @@ function validarCamposChamado() {
             if( observacao == "" ){
                 $('textarea[id="observacao"]').css('border-color', 'red');
             }
+
+
 
 
 

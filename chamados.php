@@ -403,7 +403,7 @@
              'title': 'A data do servi&ccedil;o n&atilde;o pode ser menor do que a data da cria&ccedil;&atilde;o da ordem de servi&ccedil;o',  // texto da tooltip
              'placement': 'left'      // localização da tooltip
 
-             }).tooltip('show')*/;
+             }).tooltip('show')*/
         }
 
     </script>
