@@ -406,13 +406,18 @@ class itemSolicitacaoServico_dao
                 if( isset( $row['VL_TEMPO_GASTO_MIN'] ) )
                     $vlTimeGastoMin = $row['VL_TEMPO_GASTO_MIN'];
 
+                $descricao = "";
+                if( isset( $row['DS_SERVICO'] ) ){
+                    $descricao = $row['DS_SERVICO'];
+                }
+
                 $item->setCdItem( $row['CODIGO'] );
                 $item->setDataFinal( $horaFinal );
                 $item->setDataInicial( $row['HR_INICIO'] );
                 $item->setSnFeito( $row['SN_CHECK_LIST'] );
                 $item->setTempoHora( $vlTempoGasto );
                 $item->setTempoMinuto( $vlTimeGastoMin );
-                $item->setDescricao( $row['DS_SERVICO'] );
+                $item->setDescricao( $descricao );
                 $item->setFuncionario( new funcionario() );
                 $item->getFuncionario()->setCdFuncionario( $row['CD_FUNC'] );
                 $item->getFuncionario()->setNmFuncionario( $row['NM_FUNC'] );

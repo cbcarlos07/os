@@ -52,7 +52,9 @@
   			<div class="content-box-large">
   				<div class="panel-heading">
 					<div class="panel-title">Meus chamados <button class="btn btn-default btn-limpar" title="Limpar pesquisa"><i class="fa fa-paint-brush" aria-hidden="true"></i></div>
+
 				</div>
+                <a href="#" id="sessao" onclick="atualizarAgora()" title="Clique para atualizar agora" style="margin-top: 20px;"></a>
   				<div class="panel-body">
 
                     <div class="col-lg-12" style="text-align: center">
@@ -95,6 +97,7 @@
                                 <th>CD OS</th>
                                 <th>PRIORIDADE</th>
                                 <th>SETOR</th>
+                                <th>RESPONS&Aacute;VEL</th>
                                 <th>SERVI&Ccedil;O</th>
                                 <th>DATA DA SOLIC.</th>
                                 <th>AGUARDANDO</th>

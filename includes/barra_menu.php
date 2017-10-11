@@ -22,73 +22,50 @@
             <li><a href="stats.html"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>-->
             <?php
              if( $_SESSION['sistema'] == 1 ){
-                 //fazem parte do setor de informática
-                 require_once "controller/class.os_controller.php";
-                 require_once "controller/class.itemSolicitacaoServico_Controller.php";
-                 $oc = new os_controller();
-                 $ic = new itemSolicitacaoServico_Controller();
-                 $total = $oc->get_total_chamados_aguardando();
-                 $totalServicos = $ic->getTotalMeusServicos( $_SESSION['funcionario'] );
-                 $totalChamados = $oc->getTotalMeusChamados( $_SESSION['usuario'] );
-              ?>
-                 <li><a href="solicitar.php"><i class="glyphicon glyphicon-record"></i>Solicitar</a></li>
 
-            <?php
-                if( $total > 0 ){
+                      ?>
+                     <li>
+                         <a href="solicitar.php">
+                             <i class="glyphicon glyphicon-record"></i>Solicitar
+                         </a>
+                     </li>
 
-             ?>
-                    <li class="noti"><a href="recebimentos.php"><i class="glyphicon glyphicon-pencil"></i><b>Recebimentos</b>
-                            <span class="num total-recebimentos" >
-                                <?= $total ?>
-                            </span></a></li>
-             <?php
-                }else{
-             ?>
-                    <li><a href="recebimentos.php"><i class="glyphicon glyphicon-pencil"></i>Recebimentos</a></li>
-             <?php
-                }
-            ?>
+                     <li class="rec">
+                         <a href="recebimentos.php">
+                             <i class="glyphicon glyphicon-pencil"></i>Recebimentos
+                                    <span class="num total-recebimentos" >
 
+                                    </span>
+                         </a>
+                     </li>
 
-                 <li><a href="cadastro.php"><i class="glyphicon glyphicon-edit"></i>Cadastrar Chamado</a></li>
+                     <li>
+                         <a href="cadastro.php">
+                           <i class="glyphicon glyphicon-edit"></i>Cadastrar Chamado
+                         </a>
+                     </li>
 
-             <?php
-               if( $totalChamados > 0 ){
-                ?>
-                   <li class="noti"><a href="meus.php"><i class="glyphicon glyphicon-tags" aria-hidden="true"></i></i>Meus Chamados
-                           <span class="num total-chamados" >
-                                <?= $totalChamados ?>
-                            </span>
-                       </a>
-                   </li>
-                <?php
-               }else{
-               ?>
-                   <li><a href="meus.php"><i class="glyphicon glyphicon-edit"></i>Meus Chamados</a></li>
-               <?php
-               }
-             ?>
+                     <li class="my">
+                         <a href="meus.php">
+                             <i class="glyphicon glyphicon-tags" aria-hidden="true"></i>Meus Chamados
+                                   <span class="num total-chamados" >
+
+                                    </span>
+                          </a>
+                       </li>
+
+                     <li class="serv">
+                         <a href="servico.php">
+                             <i class="glyphicon glyphicon-paperclip"></i>Meus Servicos
+                                  <span class="num total-servicos" >
+
+                                    </span>
+                         </a>
+                     </li>
 
 
-             <?php
-              if( $totalServicos > 0 ){
-                ?>
-                  <li class="noti"><a href="servico.php"><i class="glyphicon glyphicon-paperclip"></i>Meus Servicos
-                          <span class="num total-servicos" >
-                                <?= $totalServicos ?>
-                            </span></a>
-                  </li>
-              <?php
-              }
-              else{
-              ?>
-                  <li ><a href="servico.php"><i class="glyphicon glyphicon-paperclip"></i>Meus Servicos</a></li>
-              <?php
-              }
-             ?>
-
-                <!-- <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>-->
-            <?php
+                        <!-- <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>-->
+                    <?php
              }else{
                  //nao fazem parte do setor de informática
               ?>

@@ -11,9 +11,79 @@ $(document).ready(function () {
    carregarComboSetor();
    carregarTabela();
    loadTotal();
-   
+   startCountdown();
 });
 
+var tempo = new Number();
+// Tempo em segundos
+tempo = 30;
+
+var tempoPause = false;
+function startCountdown(){
+    //alert("Pause: "+tempoPause);
+    if( !tempoPause ){
+        // alert("Pause: "+tempoPause);
+        // Se o tempo não for zerado
+        if((tempo - 1) >= 0){
+
+            // Pega a parte inteira dos minutos
+            var min = parseInt(tempo/60);
+            // Calcula os segundos restantes
+            var seg = tempo%60;
+
+            var texto = " segundos para atualizar";
+            if( seg < 2 ){
+                texto = " segundo para atualizar";
+            }
+
+            // Formata o número menor que dez, ex: 08, 07, ...
+            if(min < 10){
+                min = "0"+min;
+                min = min.substr(0, 2);
+            }
+            if(seg <=9){
+                seg = "0"+seg;
+            }
+
+
+
+            // Cria a variável para formatar no estilo hora/cronômetro
+
+            horaImprimivel =  seg + texto;
+            //JQuery pra setar o valor
+            $("#sessao").html(horaImprimivel);
+
+            // Define que a função será executada novamente em 1000ms = 1 segundo
+            setTimeout('startCountdown()',1000);
+
+            // diminui o tempo
+            tempo--;
+
+
+
+            // Quando o contador chegar a zero faz esta ação
+        } else {
+            tempo = 30;
+            //window.open('../controllers/logout.php', '_self');
+            preencherTabela();
+
+            startCountdown();
+        }
+    }
+
+
+}
+
+// Chama a função ao carregar a tela
+
+
+function atualizarAgora() {
+    tempo = 30;
+    preencherTabela();
+    startCountdown()
+
+
+}
 
 
 $('#oficina').on('change', function(){
@@ -167,6 +237,8 @@ function carregarComboSetor(  ){
 }
 
 
+
+
   function preencherTabela(  ) {
       console.log("Era pra preencher tabela");
       var codigo      = $('#cdos').val();
@@ -207,6 +279,7 @@ function carregarComboSetor(  ){
                                "<td><a href='#'  onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
                                "<td>"+ j.prioridade + "</td>"+
                                "<td>"+ j.setor + "</td>"+
+                               "<td>"+ j.responsavel + "</td>"+
                                "<td>"+ j.servico + "</td>"+
                                "<td>"+ j.solicitacao + "</td>"+
                                "<td>"+ j.espera + "</td>"+
@@ -264,6 +337,7 @@ function carregarComboSetor(  ){
                                        "<td><a href='#'  onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
                                        "<td>"+ j.prioridade + "</td>"+
                                        "<td>"+ j.setor + "</td>"+
+                                       "<td>"+ j.responsavel + "</td>"+
                                        "<td>"+ j.servico + "</td>"+
                                        "<td>"+ j.solicitacao + "</td>"+
                                        "<td>"+ j.espera + "</td>"+
@@ -280,6 +354,9 @@ function carregarComboSetor(  ){
 			  
 		  } 
 	  });
+
+
+
   }
 
   function obterCodigoOs( id ){
@@ -310,4 +387,9 @@ function loadTotal(  ) {
     carregarTotalRecebimentos();
     carregarTotalMeusChamados( usuario );
     carregarTotalMeusServicos( funcion );
+
+
+    setTimeout( function(){
+        loadTotal();
+    },30000 );
 }

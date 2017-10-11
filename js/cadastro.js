@@ -1516,8 +1516,11 @@ dataFinal.on('blur', function () {
                     $.each( data.itens, function (i, j) {
                         console.log("Final:  "+j.final);
                         var string = j.descricao.split( "<br />" );
+                        var descricao = "";
+                        if( j.descricao != "" ){
+                            descricao = j.descricao.replace("#HIDE#","");
+                        }
 
-                        var descricao = j.descricao.replace("#HIDE#","");
                         var linha;
                         if( situacao != 'C'){
                             var cor = "";

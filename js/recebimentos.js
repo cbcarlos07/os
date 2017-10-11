@@ -4,8 +4,23 @@
 
 $(document).ready(function () {
    preencherTabela();
+   loadTotal();
 });
 
+
+
+function loadTotal(  ) {
+    var usuario = $('#usuario').val();
+    var funcion = $('#funcionario').val();
+    carregarTotalRecebimentos();
+    carregarTotalMeusChamados( usuario );
+    carregarTotalMeusServicos( funcion );
+
+    setTimeout( function(){
+        loadTotal();
+    },30000 );
+
+}
 
 function preencherTabela() {
     $.ajax({

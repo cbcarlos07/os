@@ -21,12 +21,19 @@ $(document).ready(function () {
 
 });
 
+
+
 function loadTotal(  ) {
     var usuario = $('#usuario').val();
     var funcion = $('#funcionario').val();
     carregarTotalRecebimentos();
     carregarTotalMeusChamados( usuario );
     carregarTotalMeusServicos( funcion );
+
+    setTimeout( function(){
+        loadTotal();
+    },30000 );
+
 }
 
 

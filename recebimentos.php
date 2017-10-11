@@ -6,7 +6,8 @@
    echo "<title>Ordem de Servi&ccedil;o - Recebimento de Chamado</title>";
    include "includes/head.php";
 
-
+   $usuario = $_SESSION['usuario'];
+   $funcionario = $_SESSION['funcionario'];
 
 
    ?>
@@ -42,7 +43,8 @@
   	<?php include "includes/cabecalho.php" ?>
 
 
-
+    <input type="hidden" id="usuario" value="<?= $usuario ?>">
+    <input type="hidden" id="funcionario" value="<?= $funcionario ?>">
 
     <div class="page-content">
     	<div class="row">

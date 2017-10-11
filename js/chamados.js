@@ -194,12 +194,18 @@ function atualizarStatus( situacao, cdos ) {
 
 }
 
+
 function loadTotal(  ) {
     var usuario = $('#usuario').val();
     var funcion = $('#funcionario').val();
     carregarTotalRecebimentos();
     carregarTotalMeusChamados( usuario );
     carregarTotalMeusServicos( funcion );
+
+    setTimeout( function(){
+        loadTotal();
+    },30000 );
+
 }
 
 function salvarItem( action ) {
@@ -630,7 +636,7 @@ $("#datai").datetimepicker({
 
            }
        });
-
+        loadTotal();
     });
 
 
@@ -1225,6 +1231,8 @@ function validaIntevaloTempo() {
                         var descricao = j.descricao;
                         if( descricao != "" ){
                             descricao = descricao.replace("#HIDE#","");
+                        }else{
+                            descricao = "";
                         }
                    //     console.log("Codigo do item: "+j.codigo);
                         var linha = "<tr>"
