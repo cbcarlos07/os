@@ -721,7 +721,8 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
                     "servico"     => $os->getDescricao(),
                     "responsavel" => $os->getResponsavel()->getCdUsuario(),
                     "solicitacao" => $os->getDataPedido(),
-                    "espera"      => $os->getPrevisao()
+                    "espera"      => $os->getPrevisao(),
+                    "situacao"    => $os->getSituacao()
                 );
             }
 

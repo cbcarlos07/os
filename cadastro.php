@@ -96,7 +96,15 @@
                           <div class="col-md-4">
                               <select  class="form-control"   tabindex="14" id="resp" data-placeholder="Selecione um funcion&aacute;rio"><option value="0"></option></select>
                           </div>
+                          <div class="form-group">
+                              <label for="dios" class="col-md-2 control-label" style="text-align: right">In&iacute;cio da OS</label>
+                              <div class="col-md-4">
+                                  <input id="dios" class="form-control" disabled>
+                              </div>
+
+                          </div>
                       </div>
+
                       <div class="row"></div>
                       <div class="form-group ">
                           <label for="servico" class="col-md-2 control-label" title="Tipo de Servi&ccedil;o">Servi&ccedil;o <span style="color: red;">*</span></label>
@@ -106,6 +114,7 @@
                               </select>
                           </div>
                       </div>
+
                       <div class="form-group col-lg-12"></div>
                       <div class="row"></div>
                       <div class="form-group col-lg-12">

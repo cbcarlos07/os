@@ -32,6 +32,9 @@
         case 'U':
             getListUsuarios();
             break;
+        case 'P':
+            verificarPapel( $usuario );
+            break;
     }
 
 
@@ -46,25 +49,34 @@
         require_once "../controller/class.os_controller.php";
         $usuarioController = new usuario_controller();
         $teste = $usuarioController->verificarLogin($usuario, $senha);
-        $osController = new os_controller();
-        $system = 0;
+       // $osController = new os_controller();
+       // $system = 0;
         session_start();
 
         if( $teste ==  1){
 
-            $sistema = $osController->verificaPapelUsuario( $usuario );
+          //  $sistema = $osController->verificaPapelUsuario( $usuario );
            // echo "Sistema: ".$sistema;
-            $system = $sistema;
+          //  $system = $sistema;
             $cdFunc = $usuarioController->getCodigoFuncionario( $usuario );
 
 
-            $_SESSION['sistema'] = $sistema;
+          //  $_SESSION['sistema'] = $sistema;
             $_SESSION['usuario'] = $usuario;
             $_SESSION['funcionario'] = $cdFunc;
 
         }
-        echo json_encode(array("sucesso" => $teste, "sistema" => $system ));
+        echo json_encode(array("sucesso" => $teste));
 
+    }
+
+    function verificarPapel( $usuario ){
+        require_once "../controller/class.os_controller.php";
+        $osController = new os_controller();
+
+        $usuarioDeTI = $osController->verificaPapelUsuario( $usuario );
+
+        echo json_encode( array("permissao" => $usuarioDeTI ) );
     }
 
     function logOff(){

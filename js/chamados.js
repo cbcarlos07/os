@@ -198,9 +198,7 @@ function atualizarStatus( situacao, cdos ) {
 function loadTotal(  ) {
     var usuario = $('#usuario').val();
     var funcion = $('#funcionario').val();
-    carregarTotalRecebimentos();
-    carregarTotalMeusChamados( usuario );
-    carregarTotalMeusServicos( funcion );
+    loadTotalMenu( usuario, funcion );
 
     setTimeout( function(){
         loadTotal();

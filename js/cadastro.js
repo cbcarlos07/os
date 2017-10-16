@@ -103,9 +103,11 @@ $('.btn-salvar-novo').on('click', function () {
 function loadTotal(  ) {
     var usuario = $('#usuario').val();
     var funcion = $('#funcionario').val();
-    carregarTotalRecebimentos();
-    carregarTotalMeusChamados( usuario );
-    carregarTotalMeusServicos( funcion );
+    loadTotalMenu( usuario, funcion );
+
+    setTimeout( function(){
+        loadTotal();
+    },30000 );
 }
 
 function salvarOs() {
@@ -438,6 +440,11 @@ function msgErroModal( msg ) {
         verificarCampo();
     });
 
+    $('#dataf').on('blur', function () {
+        console.log('data final');
+        verificarCampo();
+    });
+
 
 
     function buscarUltimoSolicitante() {
@@ -491,7 +498,6 @@ function   verifyField() {
                 btn.attr("title", "Pronto para salvar");
                 btnNovo.attr("title", "Pronto para salvar e continuar");
 
-            } else if (verificarData()) {
             } else if (verificarData()) {
                 boolServico = true;
 
@@ -1101,6 +1107,7 @@ function carregarComboSolicitante( soliciante ){
              $('#servico').val(0);
              $('#desc').val("");
              $('#snfeito').attr('checked',false);
+             $('#dios').val( $('#dataos').val() );
 
             /* $('#datai').val("");
              $('#dataf').val("");*/

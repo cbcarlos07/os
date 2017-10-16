@@ -5,7 +5,7 @@
     $hora =  date('H');
     $saudacao = "Bom dia, ";
 
-    if ( $hora > 12 ){
+    if ( $hora >= 12 ){
         $saudacao = "Boa tarde, ";
 
     }else if( $hora > 18 ){
@@ -20,7 +20,7 @@
             <div class="col-md-7">
                 <!-- Logo -->
                 <div class="logo">
-                    <h4><a href="#"  style="color: #ffffff"><?php echo $saudacao. $_SESSION['usuario']."!"; ?></a></h4>
+                    <h4><a href="#"  style="color: #ffffff"><span class="saudacao"><?php echo $saudacao ?></span><?php echo " ".$_SESSION['usuario']."!"; ?></a></h4>
                 </div>
             </div>
             <div class="col-md-3">

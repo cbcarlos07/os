@@ -359,15 +359,21 @@ $('#chk_sit').on('click', function () {
                 var tbody = $('#t-meus');
                 tbody.find('tr').remove();
                 $.each( data, function (i, j) {
+                    var cor = "";
+                    var title = "";
+                    if( j.situacao == 'C' ) {
+                        cor = "#B2EBF2";
+                        title = "Concluído";
+                    }
                     tbody.append(
-                        "<tr>"+
-                        "<td><a href='#'  onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
-                        "<td>"+ j.prioridade + "</td>"+
-                        "<td>"+ j.setor + "</td>"+
-                        "<td>"+ j.responsavel + "</td>"+
-                        "<td>"+ j.servico + "</td>"+
-                        "<td>"+ j.solicitacao + "</td>"+
-                        "<td>"+ j.espera + "</td>"+
+                        "<tr bgcolor='"+ cor +"'>"+
+                            "<td><a href='#' title='"+ title +"' onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
+                            "<td>"+ j.prioridade + "</td>"+
+                            "<td>"+ j.setor + "</td>"+
+                            "<td>"+ j.responsavel + "</td>"+
+                            "<td>"+ j.servico + "</td>"+
+                            "<td>"+ j.solicitacao + "</td>"+
+                            "<td>"+ j.espera + "</td>"+
                         "</tr>"
                     );
                 });
@@ -530,9 +536,7 @@ $('#chk_sit').on('click', function () {
 function loadTotal(  ) {
     var usuario = $('#usuario').val();
     var funcion = $('#funcionario').val();
-    carregarTotalRecebimentos();
-    carregarTotalMeusChamados( usuario );
-    carregarTotalMeusServicos( funcion );
+    loadTotalMenu( usuario, funcion );
 
 
     setTimeout( function(){

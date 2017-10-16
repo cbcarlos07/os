@@ -445,7 +445,7 @@ class os_dao
     public function verificaPapelUsuario( $usuario ){
         require_once "class.connection_factory.php";
         $con = new connection_factory();
-        $teste = false;
+        $teste = 0;
         $conn = $con->getConnection();
         $sql = "SELECT * FROM V_TI_PAPEL V WHERE V.USUARIO  = :LOGIN";
         /*$sql =   "SELECT UF.CD_OFICINA
@@ -468,7 +468,7 @@ class os_dao
             ocibindbyname( $stmt, ":LOGIN", $usuario );
             ociexecute( $stmt );
             if( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $teste = true;
+                $teste = 1;
             }
         } catch ( PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
@@ -1323,6 +1323,7 @@ class os_dao
                 $os->setDescricao( $servico );
                 $os->setDataPedido( $row['DT_PEDIDO'] );
                 $os->setPrevisao( $row['TIME_'] );
+                $os->setSituacao( $row['TP_SITUACAO'] );
                 $os_list->addOs( $os );
             }
         } catch ( PDOException $ex) {
