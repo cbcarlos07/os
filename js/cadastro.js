@@ -854,7 +854,7 @@ function carregarComboOficina( usuario ){
 
                 var option  = "<option value='"+ value.codigo +"'>"
                     + value.oficina
-                    +"</option> ";
+                    +"</option>";
 
                 oficina.append(option);
 
@@ -1541,12 +1541,14 @@ dataFinal.on('blur', function () {
                                         +"</tr> ";
                         }else{
                             linha = "<tr>"
+                                            +"  <td>" + j.codigo + "</td>"
                                             +"  <td>" + j.servico + "</td>"
                                             +"  <td>" + j.funcionario + "</td>"
                                             +"  <td>" + descricao + "</td>"
                                             +"  <td>" + j.inicio + "</td>"
                                             +"  <td>" + j.final + "</td>"
                                             +"  <td>" + j.tempo + "</td>"
+                                            +"  <td></td>"
                                 +"</tr> ";
                         }
 

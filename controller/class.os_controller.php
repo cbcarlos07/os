@@ -218,6 +218,13 @@ class os_controller
         return $teste;
     }
 
+    public function getListaMeusChamadosData( $variavel ){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getListaMeusChamadosData( $variavel );
+        return $teste;
+    }
+
     public function getListaMeusServicos( $variavel ){
         require_once '../dao/class.os_dao.php';
         $os_dao = new os_dao();

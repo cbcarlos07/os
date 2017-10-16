@@ -21,6 +21,9 @@ $(document).ready(function () {
 });
 
 
+
+
+
 function carregarTotalRecebimentos() {
 
     var total = $('span.total-recebimentos');

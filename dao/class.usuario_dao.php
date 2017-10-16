@@ -45,7 +45,7 @@ class usuario_dao
         $conn = new connection_factory();
         $conexao = $conn->getConnection();
         try {
-            $sql_text = "SELECT * FROM V_CARDAPIO_PAPEL V WHERE V.USUARIO  = :LOGIN";
+            $sql_text = "SELECT * FROM V_TI_PAPEL V WHERE V.USUARIO  = :LOGIN";
 
 
             $stmt =  oci_parse($conexao, $sql_text);

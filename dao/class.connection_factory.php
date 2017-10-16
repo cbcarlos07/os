@@ -16,6 +16,7 @@ define("DB_SML", getenv('DB_SML') );
 define("DB_SRVC_PRD", getenv('DB_SRVC_PRD') );
 define("DB_SRVC_SML", getenv('DB_SRVC_SML') );
 define("DB_URL_SML", getenv('DB_URL_SML') );
+define("DB_URL_PRD", getenv('DB_URL_PRD') );
 
 class connection_factory
 {

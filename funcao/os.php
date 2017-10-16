@@ -121,8 +121,11 @@ switch ( $acao ){
         case 'O':
             getOs( $cdos );
             break;
-         case 'P':
+        case 'P':
             getTotalAReceber(  );
+            break;
+        case 'Q':
+            getListaMeusChamadosData( $cdos, $oficina, $solicitante, $responsavel, $setor, $inicio, $fim );
             break;
         case 'S':
             getUltimaSolicitacao( $usuario );
@@ -688,6 +691,43 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
 			echo json_encode( $osArray );
 
     }
+
+        function getListaMeusChamadosData( $codigo, $oficina, $solicitante, $responsavel, $setor, $inicio, $fim ){
+            require_once "../controller/class.os_controller.php";
+            require_once "../services/class.os_list_iterator.php";
+            require_once "../beans/class.os.php";
+            $osController = new os_controller();
+
+            //	echo "1. Solicitante: ".$solicitante."<br>";
+            $dados['solicitante'] = $solicitante;
+            $dados['setor']       = $setor;
+            $dados['oficina']     = $oficina;
+            $dados['codigo']      = $codigo;
+            $dados['responsavel'] = $responsavel;
+            $dados['inicio']      = $inicio;
+            $dados['fim']         = $fim;
+
+            //echo "2. Solicitante: ".$dados['solicitante']."<br>";
+
+            $teste = $osController->getListaMeusChamadosData( $dados );
+            $os_list = new os_list_iterator( $teste );
+            $osArray = array();
+            while ( $os_list->hasNextOs() ){
+                $os = $os_list->getNextOs();
+                $osArray[] = array(
+                    "codigo"      => $os->getCdOs(),
+                    "prioridade"  => $os->getPrioridade(),
+                    "setor"       => $os->getSetor()->getNmSetor(),
+                    "servico"     => $os->getDescricao(),
+                    "responsavel" => $os->getResponsavel()->getCdUsuario(),
+                    "solicitacao" => $os->getDataPedido(),
+                    "espera"      => $os->getPrevisao()
+                );
+            }
+
+            echo json_encode( $osArray );
+
+        }
 
         function getListaMeusServicos( $codigo, $oficina, $solicitante, $responsavel, $setor ){
             require_once "../controller/class.os_controller.php";

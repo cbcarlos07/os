@@ -447,7 +447,8 @@ class os_dao
         $con = new connection_factory();
         $teste = false;
         $conn = $con->getConnection();
-        $sql =   "SELECT UF.CD_OFICINA
+        $sql = "SELECT * FROM V_TI_PAPEL V WHERE V.USUARIO  = :LOGIN";
+        /*$sql =   "SELECT UF.CD_OFICINA
                         ,A.DS_OFICINA 
                         ,U.NM_USUARIO
                         ,U.CD_USUARIO
@@ -461,10 +462,10 @@ class os_dao
                   AND U.CD_USUARIO NOT IN ('JACILENE.MELO','VICTOR.FARIAS','JACILENE.MELO','DBAMV','ZULEIDE.OLIVEIRA')
                   AND U.CD_USUARIO = :usuario
                   ORDER BY U.NM_USUARIO";
-
+*/
         try {
             $stmt = ociparse( $conn, $sql );
-            ocibindbyname( $stmt, ":usuario", $usuario );
+            ocibindbyname( $stmt, ":LOGIN", $usuario );
             ociexecute( $stmt );
             if( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
                 $teste = true;
@@ -1270,6 +1271,66 @@ class os_dao
         }
         return $os_list;
     }
+
+    public function getListaMeusChamadosData( $variavel ){
+        require_once "../includes/error.php";
+        require_once "class.connection_factory.php";
+        require_once "../services/class.os_list.php";
+        require_once "../beans/class.os.php";
+        require_once "../beans/class.oficina.php";
+        require_once "../beans/class.setor.php";
+        require_once "../beans/class.usuario.php";
+
+
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $os_list = new os_list();
+
+        try {
+            $sql = "SELECT * 
+                      FROM DBAMV.V_CHAMADOS_CONSULTA_TOTAL V
+                     WHERE  V.NM_SOLICITANTE LIKE :solicitante
+                        AND V.CD_SETOR       LIKE :setor
+                        AND V.CD_OFICINA     LIKE :oficina
+                        AND V.CD_OS          LIKE :codigo
+                        AND V.CD_RESPONSAVEL LIKE :responsavel
+                        AND TRUNC(TO_DATE(V.DT_PEDIDO, 'DD/MM/YYYY HH24:MI:SS')) BETWEEN :inicio AND :fim";
+            $stmt = oci_parse( $conn, $sql );
+            oci_bind_by_name( $stmt, "solicitante", $variavel['solicitante'] );
+            oci_bind_by_name( $stmt, "setor", $variavel['setor'] );
+            oci_bind_by_name( $stmt, "oficina", $variavel['oficina'] );
+            oci_bind_by_name( $stmt, "codigo", $variavel['codigo'] );
+            oci_bind_by_name( $stmt, "responsavel", $variavel['responsavel'] );
+            oci_bind_by_name( $stmt, "inicio", $variavel['inicio'] );
+            oci_bind_by_name( $stmt, "fim", $variavel['fim'] );
+
+            ociexecute( $stmt );
+            while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $os = new os();
+                $servico = "";
+                if( isset( $row['DS_SERVICO'] ) )
+                    $servico = $row['DS_SERVICO'];
+
+                $os->setCdOs( $row['CD_OS'] );
+                $os->setPrioridade( $row['PRIORIDADE'] );
+                $os->setOficina( new oficina() );
+                $os->setSolicitante( new usuario() );
+                $os->getSolicitante()->setCdUsuario( $row['NM_SOLICITANTE'] );
+                $os->setResponsavel( new usuario() );
+                $os->getResponsavel()->setCdUsuario( $row['CD_RESPONSAVEL'] );
+                $os->setSetor( new setor() );
+                $os->getSetor()->setNmSetor( $row['NM_SETOR'] );
+                $os->setDescricao( $servico );
+                $os->setDataPedido( $row['DT_PEDIDO'] );
+                $os->setPrevisao( $row['TIME_'] );
+                $os_list->addOs( $os );
+            }
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+        return $os_list;
+    }
+
 
     public function getTotalMeusChamados( $usuario ){
 
