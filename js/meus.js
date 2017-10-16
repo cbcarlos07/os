@@ -363,7 +363,7 @@ $('#chk_sit').on('click', function () {
                     var title = "";
                     if( j.situacao == 'C' ) {
                         cor = "#B2EBF2";
-                        title = "Concluído";
+                        title = "Conclu&iacute;do";
                     }
                     tbody.append(
                         "<tr bgcolor='"+ cor +"'>"+
