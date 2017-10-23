@@ -1,7 +1,7 @@
 /**
  * Created by carlos.bruno on 07/07/2017.
  */
-
+var enviar = false;
 $(document).ready(function () {
 
   var usuario = document.getElementById('usuario').value;
@@ -57,8 +57,8 @@ $('.btn-salvar').on('click', function () {
             acao = 'N';
         }
 
-        console.log("Solicitante: "+solicitante);
-        console.log("usuario: "+usuario);
+       // console.log("Solicitante: "+solicitante);
+       // console.log("usuario: "+usuario);
 
         $.ajax({
             type   : 'post',
@@ -284,8 +284,23 @@ function msgErro() {
 }
 
 
+$('#descricao').on('input', function () {
+    verificarCampo();
+    if( $(this).val().length > 0 ){
+        $(this).css( 'border-color', '' );
+    }
+});
+
+$('#observacao').on('input', function () {
+    verificarCampo();
+    if( $(this).val().length > 0 ){
+        $(this).css( 'border-color', '' );
+    }
+});
+
+
 function carregarTemplateNosCampos( codigo ) {
-       console.log("Codigo: "+codigo);
+     //  console.log("Codigo: "+codigo);
         $.ajax({
             url    : 'funcao/template.php',
             dataType : 'json',
@@ -454,21 +469,7 @@ function carregarTabela ( usuario ) {
 
 
 
-            function verificarCampo() {
 
-                var solicitante = document.getElementById('solicitante').value;
-                var descricao   = document.getElementById('descricao').value;
-                var observacao  = document.getElementById('observacao').value;
-
-                if( ( solicitante.trim() != "") && (descricao.trim() != "")&& ( observacao.trim() != "" ) ){
-
-                    $('.btn-salvar').removeClass('btn-danger');
-                    $('.btn-salvar').addClass('btn-primary');
-                    enviar = true;
-
-                }
-
-            }
 /*
 var codigoSetor = 0;
             $(".linha").on('click',function(e) {
@@ -521,6 +522,26 @@ var codigoSetor = 0;
     });
 
 }
+function verificarCampo() {
+
+    var solicitante = $('#solicitante').val();
+    var descricao   = $('#descricao').val();
+    var observacao  = document.getElementById('observacao').value;
+//    console.log("verificarCampo ");
+ //   console.log("Solicitante: "+solicitante);
+    if( ( solicitante != "") && (descricao.trim() != "")&& ( observacao.trim() != "" ) ){
+
+        $('.btn-salvar').removeClass('btn-danger');
+        $('.btn-salvar').addClass('btn-primary');
+        enviar = true;
+
+    }else{
+        $('.btn-salvar').removeClass('btn-primary');
+        $('.btn-salvar').addClass('btn-danger');
+        enviar = false;
+    }
+
+}
 
 function editar(codigoOs) {
     $.ajax({
@@ -548,6 +569,7 @@ function editar(codigoOs) {
 }
 
 
+$('')
 
 
 var eachRow = "";
@@ -595,7 +617,7 @@ function ver( codos ) {
 
                 tbody.append(eachRow);
             });
-            console.log(data.informacoes);
+          //  console.log(data.informacoes);
             if( data.informacoes != ""){
              //   console.log("Tipo de dado informaoces: "+ typeof data.informacoes );
 
@@ -723,7 +745,7 @@ function buscarLastSolicitante( usuario ) {
    // var solicitante = $('#usuario').val();
     //var solicitante = $('#solicitante').val();
 
-    console.log("Solicitante: "+usuario);
+  //  console.log("Solicitante: "+usuario);
   //  $('#usuario').val( usuario );
     carregarTabela( usuario );
     var cdsetor = 0;
@@ -767,7 +789,7 @@ function startCountdown(){
 
 $('#solicitante').on('change', function () {
       var value = $(this).chosen().val();
-      console.log( "Mudou: "+value );
+    //  console.log( "Mudou: "+value );
       buscarLastSolicitante( $(this).val() );
 });
 
@@ -939,7 +961,7 @@ function calcularHoras () {
         $( '#tempoMinuto' ).val( minStr );
         $( '#total' ).val( horas );
     }catch (err){
-        console.log("Erro: "+err.message);
+     //   console.log("Erro: "+err.message);
     }
 
 

@@ -22,7 +22,7 @@ $(document).ready(function () {
 
 
 function loadTotalMenu( usuario, funcion ) {
-    verificaPermissao( usuario );
+    //verificaPermissao( usuario );
     setTimeout(function () {
         carregarTotalRecebimentos();
         carregarTotalMeusChamados( usuario );
@@ -54,7 +54,7 @@ function atualizarSaudacao() {
     $('span.saudacao').text( msg );
     
 }
-
+/*
 function verificaPermissao( usuario ) {
 
     $.ajax({
@@ -89,9 +89,9 @@ function verificaPermissao( usuario ) {
             
         }
     });
-}
+}*/
 
-
+/*
 function usuarioSistema( sistema ) {
     var menu;
     if( sistema > 0 ){
@@ -131,7 +131,7 @@ function usuarioSistema( sistema ) {
 
     return menu;
 
-}
+}*/
 
 
 

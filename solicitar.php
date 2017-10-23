@@ -279,7 +279,7 @@
                       <div class="form-group ">
                           <label for="descricao" class="col-md-1 control-label">Descri&ccedil;&atilde;o</label>
                           <div class="col-md-8">
-                              <input type="text" class="form-control" id="descricao" placeholder="Ex.: Impressora com problema" onblur="verificarCampo()" tabindex="3" />
+                              <input type="text" class="form-control" id="descricao" placeholder="Ex.: Impressora com problema"  tabindex="3" />
                           </div>
                       </div>
                       <div class="form-group ">
@@ -293,7 +293,7 @@
                           <label for="observacao" class="col-md-1 control-label">Observa&ccedil;&atilde;o</label>
                           <div class="col-md-11">
                               <textarea tabindex="5" id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)
-Meu IP: 192.168.1.1" onkeydown="verificarCampo()"></textarea>
+Meu IP: 192.168.1.1" ></textarea>
                           </div>
                       </div>
                       <br>
@@ -351,48 +351,7 @@ Meu IP: 192.168.1.1" onkeydown="verificarCampo()"></textarea>
           $('#solicitante').chosen( {allow_single_deselect: true} );
       </script>
     <script src="js/solicitar.js"></script>
-      <script>
-          var enviar = false;
 
-
-
-          function verificarCampo() {
-
-              var solicitante = document.getElementById('solicitante').value;
-              var descricao   = document.getElementById('descricao').value;
-              var observacao  = document.getElementById('observacao').value;
-              var setor       = document.getElementById('setor').value;
-
-              if( ( solicitante.trim() != "") && (descricao.trim() != "") && ( observacao.trim() != "" ) && setor != 0 ){
-
-
-
-                  $('.btn-salvar').removeClass('btn-danger');
-                  $('.btn-salvar').addClass('btn-primary');
-                  enviar = true;
-
-              }else{
-                  if( solicitante.trim() == "" ){
-                      //console.log("campo solicitante está vazio");
-                  }
-
-                  if( descricao.trim() == "" ){
-                   //   console.log("campo descricao está vazio");
-                  }
-
-                  if( observacao.trim() == "" ){
-                     // console.log("campo observacao está vazio");
-                  }
-
-                  if( observacao.trim() == 0 ){
-                     // console.log("Falta escolher um setor");
-                  }
-
-              }
-
-          }
-
-      </script>
 
 
 

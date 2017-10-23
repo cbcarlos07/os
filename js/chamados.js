@@ -89,7 +89,7 @@ function salvarOs() {
     var resolucao    =  $('#resolucao').val();
     var oficina      =  $('#oficina').val();
 
-    console.log("Codigo da Os: "+cdOs);
+  //  console.log("Codigo da Os: "+cdOs);
     $.ajax({
        type      :  'post',
        dataType  :  'json',
@@ -478,7 +478,7 @@ function msgErro() {
        verificarCampoChamado();
     });
 
-    $('#observacao').on('keydown', function () {
+    $('#observacao').on('input', function () {
        verificarCampoChamado();
     });
 
@@ -489,6 +489,7 @@ function msgErro() {
         var observacao  =    $('#observacao').val();
         var btn = $('.btn-servico');
         var btnSalvar = $('.btn-salvar');
+     //   console.log( 'observacao: '+observacao );
         if( ( setor != 0) && ( descricao != "" ) && ( observacao != "" ) && ( responsavel != 0 ) ){
             boolNovoServico = true;
             btnSalvar.removeClass('btn-danger');
@@ -600,7 +601,7 @@ $("#datai").datetimepicker({
       $('.alerta-modal').fadeOut();
 
        var _cdOs = $('#cdos').val();
-       console.log("Codigo: "+_cdOs);
+     //  console.log("Codigo: "+_cdOs);
        $.ajax({
            url   : 'funcao/os.php',
            type  : 'post',
@@ -639,7 +640,7 @@ $("#datai").datetimepicker({
 
 
 function carregarComboSetor( cdsetor ){
-    console.log("Combo setor: "+cdsetor);
+   // console.log("Combo setor: "+cdsetor);
     var setor = $('#setor');
     setor.find('option').remove();
     $.ajax({
@@ -1038,7 +1039,7 @@ dataFinal.on('blur', function () {
            $('#tempoMinuto').val( minStr );
            $('#total').val( horas );
        }catch (err){
-           console.log("Erro: "+err.message);
+         //  console.log("Erro: "+err.message);
        }
 
 
@@ -1196,12 +1197,12 @@ function validaIntevaloTempo() {
     if(vDataFinal < vDataInicial){
         //  chamarModal('Atenção!','A data inicial não pode ser maior ou igual a data final',2 );
 
-        console.log("Data é menor ");
+      //  console.log("Data é menor ");
 
         return false;
     }
     else{
-        console.log("Data é maior ou igual");
+      //  console.log("Data é maior ou igual");
         return true;
     }
 
@@ -1276,7 +1277,7 @@ function validaIntevaloTempo() {
 
                     if( hide != "" ){
                         var enc = hide.indexOf("#HIDE#");
-                        console.log("Hide? "+enc);
+                    //    console.log("Hide? "+enc);
                         if( enc === 0 ){
                             hide = hide.replace("#HIDE#","");
                             $('#snvisualiza').attr('checked','checked');

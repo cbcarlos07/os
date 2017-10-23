@@ -200,11 +200,7 @@
     	<div class="row">
 		  <?php include "includes/barra_menu.php"?>
 		  <div class="col-md-8 " style="background: #ffffff">
-              <div class="form-group col-md-5 btn-acoes">
-                  <label for="inputEmail3" class="col-md-3 control-label"></label>
-                  <button class="btn btn-primary btn-salvar" ><i class="fa fa-save"></i></button>
-                  <button class="btn btn-primary btn-limpar" ><i class="fa fa-paint-brush"></i></button>
-              </div>
+
               <div class="col-md-11">
                   <form class="formulario">
 
@@ -303,7 +299,7 @@
                       <div class="form-group ">
                           <label for="observacao" class="col-md-1 control-label">Observa&ccedil;&atilde;o<span style="color: red">*</span></label>
                           <div class="col-md-11">
-                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)" disabled></textarea>
+                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)" ></textarea>
                           </div>
                       </div>
                       <div class="col-md-12"></div>
@@ -343,7 +339,11 @@
                       <br>
                   </form>
               </div>
-
+              <div class="form-group col-md-5 btn-acoes">
+                  <label for="inputEmail3" class="col-md-3 control-label"></label>
+                  <button class="btn btn-primary btn-salvar" ><i class="fa fa-save"></i></button>
+                  <button class="btn btn-primary btn-limpar" ><i class="fa fa-paint-brush"></i></button>
+              </div>
               <div class="col-md-10">
 
                   Servi&ccedil;o <button class="btn-xs btn btn-danger btn-servico" title="Adicionar servi&ccedil;o" ><i class="fa fa-plus"></i></button>

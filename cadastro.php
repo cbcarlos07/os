@@ -328,7 +328,7 @@
 				<div class="form-group col-md-5 btn-acoes">
                   <label for="inputEmail3" class="col-md-3 control-label"></label>
                   <button class="btn btn-primary btn-salvar" ><i class="fa fa-save"></i></button>
-                  <button class="btn btn-primary btn-limpar" ><i class="fa fa-paint-brush"></i></button>
+                  <button class="btn btn-primary btn-limpar" title="Limpar campos" ><i class="fa fa-paint-brush"></i></button>
                   <button class="btn btn-primary btn-pesquisar" title="Pesquisar por c&oacute;digo"><i class="fa fa-search"></i></button>
               </div>
               <div class="col-md-10">

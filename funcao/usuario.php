@@ -49,19 +49,19 @@
         require_once "../controller/class.os_controller.php";
         $usuarioController = new usuario_controller();
         $teste = $usuarioController->verificarLogin($usuario, $senha);
-       // $osController = new os_controller();
+        $osController = new os_controller();
        // $system = 0;
         session_start();
 
         if( $teste ==  1){
 
-          //  $sistema = $osController->verificaPapelUsuario( $usuario );
+            $sistema = $osController->verificaPapelUsuario( $usuario );
            // echo "Sistema: ".$sistema;
           //  $system = $sistema;
             $cdFunc = $usuarioController->getCodigoFuncionario( $usuario );
 
 
-          //  $_SESSION['sistema'] = $sistema;
+            $_SESSION['sistema'] = $sistema;
             $_SESSION['usuario'] = $usuario;
             $_SESSION['funcionario'] = $cdFunc;
 
