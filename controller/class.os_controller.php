@@ -252,4 +252,19 @@ class os_controller
         $teste = $os_dao->getTotalMeusChamados( $usuario );
         return $teste;
     }
+
+    public function inserirAnexo( $values ){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->inserirAnexo( $values );
+        return $teste;
+    }
+
+    public function getByPlaqueta( $plaqueta ){
+
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getByPlaqueta( $plaqueta );
+        return $teste;
+    }
 }

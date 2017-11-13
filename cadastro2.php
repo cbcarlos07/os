@@ -198,7 +198,10 @@
                       <input type="hidden"  id="cdsetor" />
                       <input type="hidden" value="<?php echo $usuario ; ?>" id="usuario" />
                       <input type="hidden" value="<?php echo $funcionario ; ?>" id="funcionario" />
+                      <input type="hidden" value="2" id="tipoos" />
+                      <input type="hidden" value="8" id="motivo" />
                       <input type="hidden" value="" id="bem" />
+                      <input type="hidden" value="" id="localidade" />
                       <div class="col-md-12"></div>
 
 
@@ -238,7 +241,7 @@
                       <div class="form-group ">
                           <label for="setor" class="col-md-1 control-label">Setor<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select  class="form-control"  data-placeholder="Selecione o Setor" tabindex="3" id="setor" >
+                              <select  class="form-control"  data-placeholder="Selecione o Setor"  id="setor" >
                                   <option value="0"></option></select>
                           </div>
                       </div>
@@ -248,17 +251,15 @@
 
 
                       <div class="form-group ">
-                          <label for="tipoos" class="col-md-1 control-label">Tipo OS</label>
-                          <div class="col-md-3">
-                              <select  class="form-control"  tabindex="4" id="tipoos" data-placeholder="Selecione o tipo de OS">
-                                  <option value="0"></option></select>
+                          <label for="plaqueta" class="col-md-1 control-label">Plaqueta</label>
+                          <div class="col-md-2">
+                              <input id="plaqueta" placeholder="000000" class="form-control" tabindex="3">
                           </div>
                       </div>
-
                       <div class="form-group ">
-                          <label for="motivo" class="col-md-1 control-label">Motivo</label>
-                          <div class="col-md-3">
-                              <select  class="form-control"  data-placeholder="Selecione o Motivo" tabindex="5" id="motivo" ><option value="%"></option></select></select>
+                          <label for="descbem" class="col-md-1 control-label">Plaqueta</label>
+                          <div class="col-md-4">
+                              <input id="descbem" placeholder="Descri&ccedil;&atilde;o do bem" class="form-control" >
                           </div>
                       </div>
 
@@ -266,7 +267,7 @@
                       <div class="form-group ">
                           <label for="oficina" class="col-md-1 control-label">Oficina</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="6" id="oficina" data-placeholder="Selecione" >
+                              <select  class="form-control"  tabindex="4" id="oficina" data-placeholder="Selecione" >
                                   <option value="0"></option></select>
                           </div>
                       </div>
@@ -275,27 +276,27 @@
                       <div class="form-group ">
                           <label for="descricao" class="col-md-1 control-label">Descri&ccedil;&atilde;o</label>
                           <div class="col-md-8">
-                              <input type="text" class="form-control" id="descricao" tabindex="7" placeholder="Ex.: Impressora com problema"  />
+                              <input type="text" class="form-control" id="descricao" tabindex="5" placeholder="Ex.: Impressora com problema"  />
                           </div>
                       </div>
                       <div class="form-group ">
                           <label for="ramal" class="col-md-1 control-label">Ramal</label>
                           <div class="col-md-2">
-                              <input type="text" class="form-control" id="ramal" placeholder="1404"  tabindex="8"/>
+                              <input type="text" class="form-control" id="ramal" placeholder="1404"  tabindex="6"/>
                           </div>
                       </div>
                       <div class="col-md-12"></div>
                       <div class="form-group ">
                           <label for="observacao" class="col-md-1 control-label">Observa&ccedil;&atilde;o<span style="color: red">*</span></label>
                           <div class="col-md-11">
-                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)" tabindex="9"></textarea>
+                              <textarea id="observacao" class="form-control" placeholder="Ex.: Impressora apresentando uma mensagem REPLACE TONER com uma luz vermelha intermitente (piscando)" tabindex="7"></textarea>
                           </div>
                       </div>
                       <div class="col-md-12"></div>
                       <div class="form-group ">
                           <label for="responsavel" class="col-md-1 control-label" title="Respons&aacute;vel">Respons&aacute;vel<span style="color: red">*</span></label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="10" id="responsavel" data-placeholder="Selecione" >
+                              <select  class="form-control"  tabindex="8" id="responsavel" data-placeholder="Selecione" >
                                   <option value="%"></option></select>
                           </div>
                       </div>
@@ -303,7 +304,7 @@
                       <div class="form-group ">
                           <label for="status" class="col-md-1 control-label">Status</label>
                           <div class="col-md-3">
-                              <select  class="form-control"  tabindex="11" id="status" >
+                              <select  class="form-control"  tabindex="9" id="status" >
                                   <option value="A">Aberto</option>
                                   <option value="C">Conclu&iacute;do</option>
                                   <option value="N">N&atilde;o Atendido</option>
@@ -320,7 +321,7 @@
                       <div class="form-group ">
                           <label for="resolucao" class="col-md-1 control-label" title="Resolu&ccedil;&atilde;o Final">Res. Final</label>
                           <div class="col-md-3">
-                              <input type="text" class="form-control" id="resolucao" placeholder="Ex.: Atendimento finalizado com sucesso" tabindex="12">
+                              <input type="text" class="form-control" id="resolucao" placeholder="Ex.: Atendimento finalizado com sucesso" tabindex="10">
                           </div>
                       </div>
 
@@ -429,17 +430,25 @@
     <script src="js/jquery.datetimepicker.full.js"></script>
     <script src="js/chosen.jquery.js"></script>
     <script src="js/bootstrap.fd.js"></script>
-    <script src="js/cadastro.js"></script>
+    <script src="js/cadastro2.js"></script>
     <script>
           $('#solicitante').chosen( {
               allow_single_deselect: true,
               search_contains: true,
               no_results_text: "Nenhum resultado enontrado!"
           } );
-          $('#setor').chosen( {allow_single_deselect: true} );
-          $('#tipoos').chosen( {allow_single_deselect: true} );
-          $('#motivo').chosen( {allow_single_deselect: true} );
-          $('#oficina').chosen( {allow_single_deselect: true} );
+          $('#setor').chosen( {
+              allow_single_deselect: true,
+              search_contains: true,
+              no_results_text: "Nenhum resultado enontrado!"
+          } );
+          $('#oficina').chosen(
+              {
+                  allow_single_deselect: true,
+                  search_contains: true,
+                  no_results_text: "Nenhum resultado enontrado!"
+              }
+          );
           $('#responsavel').chosen( {allow_single_deselect: true} );
           $('#status').chosen( {allow_single_deselect: true} );
           $('.modal-servico').on('shown.bs.modal', function () {

@@ -468,7 +468,7 @@ class os_dao
             ocibindbyname( $stmt, ":LOGIN", $usuario );
             ociexecute( $stmt );
             if( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $teste = 1;
+                $teste = $row['PAPEL'];
             }
         } catch ( PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
@@ -633,12 +633,13 @@ class os_dao
                   SN_SOL_EXTERNA,  SN_ORDEM_SERVICO_PRINCIPAL, 
                   SN_PACIENTE, TP_PRIORIDADE, SN_RECEBIDA,  SN_ETIQUETA_IMPRESSA,
                   SN_EMAIL_ENVIADO, TP_CLASSIFICACAO, CD_ESPEC, DS_RAMAL, TP_LOCAL
+                  ,CD_BEM, CD_LOCALIDADE
                  )
                  VALUES 
                 ( :codigo, TO_DATE(:pedido, 'DD/MM/YYYY HH24:MI' ), TO_DATE(:entrega, 'DD/MM/YYYY HH24:MI' ), :solicitante,:setor, 
                   :tipoos, :motserv, :oficina, :servico, :observacao,
                   :responsavel, :situacao, :resolucao, 1, :usuario, SYSDATE, 'S', 'S',
-                 'N', 'E', 'S', 'N', 'N', 'P', 31, :ramal, 'I')";
+                 'N', 'E', 'S', 'N', 'N', 'P', 31, :ramal, 'I', :bem, :localidade)";
 
         try {
 
@@ -658,7 +659,12 @@ class os_dao
             $resolucao    = $os->getResolucao();
             $usuario      = $os->getUsuario()->getCdUsuario();
             $ramal        = $os->getDsRamal();
+            $bem          = $os->getBem()->getCodBem();
+            $localidade   = $os->getLocalidade();
 
+            /*echo "OS DAO Bem: $bem \n";
+            echo "OS DAO localidade: $localidade \n";
+            echo "OS DAO tipo os: $tipoOs";*/
             ocibindbyname( $stmt, ":codigo", $codigo );
             ocibindbyname( $stmt, ":pedido", $dataPedido );
             ocibindbyname( $stmt, ":entrega", $dataEntrega );
@@ -674,6 +680,8 @@ class os_dao
             ocibindbyname( $stmt, ":resolucao", $resolucao);
             ocibindbyname( $stmt, ":usuario", $usuario );
             ocibindbyname( $stmt, ":ramal", $ramal );
+            ocibindbyname( $stmt, ":bem", $bem );
+            ocibindbyname( $stmt, ":localidade", $localidade );
 
 
             $retorno = $codigo;
@@ -1447,6 +1455,72 @@ class os_dao
 
         return $list;
     }
+
+    public function getByPlaqueta( $plaqueta ){
+        require_once "class.connection_factory.php";
+        require_once "../beans/class.os.php";
+        require_once "../beans/class.bens.php";
+        require_once "../beans/class.setor.php";
+
+        $bem = null;
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+
+      //  echo "Plaqueta: ".$plaqueta." \n ";
+        $sql =   "SELECT * FROM BENS B WHERE B.NR_SERIE = :plaqueta ";
+
+        try {
+            $stmt = oci_parse( $conn, $sql );
+            oci_bind_by_name( $stmt, ":plaqueta", $plaqueta );
+            oci_execute( $stmt );
+            if( $row = oci_fetch_array( $stmt, OCI_ASSOC )){
+                $bem = new bens();
+                $bem->setCodBem( $row['CD_BEM'] );
+                $bem->setSetor( new setor() );
+                $bem->getSetor()->setCdSetor( $row['CD_SETOR']);
+                $bem->setLocalidade( $row['CD_LOCALIDADE']);
+                $bem->setDescBem( $row['DS_BEM']);
+
+
+            }
+            $con->closeConnection( $conn );
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+
+        return $bem;
+    }
+
+    public function inserirAnexo( $values ){
+        require_once "class.connection_factory.php";
+        $con  = new connection_factory();
+        $conn = $con->getConnection();
+        $retorno = false;
+      //  echo "File: ".$values[2]." \n <br>";
+        $sql = "INSERT INTO SOLICITACAO_SERVICO_DOC VALUES (:p0,SEQ_SOLICITACAO_SERVICO_DOC.NEXTVAL,:p1, EMPTY_BLOB())
+                 RETURNING LO_ANEXO_SOLICITACAO INTO :p2";
+
+
+        try{
+            $lob = oci_new_descriptor( $conn, OCI_D_LOB );
+            $stmt = ociparse( $conn,$sql );
+            oci_bind_by_name( $stmt, ":p0", $values[0] );
+            oci_bind_by_name( $stmt, ":p1", $values[1] );
+            oci_bind_by_name( $stmt, ":p2", $lob, -1, OCI_B_BLOB );
+            $retorno = oci_execute( $stmt, OCI_NO_AUTO_COMMIT ); //NAO COMITAR PARA LOB->SAVE() FUNCIONAR
+
+            $lob->save( $values[2] );
+            oci_commit( $conn );
+            $lob->close();
+
+        }catch (PDOException $e){
+            echo "Erro: ".$e->getMessage();
+        }
+
+        return $retorno;
+
+    }
+
 
 
 }

@@ -117,8 +117,8 @@ function salvarOs() {
     var previsao     =  $('#previsao').val();
     var solicitante  =  $('#solicitante').val();
     var setor        =  $('#setor').val();
-    var tipoos       =  $('#tipoos').val();
-    var motivo       =  $('#motivo').val();
+    var tipoos       =  2;
+    var motivo       =  8;
     var descricao    =  $('#descricao').val();
     var observacao   =  $('#observacao').val();
     var responsavel  =  $('#responsavel').val();
@@ -126,6 +126,8 @@ function salvarOs() {
     var resolucao    =  $('#resolucao').val();
     var oficina      =  $('#oficina').val();
     var usuario      =  $('#usuario').val();
+    var bem          =  $('#bem').val();
+    var localidade   =  $('#localidade').val();
     var acao = "I";
     var codOs = 0;
     if( cdOs > 0 ){
@@ -134,6 +136,9 @@ function salvarOs() {
     }else{
 
     }
+
+    /*console.log('Tipo os: '+tipoos);
+    console.log('Usuario : '+usuario);*/
     //console.log("Codigo da Os: "+cdOs);
     $.ajax({
        type      :  'post',
@@ -155,7 +160,9 @@ function salvarOs() {
            resolucao   : resolucao,
            oficina     : oficina,
            usuario     : usuario,
-           acao        : acao
+           acao        : acao,
+           bem         : bem,
+           localidade  : localidade
        },
         success : function (data) {
           // console.log("Retorno: "+data.sucesso);
@@ -201,6 +208,7 @@ function saveOs( saveItem, action ) {
     var oficina      =  $('#oficina').val();
     var usuario      =  $('#usuario').val();
     var bem          =  $('#bem').val();
+    var localidade   =  $('#localidade').val();
     var acao = "I";
     var codOs = 0;
     if( cdOs > 0 ){
@@ -230,8 +238,10 @@ function saveOs( saveItem, action ) {
             resolucao   : resolucao,
             oficina     : oficina,
             usuario     : usuario,
+            bem         : bem,
             acao        : acao,
-            bem         : bem
+            localidade  : localidade
+
         },
         success : function (data) {
             // console.log("Retorno: "+data.sucesso);
@@ -579,12 +589,41 @@ function   verifyField() {
           //  console.log("Solicitante maior do que zero");
             $("#solicitante_chosen").removeClass("required");
             verificarCampoChamado();
-            buscarUltimoSolicitante();
+           // buscarUltimoSolicitante();
         }
 
-
-
     });
+
+    $('#plaqueta').on('focusout', function () {
+        var plaqueta = $(this).val();
+        if( plaqueta != "" ){
+             getSetor( plaqueta );
+        }
+    });
+
+    function getSetor( plaqueta ) {
+        
+        $.ajax({
+            url :     'funcao/os.php',
+            type:     'post',
+            dataType: 'json',
+            data :{
+                acao : 'X',
+                plaqueta : plaqueta
+            },
+            success : function (data) {
+                console.log('Plaqueta Setor: :'+data.setor);
+                var setor = $('#setor');
+                $('#bem').val( data.codigo );
+                $('#descbem').val( data.descricao );
+                $('#localidade').val( data.localidade );
+                $('#setor').val( data.setor ).trigger("chosen:updated");
+
+            }
+            
+        });
+        
+    }
 
 $('#oficina').on('change', function () {
     //console.log("Solicitante mudou: "+$(this).val());
@@ -642,7 +681,7 @@ $('#oficina').on('change', function () {
         var btnSalvar = $('.btn-salvar');
        /// console.log("setor: "+setor);
         if( ( setor != 0) && ( descricao != "" ) && ( observacao != "" ) && ( responsavel != 0 ) && ( solicitante != 0 )
-            && ( tipoos != 0 ) && ( oficina != 0 )
+            && ( oficina != 0 )
           ){
             boolNovoServico = true;
             btnSalvar.removeClass('btn-danger');
@@ -1191,7 +1230,7 @@ function validarCamposChamado() {
         var tipoos      =    $('#tipoos').val();
         var oficina     =    $('#oficina').val();
 
-        if( ( setor == 0) || ( descricao == "" ) || ( observacao == "" ) || ( responsavel == 0 ) || ( solicitante == 0 ) || ( tipoos == 0 ) || ( oficina == 0 ) ){
+        if( ( setor == 0) || ( descricao == "" ) || ( observacao == "" ) || ( responsavel == 0 ) || ( solicitante == 0 ) || ( oficina == 0 ) ){
             if( setor == 0 ){
                 $('select[id="setor"]').css('border-color', 'red');
                 $('select[id="setor"]').addClass('errorCampo');
@@ -1218,20 +1257,7 @@ function validarCamposChamado() {
 
             }
 
-            if( tipoos == 0 ){
-             //   console.log("solicitante: "+solicitante);
 
-
-                $("#tipoos_chosen").addClass("required");
-                $('#tipoos').trigger('chosen:activate');
-
-                chamarTooltip( "tipoos_chosen" );
-
-
-                //  $('select[id="solicitante"]').css("display","none");
-
-
-            }
 
             if( oficina == 0 ){
               //  console.log("solicitante: "+solicitante);

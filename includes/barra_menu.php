@@ -18,7 +18,7 @@
         <ul class="nav permissao">
 
             <?php
-            if( $_SESSION['sistema'] == 1 ){
+            if( $_SESSION['sistema'] > 0 ){
 
                 ?>
                 <li>
@@ -59,6 +59,19 @@
                                     </span>
                     </a>
                 </li>
+             <?php
+                if ( $_SESSION['sistema'] == 201 ) {
+
+
+                    ?>
+                    <li class="bem">
+                        <a href="cadastro2.php">
+                            <i class="glyphicon glyphicon-edit"></i>Cadastrar Chamado
+                        </a>
+                    </li>
+                    <?php
+                }
+                    ?>
 
 
                 <!-- <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>-->

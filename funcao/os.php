@@ -24,6 +24,12 @@
     $inicio     = 0;
     $fim        = 0;
     $ramal      = "";
+    $anexo      = "";
+    $file       = "";
+    $plaqueta   = "";
+    $bem        = "";
+    $localidade = "";
+
     if( isset($_POST['usuario']) )
         $usuario = $_POST['usuario'];
 
@@ -75,16 +81,30 @@
     if( isset( $_POST['fim'] ) )
         $fim = $_POST['fim'];
 
+    if( isset( $_POST['anexo'] ) )
+        $anexo = $_POST['anexo'];
+
+    if( isset( $_POST['file'] ) )
+        $file = $_POST['file'];
+
+    if( isset( $_POST['plaqueta'] ) )
+        $plaqueta = $_POST['plaqueta'];
+
+    if( isset( $_POST['bem'] ) )
+        $bem = $_POST['bem'];
+
+    if( isset( $_POST['localidade'] ) )
+        $localidade = $_POST['localidade'];
 
 
 
 switch ( $acao ){
         case 'A':
-              chamados_abertos();
-              break;
+            chamados_abertos();
+            break;
         case 'B':
-              update_situacao( $status, $cdos );
-              break;
+            update_situacao( $status, $cdos );
+            break;
         case 'C':
             update_chamado( $cdos, $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $ramal );
             break;
@@ -104,7 +124,7 @@ switch ( $acao ){
             getTotalMeusChamados( $responsavel );
             break;
         case 'I':
-            insert_chamado( $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $usuario, $ramal );
+            insert_chamado( $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $usuario, $ramal, $bem, $localidade );
             break;
         case 'J':
             getListServicoInf( $cdos );
@@ -132,6 +152,12 @@ switch ( $acao ){
             break;
         case 'U':
             update_solicitacao( $cdos, $solicitante, $setor, $descricao, $observacao, $ramal );
+            break;
+        case 'V':
+             inserirAnexo( $cdos, $anexo );
+             break;
+        case 'X':
+            getSetorByPlaqueta( $plaqueta );
             break;
 }
 
@@ -455,7 +481,7 @@ function update_chamado ( $codigo, $pedido, $previsao, $solicitante, $setor, $de
 }
 
 
-function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $usuario, $ramal ){
+function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $usuario, $ramal, $bem, $localidade ){
     require_once "../controller/class.os_controller.php";
     require_once "../beans/class.os.php";
     require_once "../beans/class.usuario.php";
@@ -464,6 +490,7 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
     require_once "../beans/class.manuEspec.php";
     require_once "../beans/class.tipo_os.php";
     require_once "../beans/class.motServ.php";
+    require_once "../beans/class.bens.php";
 
     $osController = new os_controller();
     $ordem = new os();
@@ -484,6 +511,7 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
     $ordem->setEspecialidade( new manuEspec() );
     $ordem->getEspecialidade()->setCdEspec( 31 );
     $ordem->setTipoOs( new tipo_os() );
+    //echo "CdTipo os: $tipoos";
     $ordem->getTipoOs()->setCdTipoOs( $tipoos );
     $ordem->setMotServ( new motServ() );
     $ordem->getMotServ()->setCdMotServ( $motivo );
@@ -491,6 +519,9 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
     $ordem->getUsuario()->setCdUsuario( $usuario );
     $ordem->setPrioridade( 'E' );
     $ordem->setDsRamal( $ramal );
+    $ordem->setBem( new bens() );
+    $ordem->getBem()->setCodBem( $bem );
+    $ordem->setLocalidade( $localidade );
 
 
 
@@ -792,6 +823,95 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
             echo json_encode( array( "meuschamados" => $teste ) );
 
         }
+
+         function inserirAnexo( $cdOs, $dsAnexo){
+             require_once "../controller/class.os_controller.php";
+             $osController = new os_controller();
+
+
+             //echo "2. Solicitante: ".$dados['solicitante']."<br>";
+
+             $arr = json_decode( $dsAnexo );
+             $teste = false;
+             $i = 0;
+            // var_dump( $arr );
+             foreach ( $arr as $item => $iten ){
+
+
+                 $i++;
+                // echo $iten->name." \n <br>";
+               //  echo $iten->file." \n <br>";
+                 $values[0] = $cdOs;
+                 $values[1] = $iten->name;
+                 $values[2] = $iten->file->content ;
+
+
+                $imagem = base64_to_jpeg( $iten->file->content,  'saida.'.getB64Type( $iten->file->content ));
+
+                 $tamanhoImg = filesize($imagem);
+                 $mysqlImg = addslashes(fread(fopen($imagem, "r"), $tamanhoImg));
+
+                // unlink($imagem);
+
+                 $values[2] = file_get_contents( $imagem );
+
+                 $teste = $osController->inserirAnexo( $values );
+                 echo "Imagem: ".$iten->file->content;
+             }
+
+
+
+
+             if( $teste ){
+                 echo json_encode( array( "anexo" => $teste ) );
+             }else{
+                 echo json_encode( array( "anexo" => 0 ) );
+             }
+
+         }
+
+
+            function base64_to_jpeg($base64_string, $output_file) {
+                // open the output file for writing
+                $ifp = fopen( $output_file, 'wb' );
+
+                // split the string on commas
+                // $data[ 0 ] == "data:image/png;base64"
+                // $data[ 1 ] == <actual base64 string>
+                $data = explode( ',', $base64_string );
+
+                // we could add validation here with ensuring count( $data ) > 1
+                fwrite( $ifp, base64_decode( $data[ 1 ] ) );
+
+                // clean up the file resource
+                fclose( $ifp );
+
+                return $output_file;
+            }
+
+            function getB64Type($str) {
+                return substr($str, 11, strpos($str, ';') - 11);
+            }
+
+            function getSetorByPlaqueta( $plaqueta ){
+                 require_once '../controller/class.os_controller.php';
+                 require_once '../beans/class.bens.php';
+
+                 $osc = new os_controller();
+                // echo "Plaqueta";
+                 $bem = $osc->getByPlaqueta( $plaqueta );
+
+                 $bens = array(
+                     "codigo"     => $bem->getCodBem(),
+                     "setor"      => $bem->getSetor()->getCdSetor(),
+                     "descricao"  => $bem->getDescBem(),
+                     "localidade" => $bem->getLocalidade()
+                 );
+
+
+                 echo json_encode( $bens );
+
+            }
 
 
 

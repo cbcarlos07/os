@@ -305,12 +305,13 @@ class itemSolicitacaoServico_dao
         if( $item->getHoraFinal() == "" ){
             $sql =  "UPDATE DBAMV.ITSOLICITACAO_OS SET 
                   HR_INICIO          = TO_DATE(:hinicio, 'DD/MM/YYYY HH24:MI:SS')
-                 ,VL_TEMPO_GASTO     = :hora
+                 ,HR_FINAL           = ''
                  ,CD_OS              = :cdos
                  ,CD_FUNC            = :funcionario
                  ,CD_SERVICO         = :servico
                  ,DS_SERVICO         = :descricao
-                 ,VL_TEMPO_GASTO_MIN = :minuto
+                 ,VL_TEMPO_GASTO_MIN = ''
+                 ,VL_TEMPO_GASTO     = ''
                  ,SN_CHECK_LIST      = :feito
                  WHERE CD_ITSOLICITACAO_OS = :codigo";
             $stmt = ociparse( $conn, $sql );
@@ -320,17 +321,14 @@ class itemSolicitacaoServico_dao
             $func     = $item->getFuncionario()->getCdFuncionario();
             $servico  = $item->getManuServ()->getCdServico();
             $descricao = $item->getDescricao();
-            $minuto   = $item->getTempoMinuto();
             $feito    = $item->getSnFeito();
             $codigo   = $item->getCdItem();
             ocibindbyname( $stmt, ":codigo", $codigo );
             ocibindbyname( $stmt, ":hinicio", $hinicio );
-            ocibindbyname( $stmt, ":hora", $tempo );
             ocibindbyname( $stmt, ":cdos", $cdOs );
             ocibindbyname( $stmt, ":funcionario", $func );
             ocibindbyname( $stmt, ":servico", $servico );
             ocibindbyname( $stmt, ":descricao", $descricao );
-            ocibindbyname( $stmt, ":minuto", $minuto );
             ocibindbyname( $stmt, ":feito", $feito );
         }else{
             $sql =  "UPDATE DBAMV.ITSOLICITACAO_OS SET 

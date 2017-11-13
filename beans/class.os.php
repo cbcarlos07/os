@@ -27,6 +27,48 @@ class os
     private $previsao;
     private $resolucao;
     private $dsRamal;
+    private $bem;
+    private $localidade;
+
+    /**
+     * @return mixed
+     */
+    public function getLocalidade()
+    {
+        return $this->localidade;
+    }
+
+    /**
+     * @param mixed $localidade
+     * @return os
+     */
+    public function setLocalidade($localidade)
+    {
+        $this->localidade = $localidade;
+        return $this;
+    }
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getBem()
+    {
+        return $this->bem;
+    }
+
+    /**
+     * @param mixed $bem
+     * @return os
+     */
+    public function setBem( bens $bem)
+    {
+        $this->bem = $bem;
+        return $this;
+    }
+
+
 
     /**
      * @return mixed
