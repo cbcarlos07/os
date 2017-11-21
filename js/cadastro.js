@@ -159,16 +159,24 @@ function salvarOs() {
        },
         success : function (data) {
           // console.log("Retorno: "+data.sucesso);
+
             if( data.sucesso == 1 ){
                 if( $('#responsavel').text() != "Selecione" ){
                     carregarTotalRecebimentos();
                 }
+                var codChamado =data.chamado;
                 $('.loading').fadeOut('slow');
               //  console.log("Chamado salvo: "+ data.chamado);
-                $('#cdos').val( data.chamado );
+                $('#cdos').val( codChamado );
                 corBordaCampo( "input","cdos","" );
                 sucessoChamado();
                 carregarTabela();
+                if( codChamado > 0 ){
+                    var btn_doc = $('.btn-doc');
+                    btn_doc.removeClass('btn-danger');
+                    btn_doc.addClass('btn-success');
+                }
+
 
             }else{
                 $('.loading').fadeOut('slow');
@@ -640,6 +648,7 @@ $('#oficina').on('change', function () {
         var oficina     =    $('#oficina').val();
         var btn = $('.btn-servico');
         var btnSalvar = $('.btn-salvar');
+
        /// console.log("setor: "+setor);
         if( ( setor != 0) && ( descricao != "" ) && ( observacao != "" ) && ( responsavel != 0 ) && ( solicitante != 0 )
             && ( tipoos != 0 ) && ( oficina != 0 )
@@ -811,6 +820,7 @@ $('#oficina').on('change', function () {
 		
 		if( $('#cdos').val() > 0 ){
 			getOs( $('#cdos').val() );
+			getFiles( $('#cdos').val() );
 		}
         var btn_doc = $('.btn-doc');
 		if( $('#cdos').val() > 0 ){
@@ -1896,10 +1906,13 @@ function getOs( codigoOs ) {
         $('input[id="descricao"]').css("border-color","");
         $('textarea[id="observacao"]').css("border-color","");
         $('select[id="setor"]').css("border-color","");
+        $('.btn-doc').removeClass('btn-success');
+        $('.btn-doc').addClass('btn-danger');
         setTimeout(function () {
             $('.btn-salvar').removeClass('btn-primary');
             $('.btn-salvar').addClass('btn-danger');
         }, 3000);
+        $('#output').html('');
 
 
 
@@ -1911,6 +1924,7 @@ function getOs( codigoOs ) {
                 setTimeout(function () {
                     var status = $('#status').val();
                     preencherTabelaServicos( status );
+                    getFiles( $('#cdos').val() );
                     carregarTabela();
                     startCountdown()
                 }, 30000);
@@ -1981,20 +1995,28 @@ function getOs( codigoOs ) {
 
     
     $('.btn-doc').on('click', function () {
-
-        if( $('#cdos').val() > 0 ){
+          var cdOs = $('#cdos').val();
+        if( cdOs > 0 ){
             $.FileDialog({multiple: true}).on('files.bs.filedialog', function(ev) {
                 var files = ev.files;
                 var text = "";
+                setTimeout(function () {
+                    getFiles( cdOs );
+                },500);
+
+
+                //var table = "<table class='table table-hover table-responsive table-striped'>"+
                // addAttach( files );
-                files.forEach(function(f) {
-                    text += f.name + "<br/>";
+                /*files.forEach(function(f) {
+                    table += "<tr>"+
+                             "   <td>"+ f.name+"</td>"+
+                             "</tr>";
                  //s   console.log( "Name: "+ f.name+" File: "+f);
                 });
-
+                table += "</table>";*/
                /* var cdOs = $('#cdos').val();
                 console.log("Codigo Os; "+cdOs);
-                $.ajax({
+               *//* $.ajax({
                     url      : 'funcao/os.php',
                     dataType : 'json',
                     type     : 'post',
@@ -2008,14 +2030,75 @@ function getOs( codigoOs ) {
                     }
                 });*/
 
-                $("#output").html(text);
+                //$("#output").append( table );
+
+
+
             }).on('cancel.bs.filedialog', function(ev) {
-                $("#output").html("Cancelled!");
+               // $("#output").html("Cancelled!");
             });
         }
 
 
     });
+
+    function getFiles( cdos ) {
+        //console.log( cdos );
+        $('#output').html('');
+        $.ajax({
+            url : 'funcao/os.php',
+            type : 'post',
+            dataType: 'json',
+            data : {
+                acao : 'Z',
+                cdos : cdos
+            },
+            success : function (data) {
+                console.log(data);
+                var table = "<table class='table table-hover table-responsive table-striped'>";
+                $.each( data, function ( i, j ) {
+
+                   /* console.log("Descricao: "+j.descricao);
+                    console.log("I: "+i);*/
+                    table += "<tr>"+
+                            "   <td align='left'>"+ j.descricao +"</td>"+
+                            "   <td><a href='#' title='Baixar' class='btn-lg btn-file' data-id='"+ j.codigo +"'> <i class='fa fa-cloud-download' aria-hidden='true'></i></a></td>"+
+                            "</tr>";
+                } );
+                table += "</table>";
+                $('#output').append( table );
+
+                $('.btn-file').on('click', function () {
+                    var id = $(this).data('id');
+
+                    var form = $('<form action="funcao/os.php" method="post" target="_blank">' +
+                                    '<input type="hidden" name="acao" value="0">'+
+                                    '<input type="hidden" name="cdos" value="' + id + '">'+
+                                  "</form>"
+                                    );
+
+                    $('body').append( form );
+                    form.submit();
+
+                  //  console.log('Id of pic:'+id);
+                    /*$.ajax({
+                        url : 'funcao/os.php',
+                        type : 'post',
+                        dataType: 'json',
+                        data : {
+                            acao : '0',
+                            cdos : id
+                        },
+                        success : function (data) {
+                            console.log('Success');
+                        }
+
+                    })*/
+                });
+            }
+        });
+
+    }
 
 /*
     function addAttach( files ) {

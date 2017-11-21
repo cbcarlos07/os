@@ -187,12 +187,12 @@ $.FileDialog = function FileDialog(userOptions) {
                 file : event.files[i]
             } );
 
-            console.log( "Name: "+ event.files[i].name+" File: "+event.files[i] );
+         //   console.log( "Name: "+ event.files[i].name+" File: "+event.files[i] );
         }
 
         var cdOs = $('#cdos').val();
-        console.log("Codigo Os; "+cdOs);
-        console.log(vetor);
+        //console.log("Codigo Os; "+cdOs);
+        //console.log(vetor);
         $.ajax({
             url      : 'funcao/os.php',
             dataType : 'json',

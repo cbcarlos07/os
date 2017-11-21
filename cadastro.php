@@ -370,8 +370,9 @@
                               <div class="tab-pane fade" id="tab2default">
 
                                   <div style="text-align: center">
-                                      <div id="output"></div>
+
                                       <button class="btn btn-success btn-doc">Adicionar documento <i class="fa fa-paperclip" aria-hidden="true"></i> </button>
+                                      <div id="output"></div>
 
                                   </div>
 

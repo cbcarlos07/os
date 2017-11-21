@@ -1502,16 +1502,27 @@ class os_dao
 
 
         try{
-            $lob = oci_new_descriptor( $conn, OCI_D_LOB );
-            $stmt = ociparse( $conn,$sql );
-            oci_bind_by_name( $stmt, ":p0", $values[0] );
-            oci_bind_by_name( $stmt, ":p1", $values[1] );
-            oci_bind_by_name( $stmt, ":p2", $lob, -1, OCI_B_BLOB );
-            $retorno = oci_execute( $stmt, OCI_NO_AUTO_COMMIT ); //NAO COMITAR PARA LOB->SAVE() FUNCIONAR
 
-            $lob->save( $values[2] );
+            foreach ( $values as $valor => $chave) {
+                $lob = oci_new_descriptor( $conn, OCI_D_LOB );
+                $stmt = ociparse( $conn,$sql );
+                oci_bind_by_name( $stmt, ":p0", $chave['os'] );
+                oci_bind_by_name( $stmt, ":p1", $chave['name'] );
+                oci_bind_by_name( $stmt, ":p2", $lob, -1, OCI_B_BLOB );
+                //echo "Dao: ";
+          //      var_dump( $values );
+
+
+              //  echo "Codigo da os insert: ".$chave['os']." \n";
+                $retorno = oci_execute( $stmt, OCI_NO_AUTO_COMMIT ); //NAO COMITAR PARA LOB->SAVE() FUNCIONAR
+                $lob->save( $chave['arquivo'] );
+                $lob->close();
+
+            }
+            //$lob->save( $values[2] );
             oci_commit( $conn );
-            $lob->close();
+            //$lob->close();
+            $con->closeConnection( $conn );
 
         }catch (PDOException $e){
             echo "Erro: ".$e->getMessage();
@@ -1519,6 +1530,82 @@ class os_dao
 
         return $retorno;
 
+    }
+
+    public function getAnexo( $values ){
+        require_once "class.connection_factory.php";
+        require_once "../beans/class.solicitacaoServicoOS.php";
+        $con  = new connection_factory();
+        $conn = $con->getConnection();
+        $doc = array();
+        //  echo "Dao CD OS: ".$values." \n";
+        $sql = "SELECT  D.CD_SOLICITACAO_OS
+                       ,D.CD_SOLICITACAO_DOC
+                       ,D.DS_SOLICITACAO_DOC
+                  FROM DBAMV.SOLICITACAO_SERVICO_DOC D 
+                 WHERE D.CD_SOLICITACAO_OS = :OS";
+
+
+        try {
+            $stmt = oci_parse( $conn, $sql );
+            oci_bind_by_name( $stmt, ":OS", $values );
+
+            oci_execute( $stmt );
+
+            while( $row = oci_fetch_array( $stmt, OCI_ASSOC)){
+            //    print $row['LO_ANEXO_SOLICITACAO'];
+             //   echo $row['CD_SOLICITACAO_OS'];
+               // echo "Codigo do docum: ".$row['CD_SOLICITACAO_DOC']." \n";
+                $doc[] = array(
+                    "os"        => $row['CD_SOLICITACAO_OS'],
+                    "codigo"    => $row['CD_SOLICITACAO_DOC'],
+                    "descricao" => $row['DS_SOLICITACAO_DOC']
+                );
+
+
+
+            }
+            $con->closeConnection( $conn );
+        } catch ( PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+
+        return $doc;
+
+    }
+
+
+    public function getDataFile( $id ){
+        require_once "class.connection_factory.php";
+        require_once "../beans/class.solicitacaoServicoOS.php";
+        $con  = new connection_factory();
+        $conn = $con->getConnection();
+        $sql='SELECT   D.DS_SOLICITACAO_DOC
+                       ,D.LO_ANEXO_SOLICITACAO
+                       ,LENGTH(D.LO_ANEXO_SOLICITACAO)  SIZE_   
+                FROM DBAMV.SOLICITACAO_SERVICO_DOC D 
+                WHERE D.CD_SOLICITACAO_DOC = :ID'; //selecting a blob field named 'document_body' with id = 1
+        $stmt = ociparse($conn,$sql);
+        oci_bind_by_name( $stmt, ":ID", $id );
+
+        ociexecute($stmt) or die($sql.'<hr>');
+        $file = "";
+        $name = "";
+        $filesize = "";
+        if(ocifetch($stmt)) //if file exists
+        {
+            $file=ociresult($stmt,"LO_ANEXO_SOLICITACAO");
+            $name=ociresult($stmt,"DS_SOLICITACAO_DOC");
+            $filesize=ociresult($stmt,"SIZE_");
+        }
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="'.$name.'"');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' .$filesize);
+        print $file->load();
+//browser promts to save or open the file
     }
 
 

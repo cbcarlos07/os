@@ -267,4 +267,20 @@ class os_controller
         $teste = $os_dao->getByPlaqueta( $plaqueta );
         return $teste;
     }
+
+    public function getAnexo( $values ){
+
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $teste = $os_dao->getAnexo( $values );
+        return $teste;
+
+    }
+
+    public function getDataFile( $id ){
+        require_once '../dao/class.os_dao.php';
+        $os_dao = new os_dao();
+        $os_dao->getDataFile( $id );
+
+    }
 }

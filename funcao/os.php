@@ -159,6 +159,12 @@ switch ( $acao ){
         case 'X':
             getSetorByPlaqueta( $plaqueta );
             break;
+        case 'Z':
+            getFileList( $cdos );
+            break;
+        case '0':
+            getDataFile( $cdos );
+            break;
 }
 
     function getTotalAReceber(  ){
@@ -833,14 +839,11 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
 
              $arr = json_decode( $dsAnexo );
              $teste = false;
-             $i = 0;
+           //  $i = 0;
             // var_dump( $arr );
+             $insert = array();
              foreach ( $arr as $item => $iten ){
 
-
-                 $i++;
-                // echo $iten->name." \n <br>";
-               //  echo $iten->file." \n <br>";
                  $values[0] = $cdOs;
                  $values[1] = $iten->name;
                  $values[2] = $iten->file->content ;
@@ -848,18 +851,28 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
 
                 $imagem = base64_to_jpeg( $iten->file->content,  'saida.'.getB64Type( $iten->file->content ));
 
-                 $tamanhoImg = filesize($imagem);
-                 $mysqlImg = addslashes(fread(fopen($imagem, "r"), $tamanhoImg));
+                // $tamanhoImg = filesize($imagem);
+                 //$mysqlImg = addslashes(fread(fopen($imagem, "r"), $tamanhoImg));
 
-                // unlink($imagem);
 
-                 $values[2] = file_get_contents( $imagem );
 
-                 $teste = $osController->inserirAnexo( $values );
-                 echo "Imagem: ".$iten->file->content;
+                 $file = file_get_contents( $imagem );
+                 /*
+                  * Enviando dados pra array para fazer inserção no banco de uma unica vez
+                  */
+                 $insert[] = array(
+                     "os"       => $cdOs,
+                     "name"     => $iten->name,
+                     "arquivo"  => $file
+                 );
+
+
+                  unlink($imagem);
+                // echo "Imagem: ".$iten->name." \n";
              }
 
-
+           //  var_dump( $insert );
+             $teste = $osController->inserirAnexo( $insert );
 
 
              if( $teste ){
@@ -912,6 +925,30 @@ function insert_chamado ( $pedido, $previsao, $solicitante, $setor, $descricao, 
                  echo json_encode( $bens );
 
             }
+
+            function getFileList( $cdOs ){
+               // echo "Cod da os file: $cdOs \n";
+                require_once '../controller/class.os_controller.php';
+
+                $osc = new os_controller();
+
+                $anexos = $osc->getAnexo( $cdOs );
+             //   var_dump( $anexos );
+                echo json_encode( $anexos );
+
+            }
+
+            function getDataFile( $id ){
+                require_once '../controller/class.os_controller.php';
+
+                $osc = new os_controller();
+
+                $osc->getDataFile( $id );
+
+
+            }
+
+
 
 
 
