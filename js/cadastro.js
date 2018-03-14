@@ -697,25 +697,29 @@ $('#oficina').on('change', function () {
     $("#dataos").datetimepicker({
         //timepicker: true,
         format: 'd/m/Y H:i',
-        mask: true
+        mask: true,
+		locale: 'pt-br'
     });
     $("#previsao").datetimepicker({
         //timepicker: true,
         format: 'd/m/Y H:i',
-        mask: true
+        mask: true,
+		locale: 'pt-br'
     });
 
 
     $("#datai").datetimepicker({
         //timepicker: true,
         format: 'd/m/Y H:i',
-        mask: true
+        mask: true,
+		locale: 'pt-br'
     });
 
     $("#dataf").datetimepicker({
         //timepicker: true,
         format: 'd/m/Y H:i',
-        mask: true
+        mask: true,
+		locale: 'pt-br'
     });
 
     function carregarDataHoraAtual() {
@@ -956,6 +960,7 @@ function carregarComboTipoOs( tipoOs ){
     }
 
 function carregarComboResponsavel( oficina, usuario ){
+    
     $.ajax({
         url      : 'funcao/responsavel.php',
         type     : 'post',
@@ -1551,7 +1556,7 @@ dataFinal.on('blur', function () {
                         }
 
                         var linha;
-                        if( situacao != 'C'){
+                      //  if( situacao != 'C'){
                             var cor = "";
                             if( j.final != "" )
                                 cor = "#B2EBF2"
@@ -1568,8 +1573,8 @@ dataFinal.on('blur', function () {
                                         +        "<a href='#excluir'  title='Clique para alterar servico' onclick='modalRemoverServico("+ j.codigo +",\""+ string[0] + "..." +"\")'><i class='fa fa-times'></i></a>"
                                         +  "</td>"
                                         +"</tr> ";
-                        }else{
-                            linha = "<tr>"
+                       // }else{
+                        /*    linha = "<tr>"
                                             +"  <td>" + j.codigo + "</td>"
                                             +"  <td>" + j.servico + "</td>"
                                             +"  <td>" + j.funcionario + "</td>"
@@ -1578,8 +1583,8 @@ dataFinal.on('blur', function () {
                                             +"  <td>" + j.final + "</td>"
                                             +"  <td>" + j.tempo + "</td>"
                                             +"  <td></td>"
-                                +"</tr> ";
-                        }
+                                +"</tr> ";*/
+                        //}
 
                         $('.tbody').append( linha );
                     } );
@@ -1750,10 +1755,10 @@ function getOs( codigoOs ) {
         //    console.log("Erro: "+data.erro);
 
             if( data.erro == 0 ){
-                if( data.situacao == 'C' ){
+               // if( data.situacao == 'C' ){
                 //    console.log('Situacao: '+data.situacao);
 
-                    $('.btn-salvar')
+                  /*  $('.btn-salvar')
                         .attr('disabled', true)
                         .attr('title', 'Chamado concluido');
 
@@ -1763,9 +1768,9 @@ function getOs( codigoOs ) {
                     $('a.btn-editar').removeAttr('href');
 
                     $('#motivo').val( data.motivo );
-                    setAtributes( "#status", "disabled", true );
+                    setAtributes( "#status", "disabled", true );*/
 
-                }else{
+              //  }else{
                     $('.btn-salvar').attr('disabled', false);
                     $('.btn-servico')
                         .attr('disabled', false);
@@ -1778,7 +1783,7 @@ function getOs( codigoOs ) {
 
 
 
-                }
+              //  }
 
                 $('#cdos').val(codigoOs);
                 $('#dataos').val(data.pedido);

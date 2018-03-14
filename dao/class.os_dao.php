@@ -241,7 +241,7 @@ class os_dao
         $tipo_os = null;
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $sql =   " SELECT * FROM DBAMV.TIPO_OS TP ";
+        $sql =   " SELECT * FROM DBAMV.TIPO_OS TP WHERE TP.CD_TIPO_OS NOT IN (5, 39, 1,2,3,4,37,41 )";
 
         $lista = new tipo_os_list();
         try {

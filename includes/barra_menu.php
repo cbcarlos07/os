@@ -56,7 +56,7 @@
                         <i class="glyphicon glyphicon-paperclip"></i>Meus Servicos
                         <span class="num total-servicos" >
 
-                                    </span>
+                    </span>
                     </a>
                 </li>
              <?php
@@ -74,7 +74,7 @@
                     ?>
 
 
-                <!-- <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>-->
+                 <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>
                 <?php
             }else{
                 //nao fazem parte do setor de informática
