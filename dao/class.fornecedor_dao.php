@@ -71,6 +71,43 @@ class fornecedor_dao
                     "sn_ativo"        => $row['SN_ATIVO']
                 );
             }
+        }catch ( PDOException $e ){
+            echo "Erro: ".$e->getMessage();
+        }
+        return $vetor;
+    }
+
+    public function getFornecedorAtivo(  ){
+        require_once 'class.connection_factory.php';
+        $row = array();
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+
+        $query = "SELECT O.CD_FORNECEDOR
+                        ,F.NM_FANTASIA
+                        ,O.DS_SIGLA 
+                        ,O.SN_ATIVO
+                   FROM OS_FORNECEDOR    O
+                       ,DBAMV.FORNECEDOR F
+                  WHERE F.CD_FORNECEDOR = O.CD_FORNECEDOR
+                   AND  O.SN_ATIVO = 'S'   ";
+        $vetor = array();
+        try{
+
+            $stmt = oci_parse( $conn, $query );
+
+            oci_execute($stmt);
+            //$vetor = oci_fetch_array( $stmt, OCI_ASSOC );
+            while ( $row = oci_fetch_array( $stmt, OCI_ASSOC ))
+            {
+
+                $vetor[] = array(
+                    "cd_fornecedor"   => $row['CD_FORNECEDOR'],
+                    "nm_fantasia"     => $row['NM_FANTASIA'],
+                    "ds_sigla"        => $row['DS_SIGLA'],
+                    "sn_ativo"        => $row['SN_ATIVO']
+                );
+            }
 
 
 
@@ -109,8 +146,8 @@ class fornecedor_dao
         $teste = 0;
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $query = " UPDATE OS_FORNECEDOR SET 
-                  ,DS_SIGLA      = :sigla
+        $query = "UPDATE OS_FORNECEDOR SET 
+                  DS_SIGLA       = :sigla
                   ,SN_ATIVO      = :ativo
                   WHERE CD_FORNECEDOR = :fornecedor";
         try{

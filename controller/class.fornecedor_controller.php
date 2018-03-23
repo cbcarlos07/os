@@ -22,6 +22,13 @@ class fornecedor_controller
         return $retorno;
     }
 
+    public function getFornecedorAtivo(  ){
+        require_once '../dao/class.fornecedor_dao.php';
+        $fornecedor_dao = new fornecedor_dao();
+        $retorno = $fornecedor_dao->getFornecedorAtivo( );
+        return $retorno;
+    }
+
     public function inserir( $bem ){
         require_once '../dao/class.fornecedor_dao.php';
         $fornecedor_dao = new fornecedor_dao();
