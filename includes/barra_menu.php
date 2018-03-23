@@ -75,6 +75,7 @@
 
 
                  <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>
+                 <li><a href="fornecedor.php" class="fornecedor" ><i class="glyphicon glyphicon-list"></i>Fornecedor</a></li>
                 <?php
             }else{
                 //nao fazem parte do setor de informática

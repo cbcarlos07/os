@@ -69,7 +69,7 @@
 
   			<div class="content-box-large">
   				<div class="panel-heading">
-					<div class="panel-title">Bens Patrimoniais</div>
+					<div class="panel-title">Tipo de Patrim&ocirc;nio</div>
                     <a class="btn btn-primary btn-novo">Novo</a>
 				</div>
   				<div class="panel-body">
@@ -77,32 +77,10 @@
 
                         <div class="col-lg-12">
                             <div class="form-group col-lg-3">
-                                 <label for="item">Item</label>
-                                 <select id="item" class="form-control" data-placeholder="Selecione um item" >
-                                     <option value='%'></option>
-                                 </select>
+                                 <label for="tipo">Tipo</label>
+                                 <input id="tipo" >
                             </div>
-                            <div class="form-group col-lg-3">
-                                <label for="proprietario">Propriet&aacute;rio</label>
-                                <select id="proprietario" class="form-control" data-placeholder="Selecione um Propriet&aacute;rio">
-                                    <option value='%'></option>
-                                </select>
-                            </div>
-                            <div class="form-group col-lg-3">
-                                <label for="setor">Setor</label>
-                                <select id="setor" class="form-control" data-placeholder="Selecione um setor">
-                                    <option value='%'></option>
-                                </select>
-                            </div>
-                            <div class="form-group col-lg-3">
-                                <label for="localidade">Localiza&ccedil;&atilde;o</label>
-                                <select id="localidade" class="form-control" data-placeholder="Selecione um local" >
-                                    <option value='%'></option>
-                                </select>
-                            </div>
-                            <div class="col-lg-3">
 
-                            </div>
                         </div>
 
                     </div>
@@ -112,11 +90,8 @@
                 <table class="table table-stripped table-responsive" id="bem_table">
                     <thead>
                        <tr>
-                           <th>Cod Item</th>
-                           <th>Item</th>
-                           <th>Setor</th>
-                           <th>Localiza&ccedil;&atilde;o</th>
-                           <th>Propriet&aacute;rio</th>
+                           <th>#</th>
+                           <th>Tipo</th>
                            <th></th>
                        </tr>
                     </thead>
@@ -154,30 +129,7 @@
     <script src="js/jquery.slimscroll.min.js"></script>
     <script src="js/fastclick.js"></script>
 
-    <script src="js/bem.js"></script>
-  <script>
-      $('#item').chosen( {
-          allow_single_deselect: true,
-          search_contains: true,
-          no_results_text: "Nenhum resultado encontrado!"
-      } );
-      $('#proprietario').chosen( {
-          allow_single_deselect: true,
-          search_contains: true,
-          no_results_text: "Nenhum resultado encontrado!"
-      } );
-      $('#setor').chosen( {
-          allow_single_deselect: true,
-          search_contains: true,
-          no_results_text: "Nenhum resultado encontrado!"
-      } );
-      $('#localidade').chosen( {
-          allow_single_deselect: true,
-          search_contains: true,
-          no_results_text: "Nenhum resultado encontrado!"
-      } );
+    <script src="js/tipo.js"></script>
 
-
-  </script>
   </body>
 </html>

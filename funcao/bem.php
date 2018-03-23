@@ -121,3 +121,12 @@ function getItem( $codigo ){
 
     echo json_encode( $bem );
 }
+
+function delete( $codigo ){
+    require_once '../controller/class.bens_controller.php';
+    $bemController = new bens_controller();
+
+    $bem = $bemController->de( $codigo );
+
+    echo json_encode( $bem );
+}

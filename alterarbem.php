@@ -6,8 +6,8 @@
    echo "<title>Ordem de Servi&ccedil;o - Cadastrar Chamado</title>";
    include "includes/head.php";
 
-   $usuario = $_SESSION['usuario'];
-   $funcionario = $_SESSION['funcionario'];
+   $_usuario = $_SESSION['usuario'];
+   $_funcionario = $_SESSION['funcionario'];
 
    $codigo = 0;
    if( isset($_POST['codigo']) ){
@@ -34,6 +34,8 @@
 </script>
 
   <body>
+  <input type="hidden" id="usuario" value="<?= $_usuario ?>"/>
+  <input type="hidden" id="funcionario" value="<?= $_funcionario ?>"/>
   <link href="css/load.css" rel="stylesheet" type="text/css" />
   <link href="css/bootstrap.fd.css" rel="stylesheet" type="text/css" />
   <div class="linear-progress-material loading">

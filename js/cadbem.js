@@ -15,6 +15,31 @@ $( document ).ready( function () {
 
 } );
 
+$('#proprietario').on('change', function () {
+    getSigla();
+});
+
+function getSigla() {
+    var fornecedor = $('#proprietario').val();
+    $.ajax({
+        url  : 'funcao/fornecedor.php',
+        type : 'post',
+        dataType: 'json',
+        data : {
+            acao       : 'E',
+            fornecedor : fornecedor
+        },
+        success : function (data) {
+            var patrimonio = $('#patrimonio');
+            var cdPatrimonio = patrimonio.val().replace(/[^0-9]/g,'');;
+            var sigla = data[0].ds_sigla;
+            var codigo = sigla + cdPatrimonio;
+            patrimonio.val( codigo );
+        }
+    });
+}
+
+
 function getDados() {
 
     var codigo  = $('#codigo').val();
@@ -128,18 +153,18 @@ function msgErro( msg ) {
 function getUsuario( usuario ) {
 
     $.ajax({
-        url : 'funcao/usuario.php',
+        url : 'funcao/fornecedor.php',
         dataType: 'json',
         type: 'post',
         data : {
-            acao : 'U'
+            acao : 'H'
         },
         success : function (data) {
             var option = "";
             // console.log( data );
-            $.each( data.usuarios, function ( i, j ) {
+            $.each( data, function ( i, j ) {
                 //console.log( j.usuario );
-                option += "<option value='"+j.usuario+"'>"+j.nome+"</option>";
+                option += "<option value='"+j.cd_fornecedor+"'>"+j.nm_fantasia+"</option>";
             } );
             var combo = $('#proprietario');
             combo.find('option').remove();
@@ -224,6 +249,8 @@ $('.btn-sim').on('click', function () {
 
 
 function loadTotal(  ) {
+    console.log( "Usuario: "+$('#usuario').val() );
+    console.log( "Funcionario: "+$('#funcionario').val() );
     var usuario = $('#usuario').val();
     var funcion = $('#funcionario').val();
     loadTotalMenu( usuario, funcion );
