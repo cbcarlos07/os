@@ -4,10 +4,14 @@ $( document ).ready( function () {
 
 
      getSetor(  );
-     getUsuario();
+     getProprietario();
+
 
     if( acao == 'A' ){
         codigo();
+        comboBoxTipoEquipamento( 0 );
+        comboBoxFabricante( 0 );
+        comboBoxUsuarios( '' )
     }else{
         getDados();
     }
@@ -18,6 +22,8 @@ $( document ).ready( function () {
 $('#proprietario').on('change', function () {
     getSigla();
 });
+
+
 
 function getSigla() {
     var fornecedor = $('#proprietario').val();
@@ -62,6 +68,9 @@ function getDados() {
                 $('#proprietario').val( data[0].proprietario ).trigger( "chosen:updated" );
                 getUsuario( data[0].proprietario );
                 $('#patrimonio').val( data[0].nr_patrimonio ).trigger( "chosen:updated" );
+                comboBoxTipoEquipamento(  );
+                comboBoxFabricante( 0 );
+                comboBoxUsuarios( '' );
 
 
             }
@@ -150,7 +159,7 @@ function msgErro( msg ) {
 }
 
 
-function getUsuario( usuario ) {
+function getProprietario( usuario ) {
 
     $.ajax({
         url : 'funcao/fornecedor.php',
@@ -259,3 +268,156 @@ function loadTotal(  ) {
         loadTotal();
     },30000 );
 }
+
+
+function comboBoxTipoEquipamento( codigo ) {
+    
+    $.ajax({
+        url   : 'funcao/tipo.php',
+        type  : 'post',
+        dataType : 'json',
+        data : {
+            acao : 'F'
+            
+        },
+        success : function (data) {
+
+            //  var option = "<option value='%'></option>";
+              var option = "";
+              $.each( data, function (i, j) {
+                  option += "<option value='"+j.cd_tipo_equipamento+"'>"+j.ds_tipo_equipamento+"</option>";
+              } );
+
+              var combo = $('#tipo');
+              combo.find('option').remove();
+              combo.append( option );
+              combo.val( codigo ).trigger( "chosen:updated" )
+
+
+        }
+    });
+    
+    
+}
+
+
+
+function comboBoxFabricante( codigo ) {
+
+    $.ajax({
+        url   : 'funcao/fabricante.php',
+        type  : 'post',
+        dataType : 'json',
+        data : {
+            acao : 'F'
+
+        },
+        success : function (data) {
+
+            //  var option = "<option value='%'></option>";
+            var option = "";
+            $.each( data, function (i, j) {
+                option += "<option value='"+j.cd_fabricante+"'>"+j.nm_fabricante+"</option>";
+            } );
+
+            var combo = $('#fabricante');
+            combo.find('option').remove();
+            combo.append( option );
+            combo.val( codigo ).trigger( "chosen:updated" )
+
+
+        }
+    });
+
+
+}
+
+
+function comboBoxUsuarios( codigo ) {
+
+    $.ajax({
+        url   : 'funcao/usuario.php',
+        type  : 'post',
+        dataType : 'json',
+        data : {
+            acao : 'U'
+
+        },
+        success : function (data) {
+
+            //  var option = "<option value='%'></option>";
+            var option = "";
+            $.each( data.usuarios, function (i, j) {
+                option += "<option value='"+j.usuario+"'>"+j.nome+"</option>";
+            } );
+
+            var combo = $('#responsavel');
+            combo.find('option').remove();
+            combo.append( option );
+            combo.val( codigo ).trigger( "chosen:updated" )
+
+
+        }
+    });
+
+
+}
+
+$('.btn-adicionar').on('click', function () {
+    console.log( 'Click adicionar' );
+    adicionarItemTable();
+});
+
+
+function adicionarItemTable() {
+
+    var cdsetor   = $('#setor option:selected').val();
+    var nmsetor   = $('#setor option:selected').text();
+    var cdlocal   = $('#localidade option:selected').val();
+    var nmlocal   = $('#localidade option:selected').text();
+   // var cdprop    = $('#proprietario option:selected').val();
+   // var nmprop    = $('#proprietario option:selected').text();
+    var usuari    = $('#responsavel option:selected').val();
+    var datain    = $('#datain').val();
+    var dataou    = $('#dataout').val();
+
+    var linha = "" +
+        "<tr>" +
+        "<td>"+nmsetor+"<input type='hidden' name='cdsetor[]' value='"+cdsetor+"'> </td>"+
+        "<td>"+nmlocal+"<input type='hidden' name='cdlocal[]' value='"+cdlocal+"'> </td>"+
+        "<td>"+datain+"<input type='hidden' name='datain[]' value='"+datain+"'> </td>"+
+        "<td>"+usuari+"<input type='hidden' name='usuario[]' value='"+usuari+"'> </td>"+
+        "<td><a href='#div' class='btn btn-danger btn-remove btn-xs'>remover</a></td>"+
+        "</tr>";
+    $('.tbody').append( linha );
+
+    $(".tbody").on("click", ".btn-remove", function(e){
+        $(this).closest('tr').remove();
+
+    });
+
+
+}
+
+$("#datain").datetimepicker({
+    timepicker: false,
+    format: 'd/m/Y',
+    mask: true,
+    locale: 'pt-br'
+});
+$("#dataout").datetimepicker({
+    timepicker: false,
+    format: 'd/m/Y',
+    mask: true,
+    locale: 'pt-br'
+});
+
+$('.refr-tipo').on('click', function () {
+    comboBoxTipoEquipamento(0);
+});
+$('.refr-fabr').on('click', function () {
+    comboBoxFabricante(0);
+});
+$('.refr-fornecedor').on('click', function () {
+    getProprietario(    0);
+});

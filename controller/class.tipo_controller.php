@@ -6,7 +6,7 @@
  * Date: 05/07/2017
  * Time: 15:54
  */
-class Tipo_controller
+class tipo_controller
 {
     public function getListaTipo( $tipo ){
         require_once '../dao/class.tipo_dao.php';

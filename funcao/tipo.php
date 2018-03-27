@@ -8,11 +8,7 @@
 
 $acao = $_POST['acao'];
 $codigo       = 0;
-$item         = 0;
-$setor        = 0;
-$localidade   = 0;
-$proprietario = 0;
-$patrimonio   = "";
+$item         = "";
 
 if( isset( $_POST['codigo'] ) ){
     $codigo = $_POST['codigo'];
@@ -22,111 +18,93 @@ if( isset( $_POST['item'] ) ){
     $item = $_POST['item'];
 }
 
-if( isset( $_POST['setor'] ) ){
-    $setor = $_POST['setor'];
-}
-
-if( isset( $_POST['localidade'] ) ){
-    $localidade = $_POST['localidade'];
-}
-
-if( isset( $_POST['proprietario'] ) ){
-    $proprietario = $_POST['proprietario'];
-}
-
-if( isset( $_POST['patrimonio'] ) ){
-    $patrimonio = $_POST['patrimonio'];
-}
-
 switch ( $acao ){
     case 'A':
-          salvar( $codigo, $item, $setor, $localidade, $proprietario, $patrimonio );
+          salvar( $item );
         break;
     case 'B':
         getCodigo();
         break;
     case 'C':
-        alterar( $codigo, $item, $setor, $localidade, $proprietario, $patrimonio );
+        alterar( $codigo, $item );
         break;
     case 'D':
-        getListBens(  $localidade, $setor, $proprietario, $item  );
+        getListTipo(  $item  );
         break;
     case 'E':
-        getItem( $codigo );
+        getTipo( $codigo );
         break;
     case 'F':
-        getBens(  );
+        getTipoList(  );
+        break;
+    case 'G':
+        delete( $codigo );
         break;
 
 }
 
-function salvar( $codigo, $item, $setor, $localidade, $proprietario, $patrimonio ){
+function salvar( $item ){
 
-    require_once '../controller/class.bens_controller.php';
+    require_once '../controller/class.tipo_controller.php';
 
-    $bemController = new bens_controller();
+    $tipoController = new tipo_controller();
 
-    $bem = array( $codigo, $item, $setor, $localidade, $proprietario, $patrimonio );
+    $bem = array( $item );
 
-    $retorno = $bemController->inserir( $bem );
-
-    echo json_encode( array( 'retorno' => $retorno ) );
-
-}
-
-function getCodigo(){
-    require_once '../controller/class.bens_controller.php';
-    $bemController = new bens_controller();
-    $retorno = $bemController->getProximoCodigo();
-    echo json_encode( $retorno );
-}
-
-function alterar( $codigo, $item, $setor, $localidade, $proprietario, $patrimonio ){
-
-    require_once '../controller/class.bens_controller.php';
-
-    $bemController = new bens_controller();
-
-    $bem = array( $codigo, $item, $setor, $localidade, $proprietario, $patrimonio );
-
-    $retorno = $bemController->alterar( $bem );
+    $retorno = $tipoController->inserir( $bem );
 
     echo json_encode( array( 'retorno' => $retorno ) );
 
 }
 
-function getListBens( $localidade, $setor, $proprietario, $item ){
-   require_once '../controller/class.bens_controller.php';
-   $bemController = new bens_controller();
 
-   $bem = $bemController->getListaBens( $localidade, $setor, $proprietario, $item );
+
+function alterar( $codigo, $item ){
+
+    require_once '../controller/class.tipo_controller.php';
+
+    $tipoController = new tipo_controller();
+
+    $bem = array( $codigo, $item );
+
+    $retorno = $tipoController->alterar( $bem );
+
+    echo json_encode( array( 'retorno' => $retorno ) );
+
+}
+
+function getListTipo( $item ){
+   require_once '../controller/class.tipo_controller.php';
+   $tipoController = new tipo_controller();
+
+   $bem = $tipoController->getListaTipo( $item );
 
    echo json_encode( $bem );
 }
 
-function getBens(  ){
-    require_once '../controller/class.bens_controller.php';
-    $bemController = new bens_controller();
+function getTipoList(  ){
+    require_once '../controller/class.tipo_controller.php';
+    $tipoController = new tipo_controller();
 
-    $bem = $bemController->getBens(  );
+    $bem = $tipoController->getTipoList(  );
 
     echo json_encode( $bem );
 }
 
-function getItem( $codigo ){
-    require_once '../controller/class.bens_controller.php';
-    $bemController = new bens_controller();
+function getTipo( $codigo ){
+    require_once '../controller/class.tipo_controller.php';
+    $tipoController = new tipo_controller();
 
-    $bem = $bemController->getItem( $codigo );
+    $bem = $tipoController->getTipo( $codigo );
 
     echo json_encode( $bem );
 }
 
 function delete( $codigo ){
-    require_once '../controller/class.bens_controller.php';
-    $bemController = new bens_controller();
+    require_once '../controller/class.tipo_controller.php';
+    $tipoController = new tipo_controller();
 
-    $bem = $bemController->de( $codigo );
+    $bem = $tipoController->excluir( $codigo );
 
     echo json_encode( $bem );
 }

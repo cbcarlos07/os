@@ -99,24 +99,91 @@
                       </div>
 
                       <div class="row"></div>
-                      <div class="form-group col-lg-5 ">
-                          <label for="setor" >Setor</label>
-                          <select  class="form-control" id="setor" data-placeholder="Selecione o setor" >
-                              <option value='%'></option>
+                      <div class="form-group col-lg-3 ">
+                          <label for="ordem" >N&ordm; de S&eacute;rie</label>
+                          <input  class="form-control" id="ordem" placeholder="N&ordm; de S&eacute;rie" required  />
+                      </div>
+
+                      <div class="form-group col-lg-3 ">
+                          <label for="tipo" >Tipo de Equipamento</label>
+                          <select  class="form-control" id="tipo" data-placeholder="Tipo de Equipamentp" required>
+                          </select>
+
+                      </div>
+                      <div class="col-lg-1">
+                          <a href="#" class="refr-tipo"  title="Clique para atualizar"> <i class="fa fa-refresh" aria-hidden="true" style="margin-top: 30px;"></i> </a>
+                      </div>
+
+                      <div class="form-group col-lg-3 ">
+                          <label for="fabricante" >Fabricante</label>
+                          <select  class="form-control" id="fabricante" data-placeholder="Fabricante" required>
+                              <option value=""></option>
                           </select>
                       </div>
-                      <div class="row"></div>
-                      <div class="form-group col-lg-5 ">
-                          <label for="responsavel" >Respons&aacute;vel</label>
-                          <input  class="form-control" id="responsavel" placeholder="Respons&aacute;vel" required disabled />
+
+                      <div class="col-lg-1">
+                          <a href="#" class="refr-fabr"  title="Clique para atualizar"> <i class="fa fa-refresh" aria-hidden="true" style="margin-top: 30px;"></i> </a>
                       </div>
+
+
+
                       <div class="row"></div>
-                      <div class="form-group col-lg-5 ">
-                          <label for="localidade" >Localiza&ccedil;&atilde;o</label>
-                          <select  class="form-control" id="localidade" data-placeholder="Selecione o local" >
-                              <option value='%'></option>
-                          </select>
+                      <!-- Painel para adicionar o historico -->
+                      <div class="panel panel-default">
+                          <div class="panel-body">
+
+                              <div class="row"></div>
+                              <div class="form-group col-lg-4 ">
+                                  <label for="setor" >Setor</label>
+                                  <select  class="form-control" id="setor" data-placeholder="Selecione o setor" >
+                                      <option value='%'></option>
+                                  </select>
+                              </div>
+
+
+                              <div class="form-group col-lg-4 ">
+                                  <label for="localidade" >Localiza&ccedil;&atilde;o</label>
+                                  <select  class="form-control" id="localidade" data-placeholder="Selecione o local" >
+                                      <option value='%'></option>
+                                  </select>
+                              </div>
+                              <div class="row"></div>
+                              <div class="form-group col-lg-3 data">
+                                  <label for="datain" >Data de Entrada</label>
+                                  <input  class="form-control" id="datain" placeholder="Data de Entrada" required  />
+                              </div>
+                              <div class="form-group col-lg-5 ">
+                                  <label for="responsavel" >Retirar Respons&aacute;vel</label>
+                                  <select  class="form-control" id="responsavel" data-placeholder="Respons&aacute;vel" >
+                                      <option value='%'></option>
+                                  </select>
+                              </div>
+
+                              <a href="#" class="btn btn-primary btn-adicionar"  style="margin-top: 20px;">Adicionar</a>
+
+
+
+
+                              <div>
+                                  <table class="table table-responsive table-stripped">
+                                      <thead>
+                                        <tr>
+                                            <th>Nome Setor</th>
+                                            <th>Nome Localidade</th>
+                                            <th>Data Entrada</th>
+                                            <th>Respons&aacute;vel</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody class="tbody">
+
+                                      </tbody>
+                                  </table>
+                              </div>
+
+                          </div>
                       </div>
+                      <!-- Painel para adicionar o historico -->
+
                       <div class="row"></div>
                       <div class="form-group col-lg-5 ">
                           <label for="proprietario" >Propriet&aacute;rio</label>
@@ -124,6 +191,10 @@
                               <option value='%'></option>
                           </select>
                       </div>
+                      <div class="col-lg-1">
+                          <a href="#" class="refr-fornecedor"  title="Clique para atualizar"> <i class="fa fa-refresh" aria-hidden="true" style="margin-top: 30px;"></i> </a>
+                      </div>
+
                       <div class="row"></div>
                       <div class="form-group col-lg-5 ">
                           <label for="patrimonio" >N&uacute;mero do Patrim&ocirc;nio</label>
@@ -157,6 +228,7 @@
 
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.datetimepicker.full.js"></script>
     <script src="js/chosen.jquery.js"></script>
     <script src="js/cadbem.js"></script>
     <script>
@@ -166,6 +238,21 @@
               no_results_text: "Nenhum resultado enontrado!"
           } );
           $('#setor').chosen( {
+              allow_single_deselect: true,
+              search_contains: true,
+              no_results_text: "Nenhum resultado enontrado!"
+          } );
+          $('#tipo').chosen( {
+              allow_single_deselect: true,
+              search_contains: true,
+              no_results_text: "Nenhum resultado enontrado!"
+          } );
+          $('#fabricante').chosen( {
+              allow_single_deselect: true,
+              search_contains: true,
+              no_results_text: "Nenhum resultado enontrado!"
+          } );
+          $('#responsavel').chosen( {
               allow_single_deselect: true,
               search_contains: true,
               no_results_text: "Nenhum resultado enontrado!"

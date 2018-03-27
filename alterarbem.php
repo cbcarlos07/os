@@ -81,7 +81,8 @@
 		  <div class="col-md-8 " style="background: #ffffff">
               
               <div class="col-md-11">
-                  <form class="formulario">
+                  <form class="formula
+                  rio">
 
 
                       <div class="col-md-12"></div>

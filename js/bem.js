@@ -251,3 +251,4 @@ function loadTotal(  ) {
         loadTotal();
     },30000 );
 }
+

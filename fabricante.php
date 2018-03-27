@@ -6,7 +6,7 @@
 <html lang="pt_BR">
 
   <?php
-  echo "<title>Ordem de Servi&ccedil;o - Tipo de Bem</title>";
+  echo "<title>Ordem de Servi&ccedil;o - Fabricante</title>";
   include "includes/head.php" ;
 
   $_usuario = $_SESSION['usuario'];
@@ -69,7 +69,7 @@
 
   			<div class="content-box-large">
   				<div class="panel-heading">
-					<div class="panel-title">Tipo de Patrim&ocirc;nio</div>
+					<div class="panel-title">Fabricante</div>
                     <a class="btn btn-primary btn-novo">Novo</a>
 				</div>
   				<div class="panel-body">
@@ -77,8 +77,8 @@
 
                         <div class="col-lg-12">
                             <div class="form-group col-lg-3">
-                                 <label for="tipo">Tipo</label>
-                                 <input id="tipo" class="form-control">
+                                 <label for="fabricante">Fabricante</label>
+                                 <input id="fabricante" class="form-control">
                             </div>
                             <a href="#" class="btn btn-success btn-search" style="margin-top: 25px;" >Pesquisar</a>
 
@@ -92,7 +92,7 @@
                     <thead>
                        <tr>
                            <th>#</th>
-                           <th>Tipo</th>
+                           <th>Fabricante</th>
                            <th></th>
                        </tr>
                     </thead>
@@ -130,7 +130,7 @@
     <script src="js/jquery.slimscroll.min.js"></script>
     <script src="js/fastclick.js"></script>
 
-    <script src="js/tipo.js"></script>
+    <script src="js/fabricante.js"></script>
 
   </body>
 </html>

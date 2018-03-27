@@ -9,7 +9,10 @@
    $_usuario = $_SESSION['usuario'];
    $_funcionario = $_SESSION['funcionario'];
 
-
+   $cdOs = 0;
+   if( isset($_POST['cdos']) ){
+		$cdOs = $_POST['cdos'];
+   }
 
 
    ?>
@@ -76,42 +79,32 @@
     	<div class="row">
 		  <?php include "includes/barra_menu.php"?>
 		  <div class="col-md-8 " style="background: #ffffff">
-
+              
               <div class="col-md-11">
-                  <form class="formulario">
+                  <form class="formulario" method="post" onsubmit="return false;">
 
 
                       <div class="col-md-12"></div>
 
 
-                      <div class="form-group col-lg-3">
+
                           <input  type="hidden" id="acao" value="A"  />
 
-                      </div>
 
 
                       <div class="row"></div>
-                      <input type="hidden" value="A" id="acao">
-                      <div class="form-group col-lg-5 ">
-                          <label for="fornecedor" >Fornecedor</label>
-                          <select  class="form-control" id="fornecedor" data-placeholder="Selecione o setor" >
-                              <option value=''></option>
-                          </select>
+                      <div class="form-group col-lg-5 item">
+                          <label for="item" >Cadastrar Tipo</label>
+                          <input type="hidden" value="0" id="codigo" >
+                          <input  class="form-control" id="item" placeholder="Descri&ccedil;&atilde;o do Tipo de Patrim&ocirc;nio" required  />
+                          <span class="error" style="color: red"></span>
                       </div>
+
                       <div class="row"></div>
-                      <div class="form-group col-lg-5 ">
-                          <label for="sigla" >Sigla</label>
-                          <input  class="form-control" id="sigla" placeholder="Sigla" required title="Sigla Sugerida" />
-                      </div>
-                      <div class="row"></div>
-                      <div class="col-lg-5 form-check">
-                          <input type="checkbox" class="form-check-input" id="ativo" checked>
-                          <label class="form-check-label" for="ativo" >Ativo?</label>
-                      </div>
 
                       <div class="row"></div>
                       <div class="col-lg-12">
-                          <a href="#" class="btn btn-success btn-salvar">Salvar</a>
+                          <button type="submit" class="btn btn-success btn-salvar">Salvar</button>
                           <a href="#" class="btn btn-warning btn-cancelar">Cancelar</a>
                       </div>
 
@@ -138,16 +131,9 @@
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/chosen.jquery.js"></script>
+    <script src="js/cadtipo.js"></script>
 
-    <script>
-          $('#fornecedor').chosen( {
-              allow_single_deselect: true,
-              search_contains: true,
-              no_results_text: "Nenhum resultado enontrado!"
-          } );
 
-    </script>
-    <script src="js/cadfornecedor.js"></script>
 
 
 

@@ -9,11 +9,12 @@
 class bens
 {
     private $cdBem;
-    private $dsItem;
-    private $cdSetor;
-    private $cdLocalidade;
+    private $dsBem;
     private $proprietario;
     private $nrPatrimonio;
+    private $nrSerie;
+    private $cdTipoEquipamento;
+    private $cdFabricante;
 
     /**
      * @return mixed
@@ -36,54 +37,18 @@ class bens
     /**
      * @return mixed
      */
-    public function getDsItem()
+    public function getDsBem()
     {
-        return $this->dsItem;
+        return $this->dsBem;
     }
 
     /**
-     * @param mixed $dsItem
+     * @param mixed $dsBem
      * @return bens
      */
-    public function setDsItem($dsItem)
+    public function setDsBem($dsBem)
     {
-        $this->dsItem = $dsItem;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCdSetor()
-    {
-        return $this->cdSetor;
-    }
-
-    /**
-     * @param mixed $cdSetor
-     * @return bens
-     */
-    public function setCdSetor($cdSetor)
-    {
-        $this->cdSetor = $cdSetor;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCdLocalidade()
-    {
-        return $this->cdLocalidade;
-    }
-
-    /**
-     * @param mixed $cdLocalidade
-     * @return bens
-     */
-    public function setCdLocalidade($cdLocalidade)
-    {
-        $this->cdLocalidade = $cdLocalidade;
+        $this->dsBem = $dsBem;
         return $this;
     }
 
@@ -122,6 +87,63 @@ class bens
         $this->nrPatrimonio = $nrPatrimonio;
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getNrSerie()
+    {
+        return $this->nrSerie;
+    }
+
+    /**
+     * @param mixed $nrSerie
+     * @return bens
+     */
+    public function setNrSerie($nrSerie)
+    {
+        $this->nrSerie = $nrSerie;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCdTipoEquipamento()
+    {
+        return $this->cdTipoEquipamento;
+    }
+
+    /**
+     * @param mixed $cdTipoEquipamento
+     * @return bens
+     */
+    public function setCdTipoEquipamento($cdTipoEquipamento)
+    {
+        $this->cdTipoEquipamento = $cdTipoEquipamento;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCdFabricante()
+    {
+        return $this->cdFabricante;
+    }
+
+    /**
+     * @param mixed $cdFabricante
+     * @return bens
+     */
+    public function setCdFabricante($cdFabricante)
+    {
+        $this->cdFabricante = $cdFabricante;
+        return $this;
+    }
+
+
+
 
 
 

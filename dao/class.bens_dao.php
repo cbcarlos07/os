@@ -117,17 +117,18 @@ class bens_dao
       $con = new connection_factory();
       $conn = $con->getConnection();
       $query = " INSERT INTO DTI_BEM_PATRIMONIAL 
-                 (CD_BEM, DS_ITEM, CD_SETOR, CD_LOCALIDADE, PROPRIETARIO, NR_PATRIMONIO) 
+                 (CD_BEM, DS_ITEM, PROPRIETARIO, NR_SERIE, NR_PATRIMONIO, CD_TIPO_EQUIPAMENTO, CD_FABRICANTE) 
                  VALUES
-                 (:codigo, :item, :setor, :localidade, :proprietario, :patrimonio )";
+                 (:codigo, :item, :proprietario, :serie, :patrimonio, :tipo, :fabricante )";
       try{
           $stmt = ociparse( $conn, $query );
           oci_bind_by_name( $stmt, ":codigo", $bem[0] );
           oci_bind_by_name( $stmt, ":item", $bem[1] );
-          oci_bind_by_name( $stmt, ":setor", $bem[2] );
-          oci_bind_by_name( $stmt, ":localidade", $bem[3] );
-          oci_bind_by_name( $stmt, ":proprietario", $bem[4] );
-          oci_bind_by_name( $stmt, ":patrimonio", $bem[5] );
+          oci_bind_by_name( $stmt, ":proprietario", $bem[2] );
+          oci_bind_by_name( $stmt, ":serie", $bem[3] );
+          oci_bind_by_name( $stmt, ":patrimonio", $bem[4] );
+          oci_bind_by_name( $stmt, ":tipo", $bem[5] );
+          oci_bind_by_name( $stmt, ":fabricante", $bem[6] );
 
           $teste =  ociexecute( $stmt, OCI_COMMIT_ON_SUCCESS );
 
@@ -144,19 +145,21 @@ class bens_dao
         $conn = $con->getConnection();
         $query = " UPDATE DTI_BEM_PATRIMONIAL SET 
                    DS_ITEM       = :item
-                  ,CD_SETOR      = :setor
-                  ,CD_LOCALIDADE = :localidade
-                  ,PROPRIETARIO  = :proprietario
-                  ,NR_PATRIMONIO = :patrimonio  
+                  ,PROPRIETARIO  = :proprietario 
+                  ,NR_SERIE      = :serie
+                  ,NR_PATRIMONIO = :patrimonio                  
+                  ,CD_TIPO_EQUIPAMENTO = tipo
+                  ,CD_FABRICANTE = :fabricante  
                   WHERE CD_BEM = :codigo";
         try{
             $stmt = ociparse( $conn, $query );
             oci_bind_by_name( $stmt, ":codigo", $bem[0] );
             oci_bind_by_name( $stmt, ":item", $bem[1] );
-            oci_bind_by_name( $stmt, ":setor", $bem[2] );
-            oci_bind_by_name( $stmt, ":localidade", $bem[3] );
-            oci_bind_by_name( $stmt, ":proprietario", $bem[4] );
-            oci_bind_by_name( $stmt, ":patrimonio", $bem[5] );
+            oci_bind_by_name( $stmt, ":proprietario", $bem[2] );
+            oci_bind_by_name( $stmt, ":serie", $bem[3] );
+            oci_bind_by_name( $stmt, ":patrimonio", $bem[4] );
+            oci_bind_by_name( $stmt, ":tipo", $bem[5] );
+            oci_bind_by_name( $stmt, ":fabricante", $bem[6] );
 
             $teste = ociexecute( $stmt, OCI_COMMIT_ON_SUCCESS );
 

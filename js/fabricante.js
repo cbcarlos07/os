@@ -10,24 +10,24 @@ $('.btn-search').on('click', function () {
 });
 
 function tabela() {
-    var tipo   = $('#tipo').val();
+    var fabricante   = $('#fabricante').val();
     $.ajax({
-        url : 'funcao/tipo.php',
+        url : 'funcao/fabricante.php',
         type : 'post',
         dataType : 'json',
         data : {
             acao : 'D',
-            item : tipo
+            item : fabricante
         },
         success : function ( data ) {
             var tbody = $('.tbody');
             var corpo = "";
             $.each( data, function ( i, j ) {
                 corpo += "<tr>" +
-                    "<td>"+j.cd_tipo_equipamento+"</td>"+
-                    "<td>"+j.ds_tipo_equipamento+"</td>"+
-                    "<td> <a href='#' class='btn btn-success btn-alterar' data-id='"+ j.cd_tipo_equipamento +"'>Alterar</a> "+
-                    " <a href='#' class='btn btn-danger btn-excluir' data-nome='"+j.ds_tipo_equipamento+"' data-id='"+ j.cd_tipo_equipamento +"'>Excluir</a> </td>"+
+                    "<td>"+j.cd_fabricante+"</td>"+
+                    "<td>"+j.nm_fabricante+"</td>"+
+                    "<td> <a href='#' class='btn btn-success btn-alterar' data-id='"+ j.cd_fabricante +"'>Alterar</a> "+
+                    " <a href='#' class='btn btn-danger btn-excluir' data-nome='"+j.nm_fabricante+"' data-id='"+ j.cd_fabricante +"'>Excluir</a> </td>"+
                     "</tr>";
             } );
 
@@ -41,7 +41,7 @@ function tabela() {
             $('.btn-alterar').on('click', function () {
                 var id = $( this ).data('id');
                 //alert('Codigo: '+id);
-                var form = $('<form action="tipoalt.php" method="post">' +
+                var form = $('<form action="fabricantealt.php" method="post">' +
                     '<input type="hidden" name="codigo" value="'+id+'">'+
                     '</form>');
                 $('body').append( form );
@@ -58,7 +58,7 @@ function tabela() {
                 $('.btn-yes').on('click', function () {
                     //console.log( "Remover" );
                     $.ajax({
-                        url : 'funcao/tipo.php',
+                        url : 'funcao/fabricante.php',
                         type: 'post',
                         dataType : 'json',
                         data : {
@@ -111,7 +111,7 @@ function loadTotal(  ) {
 
 $('.btn-novo').on('click',function () {
     console.log( 'Click' );
-    var form = $('<form action="tipocad.php" method="post">' +
+    var form = $('<form action="fabricantecad.php" method="post">' +
         '</form>');
     $('body').append( form );
     form.submit();
