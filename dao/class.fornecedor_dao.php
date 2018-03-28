@@ -51,7 +51,7 @@ class fornecedor_dao
                         ,F.NM_FANTASIA
                         ,O.DS_SIGLA 
                         ,O.SN_ATIVO
-                   FROM OS_FORNECEDOR    O
+                   FROM DTI_FORNECEDOR    O
                        ,DBAMV.FORNECEDOR F
                   WHERE F.CD_FORNECEDOR = O.CD_FORNECEDOR";
         $vetor = array();
@@ -87,7 +87,7 @@ class fornecedor_dao
                         ,F.NM_FANTASIA
                         ,O.DS_SIGLA 
                         ,O.SN_ATIVO
-                   FROM OS_FORNECEDOR    O
+                   FROM DTI_FORNECEDOR    O
                        ,DBAMV.FORNECEDOR F
                   WHERE F.CD_FORNECEDOR = O.CD_FORNECEDOR
                    AND  O.SN_ATIVO = 'S'   ";
@@ -123,7 +123,7 @@ class fornecedor_dao
       $teste = 0;
       $con = new connection_factory();
       $conn = $con->getConnection();
-      $query = " INSERT INTO OS_FORNECEDOR 
+      $query = " INSERT INTO DTI_FORNECEDOR 
                  (CD_FORNECEDOR, DS_SIGLA, SN_ATIVO) 
                  VALUES
                  (:fornecedor, :sigla, :ativo )";
@@ -146,7 +146,7 @@ class fornecedor_dao
         $teste = 0;
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $query = "UPDATE OS_FORNECEDOR SET 
+        $query = "UPDATE DTI_FORNECEDOR SET 
                   DS_SIGLA       = :sigla
                   ,SN_ATIVO      = :ativo
                   WHERE CD_FORNECEDOR = :fornecedor";
@@ -169,7 +169,7 @@ class fornecedor_dao
         $teste = 0;
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $query = " DELETE FROM  OS_FORNECEDOR WHERE CD_FORNECEDOR = :fornecedor";
+        $query = " DELETE FROM  DTI_FORNECEDOR WHERE CD_FORNECEDOR = :fornecedor";
         try{
             $stmt = ociparse( $conn, $query );
             oci_bind_by_name( $stmt, ":fornecedor", $codigo );
@@ -188,7 +188,7 @@ class fornecedor_dao
       require_once 'class.connection_factory.php';
       $con = new connection_factory();
       $conn = $con->getConnection();
-      $query = "SELECT * FROM OS_FORNECEDOR D WHERE D.CD_FORNECEDOR = :codigo";
+      $query = "SELECT * FROM DTI_FORNECEDOR D WHERE D.CD_FORNECEDOR = :codigo";
         $vetor = array();
       try{
           $stmt = ociparse( $conn, $query );

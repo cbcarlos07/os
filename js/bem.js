@@ -9,7 +9,10 @@ $( document ).ready( function () {
   comboBoxSetor();
   comboBoxLocalidade( '%' );
   loadTotal();
+
 } );
+
+
 $('#setor').on('change', function () {
     comboBoxLocalidade( $( this ).val() );
     tabela();
@@ -29,7 +32,7 @@ $('#item').on('change', function () {
 
 $('.btn-novo').on('click',function () {
     console.log( 'Click' );
-    var form = $('<form action="cadastrobem.php" method="post">' +
+    var form = $('<form action="bemcad.php" method="post">' +
                 '</form>');
     $('body').append( form );
     form.submit();
@@ -77,7 +80,7 @@ function tabela() {
 
             $('.btn-alterar').on('click', function () {
                 var id = $( this ).data('id');
-                var form = $('<form action="alterarbem.php" method="post">' +
+                var form = $('<form action="bemalt.php" method="post">' +
                                  '<input type="hidden" name="codigo" value="'+id+'">'+
                               '</form>');
                 $('body').append( form );
@@ -131,6 +134,7 @@ function comboBoxItem() {
         success : function ( data ) {
             var corpo = "<option value='%'></option>";
             $.each( data, function ( i, j ) {
+                console.log( j.ds_item );
                 corpo += "<option value='"+j.cd_bem+"'>"+j.ds_item+"</option>";
             } );
 

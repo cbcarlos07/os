@@ -20,7 +20,7 @@
    <link href="css/font-awesome.css" rel="stylesheet">
    <link href="css/bootstrap-chosen.css" rel="stylesheet">
    <link href="css/solicitar.css" rel="stylesheet">
-   <link href="css/chosen.css" rel="stylesheet">
+
    <link href="css/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
    <script src="js/jquery.min.js"></script>
 
@@ -37,7 +37,7 @@
   <input type="hidden" id="usuario" value="<?= $_usuario ?>"/>
   <input type="hidden" id="funcionario" value="<?= $_funcionario ?>"/>
   <link href="css/load.css" rel="stylesheet" type="text/css" />
-  <link href="css/bootstrap.fd.css" rel="stylesheet" type="text/css" />
+
   <div class="linear-progress-material loading">
       <div class="bar bar1"></div>
       <div class="bar bar2"></div>
@@ -100,8 +100,8 @@
 
                       <div class="row"></div>
                       <div class="form-group col-lg-3 ">
-                          <label for="ordem" >N&ordm; de S&eacute;rie</label>
-                          <input  class="form-control" id="ordem" placeholder="N&ordm; de S&eacute;rie" required  />
+                          <label for="serie" >N&ordm; de S&eacute;rie</label>
+                          <input  class="form-control" id="serie" placeholder="N&ordm; de S&eacute;rie" required  />
                       </div>
 
                       <div class="form-group col-lg-3 ">
@@ -133,7 +133,7 @@
                           <div class="panel-body">
 
                               <div class="row"></div>
-                              <div class="form-group col-lg-4 ">
+                              <div class="form-group col-lg-4 setor">
                                   <label for="setor" >Setor</label>
                                   <select  class="form-control" id="setor" data-placeholder="Selecione o setor" >
                                       <option value='%'></option>
@@ -141,7 +141,7 @@
                               </div>
 
 
-                              <div class="form-group col-lg-4 ">
+                              <div class="form-group col-lg-4 localizacao">
                                   <label for="localidade" >Localiza&ccedil;&atilde;o</label>
                                   <select  class="form-control" id="localidade" data-placeholder="Selecione o local" >
                                       <option value='%'></option>
@@ -152,8 +152,8 @@
                                   <label for="datain" >Data de Entrada</label>
                                   <input  class="form-control" id="datain" placeholder="Data de Entrada" required  />
                               </div>
-                              <div class="form-group col-lg-5 ">
-                                  <label for="responsavel" >Retirar Respons&aacute;vel</label>
+                              <div class="form-group col-lg-5 responsavel">
+                                  <label for="responsavel" >Respons&aacute;vel</label>
                                   <select  class="form-control" id="responsavel" data-placeholder="Respons&aacute;vel" >
                                       <option value='%'></option>
                                   </select>
@@ -230,7 +230,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.datetimepicker.full.js"></script>
     <script src="js/chosen.jquery.js"></script>
-    <script src="js/cadbem.js"></script>
+    <script src="js/bemcad.js"></script>
     <script>
           $('#localidade').chosen( {
               allow_single_deselect: true,

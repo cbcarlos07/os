@@ -182,7 +182,7 @@
           } );
 
     </script>
-    <script src="js/cadbem.js"></script>
+    <script src="js/bemcad.js"></script>
 
 
 

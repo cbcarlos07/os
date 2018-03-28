@@ -6,12 +6,12 @@ $( document ).ready( function () {
      getSetor(  );
      getProprietario();
 
-
+    comboBoxUsuarios( '%' );
     if( acao == 'A' ){
         codigo();
         comboBoxTipoEquipamento( 0 );
         comboBoxFabricante( 0 );
-        comboBoxUsuarios( '' )
+
     }else{
         getDados();
     }
@@ -59,17 +59,35 @@ function getDados() {
                 codigo : codigo
             },
             success : function (data) {
-                console.log(  data[0].cd_setor );
-                $('#item').val( data[0].ds_item );
-                $('#setor').val( data[0].cd_setor ).trigger( "chosen:updated" );
-                getLocalidade( data[0].cd_localidade  );
+                console.log(  data );
+                $('#item').val( data.bens[0].ds_item );
+                $('#setor').val( data.bens[0].cd_setor ).trigger( "chosen:updated" );
+                getLocalidade( data.bens[0].cd_localidade  );
 
                // console.log( "Proprietario: "+data[0].proprietario );
-                $('#proprietario').val( data[0].proprietario ).trigger( "chosen:updated" );
-                getUsuario( data[0].proprietario );
-                $('#patrimonio').val( data[0].nr_patrimonio ).trigger( "chosen:updated" );
-                comboBoxTipoEquipamento(  );
-                comboBoxFabricante( 0 );
+                $('#proprietario').val( data.bens[0].proprietario ).trigger( "chosen:updated" );
+                $('#serie').val( data.bens[0].nr_serie ).trigger( "chosen:updated" );
+                //getUsuario( data[0].proprietario );
+                $('#patrimonio').val( data.bens[0].nr_patrimonio );
+                comboBoxTipoEquipamento( data.bens[0].cd_tipo_equipamento );
+                comboBoxFabricante( data.bens[0].cd_fabricante );
+                var linha = "";
+                $.each( data.historico, function ( i, j ) {
+                    //console.log("Setor: "+j.nm_setor);
+                     linha += "" +
+                        "<tr>" +
+                            "<td>"+j.nm_setor+"<input type='hidden' name='cdsetor[]' id='cdsetor'  value='"+j.cd_setor+"'> </td>"+
+                            "<td>"+j.ds_localidade+"<input type='hidden' name='cdlocalidade[]' value='"+j.cd_localidade+"'> </td>"+
+                            "<td>"+j.dt_entrada+"<input type='hidden' name='datain[]' value='"+j.dt_entrada+"'> </td>"+
+                            "<td>"+j.usuario+"<input type='hidden' name='usuario[]' value='"+j.usuario+"'> </td>"+
+                            "<td><a href='#div' class='btn btn-danger btn-remove btn-xs'>remover</a></td>"+
+                        "</tr>";
+                } );
+
+                var tbody = $('.tbody');
+                tbody.find('tr').remove();
+                tbody.append( linha );
+
                 comboBoxUsuarios( '' );
 
 
@@ -87,7 +105,7 @@ function getSetor() {
             acao : 'S'
         },
         success : function (data) {
-            var option = "";
+            var option = "<option value='%'></option>";
           //   console.log( data );
             $.each( data.setor, function ( i, j ) {
                 //console.log( j.nmsetor );
@@ -118,13 +136,14 @@ function getLocalidade( local ) {
             setor : setor
         },
         success : function (data) {
-            var option = "";
+            var option = "<option value='%'></option>";
           //  console.log( data );
             $.each( data, function ( i, j ) {
               //  console.log( j.cd_localidade );
                // console.log( j.ds_localidade );
                 option += "<option value='"+j.cd_localidade+"'>"+j.ds_localidade+"</option>";
             } );
+
             if( $('#acao').val() == 'C' ){
                 if( typeof data[0].nm_responsavel == 'undefined'){
                     location.reload();
@@ -146,7 +165,7 @@ function sucessoChamado() {
     mensagem.empty().html('<p class="alert alert-success">Opera&ccedil;&atilde;o realizada com sucesso</p>').fadeIn("fast");
     setTimeout(function (){
         mensagem.fadeOut();
-       // codigo();
+        location.href = "bem.php";
     },2000);
 }
 
@@ -184,14 +203,45 @@ function getProprietario( usuario ) {
 }
 
 $('.btn-salvar').on('click', function () {
+
+        salvar();
+
+});
+function salvar() {
     var codigo        = $('#codigo').val();
     var item          = $('#item').val();
-    var setor         = $('#setor').val();
-    var localidade    = $('#localidade').val();
+    var serie         = $('#serie').val();
+    var tipo          = $('#tipo').val();
+    var fabricante    = $('#fabricante').val();
     var proprietario  = $('#proprietario').val();
     var patrimonio    = $('#patrimonio').val();
     var acao          = $('#acao').val();
+
+    var setor = $('input[name="cdsetor[]"]').map(function(){
+        return this.value;
+    }).get();
+    var localidade = $('input[name="cdlocalidade[]"]').map(function(){
+        return this.value;
+    }).get();
+    var data = $('input[name="datain[]"]').map(function(){
+        return this.value;
+    }).get();
+    var usuario = $('input[name="usuario[]"]').map(function(){
+        return this.value;
+    }).get();
     //console.log( "Localidade: "+localidade );
+   /* console.log( "Codigo: "+codigo );
+    console.log( "Item: "+item );
+    console.log( "serie: "+serie );
+    console.log( "Tipo de Equipamento: "+tipo+" "+$('#tipo option:selected').text() );
+    console.log( "Fabricante: "+fabricante+" "+$('#fabricante option:selected').text() );
+    console.log( "Proprietario: "+proprietario+" "+$('#proprietario option:selected').text() );
+    console.log( "Patrimonio: "+patrimonio+" "+$('#patrimonio option:selected').text() );
+    console.log( "Codigo: "+codigo );
+
+    console.log( "Setor: "+setor );*/
+
+
     if( item == "" ){
         $('.item').addClass( 'has-error' );
     }else{
@@ -205,10 +255,15 @@ $('.btn-salvar').on('click', function () {
                 acao         : acao,
                 codigo       : codigo,
                 item         : item,
-                setor        : setor,
-                localidade   : localidade,
+                serie        : serie,
+                tipo         : tipo,
+                fabricante   : fabricante,
                 proprietario : proprietario,
-                patrimonio   : patrimonio
+                patrimonio   : patrimonio,
+                'setor[]'      : setor,
+                'localidade[]' : localidade,
+                'data[]'       : data,
+                'usuario[]'    : usuario
             },
             success : function ( data ) {
                 console.log( data.retorno );
@@ -220,10 +275,7 @@ $('.btn-salvar').on('click', function () {
         });
     }
 
-
-
-});
-
+}
 function aguardando() {
     $('.loading').fadeIn();
 }
@@ -345,8 +397,8 @@ function comboBoxUsuarios( codigo ) {
         },
         success : function (data) {
 
-            //  var option = "<option value='%'></option>";
-            var option = "";
+              var option = "<option value='%'></option>";
+            //var option = "";
             $.each( data.usuarios, function (i, j) {
                 option += "<option value='"+j.usuario+"'>"+j.nome+"</option>";
             } );
@@ -354,7 +406,14 @@ function comboBoxUsuarios( codigo ) {
             var combo = $('#responsavel');
             combo.find('option').remove();
             combo.append( option );
-            combo.val( codigo ).trigger( "chosen:updated" )
+            if( codigo != "%" ) {
+                combo.val(codigo).trigger("chosen:updated");
+                console.log('Seleciona');
+            }
+            else {
+                combo.trigger("chosen:updated")
+                console.log('Nao Seleciona');
+            }
 
 
         }
@@ -364,8 +423,11 @@ function comboBoxUsuarios( codigo ) {
 }
 
 $('.btn-adicionar').on('click', function () {
-    console.log( 'Click adicionar' );
-    adicionarItemTable();
+
+    if( verifyFieldsTable() ){
+        adicionarItemTable();
+    }
+
 });
 
 
@@ -383,13 +445,18 @@ function adicionarItemTable() {
 
     var linha = "" +
         "<tr>" +
-        "<td>"+nmsetor+"<input type='hidden' name='cdsetor[]' value='"+cdsetor+"'> </td>"+
-        "<td>"+nmlocal+"<input type='hidden' name='cdlocal[]' value='"+cdlocal+"'> </td>"+
+        "<td>"+nmsetor+"<input type='hidden' name='cdsetor[]' id='cdsetor'  value='"+cdsetor+"'> </td>"+
+        "<td>"+nmlocal+"<input type='hidden' name='cdlocalidade[]' value='"+cdlocal+"'> </td>"+
         "<td>"+datain+"<input type='hidden' name='datain[]' value='"+datain+"'> </td>"+
         "<td>"+usuari+"<input type='hidden' name='usuario[]' value='"+usuari+"'> </td>"+
         "<td><a href='#div' class='btn btn-danger btn-remove btn-xs'>remover</a></td>"+
         "</tr>";
-    $('.tbody').append( linha );
+    //$('.tbody').append( linha );
+    $( linha ).prependTo( '.tbody' );
+    $("#setor option:first").attr('selected','selected');
+    $('#localidade').val($("#localidade option:first").val());
+    $('#datain').val('');
+    $('#responsavel').val($("#responsavel option:first").val());
 
     $(".tbody").on("click", ".btn-remove", function(e){
         $(this).closest('tr').remove();
@@ -421,3 +488,49 @@ $('.refr-fabr').on('click', function () {
 $('.refr-fornecedor').on('click', function () {
     getProprietario(    0);
 });
+
+function verifyFieldsTable() {
+
+    var tudoOk = false;
+    var setor  = $( '#setor' );
+    var local  = $( '#localidade' );
+    var data   = $( '#datain' );
+    var resp   = $( '#responsavel' );
+
+    if( (setor.val() === '%' || local.val() === "%") ||
+        ( data.val( ) === '__/__/___'  || data.val( ) === '' ) ||
+        ( resp.val() === null || resp.val() === "%"  ) ){
+
+        if( setor.val() === '%' ){
+            $('#setor_chosen').addClass( 'required' );
+            setor.trigger( "chosen:activate" );
+            setor.attr('title','Por favor escolha uma opção');
+
+        }
+
+        if( local.val() === '%' ){
+            $('#localidade_chosen').addClass( 'required' );
+            local.trigger( "chosen:activate" );
+            local.attr('title','Por favor escolha uma opção');
+
+        }
+
+        if( data.val( ) === '__/__/___'  || data.val( ) === '' ){
+            $('.data').addClass( 'has-error' );
+            data.focus();
+
+        }
+
+        if( resp.val() === null || resp.val() === "%"  ){
+            $('#responsavel_chosen').addClass( 'required' );
+            resp.trigger( "chosen:activate" );
+            resp.attr('title','Por favor escolha uma opção');
+
+        }
+
+    }else{
+        tudoOk = true;
+    }
+    return tudoOk;
+
+}

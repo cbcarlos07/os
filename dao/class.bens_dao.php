@@ -6,32 +6,46 @@
  * Date: 05/07/2017
  * Time: 11:41
  */
+
 class bens_dao
 {
   public function getListaBens( $localidade, $setor, $proprietario, $item ){
       require_once 'class.connection_factory.php';
-      $row = array();
+
       $con = new connection_factory();
       $conn = $con->getConnection();
 
-      $query = "SELECT B.CD_BEM
-                      ,B.DS_ITEM
-                      ,S.NM_SETOR
-                    ,L.DS_LOCALIDADE
-                    ,B.PROPRIETARIO
-                    ,B.NR_PATRIMONIO 
-                FROM DTI_BEM_PATRIMONIAL B
-                    ,SETOR S
-                    ,LOCALIDADE L
-                 WHERE S.CD_SETOR = B.CD_SETOR
-                  AND  L.CD_LOCALIDADE = B.CD_LOCALIDADE   
-                  AND  L.CD_LOCALIDADE LIKE :localidade
-                  AND  S.CD_SETOR      LIKE :setor
-                  AND  B.PROPRIETARIO  LIKE :proprietario
-                  AND  B.CD_BEM        LIKE :item ";
+      $query = "SELECT D.CD_BEM 
+                      ,D.DS_ITEM
+                      ,MAX(B.CD_HISTORICO)
+                      ,MAX(B.CD_SETOR) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO)
+                      ,MAX(S.NM_SETOR) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO)      NM_SETOR
+                      ,MAX(B.CD_LOCALIDADE) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO) 
+                      ,MAX(L.DS_LOCALIDADE) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO) DS_LOCALIDADE
+                      ,MAX(B.DT_ENTRADA) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO)
+                      ,D.PROPRIETARIO
+                      ,F.NM_FANTASIA NM_FORNECEDOR
+                    FROM DTI_BEM_PATRIMONIAL D
+                      ,DTI_BEM_HISTORICO   B
+                      ,DBAMV.SETOR         S
+                      ,DBAMV.LOCALIDADE    L
+                      ,DBAMV.FORNECEDOR    F
+                    WHERE B.CD_BEM         =    D.CD_BEM 
+                    AND   S.CD_SETOR       =    B.CD_SETOR
+                    AND   L.CD_LOCALIDADE  =    B.CD_LOCALIDADE
+                    AND   F.CD_FORNECEDOR  =    D.PROPRIETARIO
+                    AND   D.CD_BEM        LIKE  :item
+                    AND   D.PROPRIETARIO  LIKE  :proprietario
+                    AND   B.CD_SETOR      LIKE  :setor
+                    AND   B.CD_LOCALIDADE LIKE  :localidade
+                    
+                    GROUP BY D.CD_BEM 
+                      ,D.DS_ITEM
+                      ,D.PROPRIETARIO
+                      ,F.NM_FANTASIA";
       $vetor = array();
       try{
-
+          //echo "Item pesq: ".$item;
           $stmt = oci_parse( $conn, $query );
           $localidade   = "%$localidade%";
           $setor        = "%$setor%";
@@ -45,14 +59,13 @@ class bens_dao
           //$vetor = oci_fetch_array( $stmt, OCI_ASSOC );
          while ( $row = oci_fetch_array( $stmt, OCI_ASSOC ))
           {
-
+              //echo "Item: ".$row['NM_SETOR'];
               $vetor[] = array(
                   "cd_bem"          => $row['CD_BEM'],
                   "ds_item"         => $row['DS_ITEM'],
                   "nm_setor"        => $row['NM_SETOR'],
                   "ds_localiade"    => $row['DS_LOCALIDADE'],
-                  "proprietario"    => $row['PROPRIETARIO'],
-                  "nr_patrimonio"   => $row['NR_PATRIMONIO']
+                  "proprietario"    => $row['NM_FORNECEDOR']
               );
           }
 
@@ -71,17 +84,7 @@ class bens_dao
         $con = new connection_factory();
         $conn = $con->getConnection();
 
-        $query = "SELECT B.CD_BEM
-                      ,B.DS_ITEM
-                      ,S.NM_SETOR
-                    ,L.DS_LOCALIDADE
-                    ,B.PROPRIETARIO
-                    ,B.NR_PATRIMONIO 
-                FROM DTI_BEM_PATRIMONIAL B
-                    ,SETOR S
-                    ,LOCALIDADE L
-                 WHERE S.CD_SETOR = B.CD_SETOR
-                  AND  L.CD_LOCALIDADE = B.CD_LOCALIDADE   ";
+        $query = "SELECT * FROM DTI_BEM_PATRIMONIAL ";
         $vetor = array();
         try{
 
@@ -92,13 +95,10 @@ class bens_dao
             while ( $row = oci_fetch_array( $stmt, OCI_ASSOC ))
             {
 
+                //echo "DS_ITEM: ".$row['DS_ITEM']."\n";
                 $vetor[] = array(
                     "cd_bem"          => $row['CD_BEM'],
-                    "ds_item"         => $row['DS_ITEM'],
-                    "nm_setor"        => $row['NM_SETOR'],
-                    "ds_localiade"    => $row['DS_LOCALIDADE'],
-                    "proprietario"    => $row['PROPRIETARIO'],
-                    "nr_patrimonio"   => $row['NR_PATRIMONIO']
+                    "ds_item"         => $row['DS_ITEM']
                 );
             }
 
@@ -144,13 +144,13 @@ class bens_dao
         $con = new connection_factory();
         $conn = $con->getConnection();
         $query = " UPDATE DTI_BEM_PATRIMONIAL SET 
-                   DS_ITEM       = :item
-                  ,PROPRIETARIO  = :proprietario 
-                  ,NR_SERIE      = :serie
-                  ,NR_PATRIMONIO = :patrimonio                  
-                  ,CD_TIPO_EQUIPAMENTO = tipo
-                  ,CD_FABRICANTE = :fabricante  
-                  WHERE CD_BEM = :codigo";
+                   DS_ITEM             = :item
+                  ,PROPRIETARIO        = :proprietario 
+                  ,NR_SERIE            = :serie
+                  ,NR_PATRIMONIO       = :patrimonio                  
+                  ,CD_TIPO_EQUIPAMENTO = :tipo
+                  ,CD_FABRICANTE       = :fabricante  
+                  WHERE CD_BEM         = :codigo";
         try{
             $stmt = ociparse( $conn, $query );
             oci_bind_by_name( $stmt, ":codigo", $bem[0] );
@@ -218,12 +218,13 @@ class bens_dao
           $teste = ociexecute( $stmt );
           if ( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
               $vetor[] = array(
-                  "cd_bem"          => $row['CD_BEM'],
-                  "ds_item"         => $row['DS_ITEM'],
-                  "cd_setor"        => $row['CD_SETOR'],
-                  "cd_localidade"    => $row['CD_LOCALIDADE'],
-                  "proprietario"    => $row['PROPRIETARIO'],
-                  "nr_patrimonio"   => $row['NR_PATRIMONIO']
+                  "cd_bem"               => $row['CD_BEM'],
+                  "ds_item"              => $row['DS_ITEM'],
+                  "proprietario"         => $row['PROPRIETARIO'],
+                  "nr_patrimonio"        => $row['NR_PATRIMONIO'],
+                  "nr_serie"             => $row['NR_SERIE'],
+                  "cd_tipo_equipamento"  => $row['CD_TIPO_EQUIPAMENTO'],
+                  "cd_fabricante"        => $row['CD_FABRICANTE']
               );
           }
       }catch ( PDOException  $exception ){

@@ -6,6 +6,11 @@
  * Date: 05/07/2017
  * Time: 11:41
  */
+
+ini_set('display_errors',1);
+ini_set('display_startup_erros',1);
+error_reporting(E_ALL);
+
 class bemHistorico_dao
 {
   public function getListaHistorico( $bem ){
@@ -17,7 +22,7 @@ class bemHistorico_dao
       $query = "SELECT  D.CD_HISTORICO
                        ,D.CD_BEM
                        ,D.CD_SETOR
-                       ,S.NM_SETOR  
+                       ,S.NM_NM_SETOR  
                        ,D.CD_LOCALIDADE
                        ,L.DS_LOCALIDADE
                        ,TO_CHAR(D.DT_ENTRADA, 'DD/MM/YYYY') ENTRADA
@@ -28,6 +33,7 @@ class bemHistorico_dao
                   WHERE D.CD_SETOR = S.CD_SETOR    
                   AND   L.CD_LOCALIDADE = D.CD_LOCALIDADE
                   AND   D.CD_BEM = :bem
+                  ORDER BY 1 DESC
   ";
       $vetor = array();
       try{
@@ -41,7 +47,7 @@ class bemHistorico_dao
 
               $vetor[] = array(
                   "cd_bem"          => $row['CD_BEM'],
-                  "cd_setor"        => $row['DS_ITEM'],
+                  "cd_setor"        => $row['CD_SETOR'],
                   "nm_setor"        => $row['NM_SETOR'],
                   "cd_localidade"   => $row['CD_LOCALIDADE'],
                   "ds_localidade"   => $row['DS_LOCALIDADE'],
