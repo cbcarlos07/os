@@ -81,7 +81,7 @@
 		  <div class="col-md-8 " style="background: #ffffff">
               
               <div class="col-md-11">
-                  <form class="formulario">
+                  <form class="formulario" method="post" onsubmit="return false;">
 
 
                       <div class="col-md-12"></div>
@@ -90,7 +90,7 @@
                       <div class="form-group col-lg-3">
                           <input  type="hidden" id="acao" value="A"  />
                           <label for="codigo" >C&oacute;digo do Bem</label>
-                          <input  class="form-control" id="codigo" placeholder="C&oacute;d" disabled />
+                          <input  class="form-control" id="codigo" name="codigo" placeholder="C&oacute;d" disabled />
                       </div>
                       <div class="row"></div>
                       <div class="form-group col-lg-5 item">
@@ -99,7 +99,7 @@
                       </div>
 
                       <div class="row"></div>
-                      <div class="form-group col-lg-3 ">
+                      <div class="form-group col-lg-3 serie">
                           <label for="serie" >N&ordm; de S&eacute;rie</label>
                           <input  class="form-control" id="serie" placeholder="N&ordm; de S&eacute;rie" required  />
                       </div>
@@ -136,7 +136,7 @@
                               <div class="form-group col-lg-4 setor">
                                   <label for="setor" >Setor</label>
                                   <select  class="form-control" id="setor" data-placeholder="Selecione o setor" >
-                                      <option value='%'></option>
+                                      <option value=''></option>
                                   </select>
                               </div>
 
@@ -144,18 +144,18 @@
                               <div class="form-group col-lg-4 localizacao">
                                   <label for="localidade" >Localiza&ccedil;&atilde;o</label>
                                   <select  class="form-control" id="localidade" data-placeholder="Selecione o local" >
-                                      <option value='%'></option>
+                                      <option value=''></option>
                                   </select>
                               </div>
                               <div class="row"></div>
                               <div class="form-group col-lg-3 data">
                                   <label for="datain" >Data de Entrada</label>
-                                  <input  class="form-control" id="datain" placeholder="Data de Entrada" required  />
+                                  <input  class="form-control" id="datain" placeholder="Data de Entrada"   />
                               </div>
                               <div class="form-group col-lg-5 responsavel">
                                   <label for="responsavel" >Respons&aacute;vel</label>
-                                  <select  class="form-control" id="responsavel" data-placeholder="Respons&aacute;vel" >
-                                      <option value='%'></option>
+                                  <select  class="form-control" id="responsavel" data-placeholder="Respons&aacute;vel"  >
+                                      <option value=''></option>
                                   </select>
                               </div>
 
@@ -163,8 +163,11 @@
 
 
 
-
-                              <div>
+                              <br />
+                              <br />
+                              <br />
+                              <div class="row">
+                                  <span class="table_error" style="color: red; text-align: center" ></span>
                                   <table class="table table-responsive table-stripped">
                                       <thead>
                                         <tr>
@@ -187,8 +190,8 @@
                       <div class="row"></div>
                       <div class="form-group col-lg-5 ">
                           <label for="proprietario" >Propriet&aacute;rio</label>
-                          <select  class="form-control" id="proprietario" data-placeholder="Selecione o Propriet&aacute;rio" >
-                              <option value='%'></option>
+                          <select  class="form-control" id="proprietario"  data-placeholder="Selecione o Propriet&aacute;rio" required>
+                              <option value=''></option>
                           </select>
                       </div>
                       <div class="col-lg-1">
@@ -196,13 +199,13 @@
                       </div>
 
                       <div class="row"></div>
-                      <div class="form-group col-lg-5 ">
+                      <div class="form-group col-lg-5 patrimonio">
                           <label for="patrimonio" >N&uacute;mero do Patrim&ocirc;nio</label>
-                          <input  class="form-control" id="patrimonio" placeholder="N&uacute;mero do Patrim&ocirc;nio" required  />
+                          <input  class="form-control" id="patrimonio" name="patrimonio" placeholder="N&uacute;mero do Patrim&ocirc;nio" required  />
                       </div>
                       <div class="row"></div>
                       <div class="col-lg-12">
-                          <a href="#" class="btn btn-success btn-salvar">Salvar</a>
+                          <button type="submit" class="btn btn-success btn-salvar">Salvar</button>
                           <a href="#" class="btn btn-warning btn-cancelar">Cancelar</a>
                       </div>
 

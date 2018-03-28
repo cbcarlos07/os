@@ -53,6 +53,7 @@
        // $system = 0;
         session_start();
 
+
         if( $teste ==  1){
 
             $sistema = $osController->verificaPapelUsuario( $usuario );
@@ -64,6 +65,7 @@
             $_SESSION['sistema'] = $sistema;
             $_SESSION['usuario'] = $usuario;
             $_SESSION['funcionario'] = $cdFunc;
+           // $_SESSION['versao']      = 'v2.7.0';
 
         }
         echo json_encode(array("sucesso" => $teste));

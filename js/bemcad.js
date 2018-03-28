@@ -105,7 +105,7 @@ function getSetor() {
             acao : 'S'
         },
         success : function (data) {
-            var option = "<option value='%'></option>";
+            var option = "<option value=''></option>";
           //   console.log( data );
             $.each( data.setor, function ( i, j ) {
                 //console.log( j.nmsetor );
@@ -188,7 +188,7 @@ function getProprietario( usuario ) {
             acao : 'H'
         },
         success : function (data) {
-            var option = "";
+            var option = "<option value=''></option>";
             // console.log( data );
             $.each( data, function ( i, j ) {
                 //console.log( j.usuario );
@@ -203,10 +203,69 @@ function getProprietario( usuario ) {
 }
 
 $('.btn-salvar').on('click', function () {
+   // verificarCampos()
+        if( verificarCampos() ){
+            salvar();
+        }
 
-        salvar();
 
 });
+
+function verificarCampos() {
+
+    var item          = $('#item');
+    var serie         = $('#serie');
+    var tipo          = $('#tipo');
+    var fabricante    = $('#fabricante');
+    var proprietario  = $('#proprietario');
+    var patrimonio    = $('#patrimonio');
+
+    var retorno = false;
+    console.log( "Tabela: "+ $(".tbody tr").length ) ;
+    if( ( item.val() === "" || serie.val() === "" ) || ( tipo.val() === null || fabricante.val() == null ) ||
+        ( ( proprietario.val() === null || proprietario.val() === "" ) ||  patrimonio.val() === '' )
+        || ( $(".tbody tr").length  === 0 ) ){
+
+        if( item.val() === "" ){
+            $('.item').addClass( 'has-error' );
+        }
+
+        if( serie.val() === "" ){
+            $('.serie').addClass( 'has-error' );
+        }
+
+        if( tipo.val() === null ){
+            removerClass( '#tipo_chosen', 1 );
+        }
+
+        if( fabricante.val() === null ){
+            removerClass( '#fabricante_chosen', 1 );
+        }
+
+        if( proprietario.val() === null || proprietario.val() === "" ){
+            removerClass( '#proprietario_chosen', 1 );
+        }
+        if( patrimonio.val() === "" ){
+            $('.patrimonio').addClass( 'has-error' );
+        }
+        if( $(".tbody tr").length == 0 ){
+            $('span.table_error').text('Tabela não possui dados');
+        }
+
+    }else{
+        $('.item').removeClass( 'has-error' );
+        $('.serie').removeClass( 'has-error' );
+        removerClass( '#tipo_chosen', 0 );
+        removerClass( '#fabricante_chosen', 0 );
+        removerClass( '#proprietario_chosen', 0 );
+        $('.patrimonio').removeClass( 'has-error' );
+        $('span.table_error').text('');
+        retorno = true;
+    }
+
+    return retorno;
+}
+
 function salvar() {
     var codigo        = $('#codigo').val();
     var item          = $('#item').val();
@@ -335,7 +394,7 @@ function comboBoxTipoEquipamento( codigo ) {
         success : function (data) {
 
             //  var option = "<option value='%'></option>";
-              var option = "";
+              var option = "<option value=''></option>";
               $.each( data, function (i, j) {
                   option += "<option value='"+j.cd_tipo_equipamento+"'>"+j.ds_tipo_equipamento+"</option>";
               } );
@@ -366,8 +425,8 @@ function comboBoxFabricante( codigo ) {
         },
         success : function (data) {
 
-            //  var option = "<option value='%'></option>";
-            var option = "";
+              var option = "<option value=''></option>";
+            //var option = "";
             $.each( data, function (i, j) {
                 option += "<option value='"+j.cd_fabricante+"'>"+j.nm_fabricante+"</option>";
             } );
@@ -397,7 +456,7 @@ function comboBoxUsuarios( codigo ) {
         },
         success : function (data) {
 
-              var option = "<option value='%'></option>";
+              var option = "<option value=''></option>";
             //var option = "";
             $.each( data.usuarios, function (i, j) {
                 option += "<option value='"+j.usuario+"'>"+j.nome+"</option>";
@@ -457,11 +516,12 @@ function adicionarItemTable() {
     $('#localidade').val($("#localidade option:first").val());
     $('#datain').val('');
     $('#responsavel').val($("#responsavel option:first").val());
-
+    $('span.table_error').text('');
     $(".tbody").on("click", ".btn-remove", function(e){
         $(this).closest('tr').remove();
 
     });
+
 
 
 }
@@ -497,18 +557,18 @@ function verifyFieldsTable() {
     var data   = $( '#datain' );
     var resp   = $( '#responsavel' );
 
-    if( (setor.val() === '%' || local.val() === "%") ||
+    if( (setor.val() === '' || local.val() === "") ||
         ( data.val( ) === '__/__/___'  || data.val( ) === '' ) ||
-        ( resp.val() === null || resp.val() === "%"  ) ){
+        ( resp.val() === null || resp.val() === ""  ) ){
 
-        if( setor.val() === '%' ){
+        if( setor.val() === '' ){
             $('#setor_chosen').addClass( 'required' );
             setor.trigger( "chosen:activate" );
             setor.attr('title','Por favor escolha uma opção');
 
         }
 
-        if( local.val() === '%' ){
+        if( local.val() === '' ){
             $('#localidade_chosen').addClass( 'required' );
             local.trigger( "chosen:activate" );
             local.attr('title','Por favor escolha uma opção');
@@ -530,7 +590,22 @@ function verifyFieldsTable() {
 
     }else{
         tudoOk = true;
+        removerClass( '#setor_chosen',0 );
+        removerClass( '#localidade_chosen',0 );
+        removerClass( '#responsavel_chosen',0 );
+
     }
     return tudoOk;
 
 }
+
+function removerClass( id, op ) {
+    if( op === 1  ){
+        $(id).addClass( 'required' );
+    }else{
+        $(id).removeClass( 'required' );
+    }
+
+}
+
+

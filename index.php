@@ -1,6 +1,13 @@
+<?php
+include_once __DIR__.'/../vendor/autoload.php';
+$dotenv = new \Dotenv\Dotenv(__DIR__."/../");
+$dotenv->load();
+define("VERSAO", getenv('VERSAO') );
+?>
 <!DOCTYPE html>
 <html>
   <head>
+
     <title>Ordem de Servi&ccedil;o</title>
 	  <link rel="short icon" href="images/ham.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +39,7 @@
 				<div class="col-md-12">
 					<!-- Logo -->
 					<div class="logo">
-						<h1><a href="index.html">Ordem de Servi&ccedil;o v2.7.0</a></h1>
+						<h1><a href="index.html">Ordem de Servi&ccedil;o <?= VERSAO ?></a></h1>
 					</div>
 				</div>
 			</div>

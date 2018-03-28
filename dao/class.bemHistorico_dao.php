@@ -22,7 +22,7 @@ class bemHistorico_dao
       $query = "SELECT  D.CD_HISTORICO
                        ,D.CD_BEM
                        ,D.CD_SETOR
-                       ,S.NM_NM_SETOR  
+                       ,S.NM_SETOR  
                        ,D.CD_LOCALIDADE
                        ,L.DS_LOCALIDADE
                        ,TO_CHAR(D.DT_ENTRADA, 'DD/MM/YYYY') ENTRADA
