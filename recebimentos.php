@@ -76,14 +76,16 @@
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/bootstrap.min.js"></script>
 
 
 
     <?php include "includes/js_bottom.php" ?>
+  <script src="js/custom.js"></script>
+  <script src="js/recebimentos.js"></script>
 
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/recebimentos.js"></script>
 
 
 

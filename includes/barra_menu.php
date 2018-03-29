@@ -59,6 +59,21 @@
                     </span>
                     </a>
                 </li>
+
+                <li class="submenu">
+                    <a href="#">
+                        <i class="glyphicon glyphicon-list"></i> Bens Patrimoniais
+                        <span class="caret pull-right"></span>
+                    </a>
+                    <!-- Sub menu -->
+                    <ul>
+                        <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>
+                        <li><a href="fornecedor.php" class="fornecedor" ><i class="glyphicon glyphicon-folder-close"></i>Fornecedor</a></li>
+                        <li><a href="tipo.php" class="fornecedor" ><i class="glyphicon glyphicon-record"></i>Tipo de Patrim&ocirc;nio</a></li>
+                        <li><a href="fabricante.php" class="fornecedor" ><i class="glyphicon glyphicon-book"></i>Fabricante</a></li>
+                    </ul>
+                </li>
+
              <?php
                 if ( $_SESSION['sistema'] == 201 ) {
 
@@ -74,10 +89,9 @@
                     ?>
 
 
-                 <li><a href="bem.php" class="bens" ><i class="glyphicon glyphicon-list"></i>Bens Patrimoniais</a></li>
-                 <li><a href="fornecedor.php" class="fornecedor" ><i class="glyphicon glyphicon-list"></i>Fornecedor</a></li>
-                 <li><a href="tipo.php" class="fornecedor" ><i class="glyphicon glyphicon-list"></i>Tipo de Patrim&ocirc;nio</a></li>
-                 <li><a href="fabricante.php" class="fornecedor" ><i class="glyphicon glyphicon-list"></i>Fabricante</a></li>
+                
+
+
                 <?php
             }else{
                 //nao fazem parte do setor de informática

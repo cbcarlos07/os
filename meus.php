@@ -189,6 +189,7 @@
 
 
     <?php include "includes/js_bottom.php" ?>
+  <script src="js/custom.js"></script>
   <script src="js/meus.js"></script>
 
 

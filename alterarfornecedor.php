@@ -150,6 +150,7 @@
           } );
 
     </script>
+    <script src="js/custom.js"></script>
     <script src="js/cadfornecedor.js"></script>
 
 

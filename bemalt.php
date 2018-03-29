@@ -230,6 +230,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.datetimepicker.full.js"></script>
     <script src="js/chosen.jquery.js"></script>
+    <script src="js/custom.js"></script>
     <script src="js/bemcad.js"></script>
     <script>
           $('#localidade').chosen( {

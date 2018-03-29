@@ -344,12 +344,14 @@ Meu IP: 192.168.1.1" ></textarea>
     <?php include "includes/js_bottom.php" ?>
 
     <script src="js/jquery.js"></script>
+
     <script src="js/bootstrap.min.js"></script>
     <script src="js/chosen.jquery.js"></script>
     <script>
           $('#setor').chosen( {allow_single_deselect: true} );
           $('#solicitante').chosen( {allow_single_deselect: true} );
     </script>
+    <script src="js/custom.js"></script>
     <script src="js/solicitar.js"></script>
 
 
