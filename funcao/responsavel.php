@@ -5,7 +5,9 @@
  * Date: 18/07/2017
  * Time: 11:37
  */
-
+ini_set('display_errors',1);
+ini_set('display_startup_erros',1);
+error_reporting(E_ALL);
 $acao = $_POST['acao'];
 $_cdOficina = 0;
 $_cdEspec   = 0;
@@ -46,22 +48,10 @@ switch ($acao){
 
 function getListResponsaveis(  ){
     require_once "../controller/class.os_controller.php";
-    require_once "../beans/class.usuario.php";
-    require_once "../services/class.usuario_list_iterator.php";
 
     $os_controller = new os_controller();
     $lista = $os_controller->getListaResponsaveis(  );
-    $usuarioList = new usuario_list_iterator( $lista );
-    $usuarios = array();
-    while ( $usuarioList->hasNextUsuario() ){
-        $usuario = $usuarioList->getNextUsuario();
-        $usuarios[] = array(
-            "nome" => $usuario->getNmUsuario(),
-            "cdusuario" => $usuario->getCdUsuario()
-        );
-    }
-
-    echo json_encode(array("usuarios" => $usuarios));
+    echo json_encode( $lista ) ;
 
 }
 
@@ -92,22 +82,10 @@ function getListResponsaveis(  ){
 
         function getListFunc(  ){
             require_once "../controller/class.os_controller.php";
-            require_once "../beans/class.funcionario.php";
-            require_once "../services/class.funcionario_list_iterator.php";
 
             $os_Controller = new os_controller();
             $lista = $os_Controller->getListFuncionario();
-            $funcList = new funcionario_list_iterator( $lista );
-            $funcionarios = array();
-            while ( $funcList->hasNextFuncionario() ){
-                $funcionario = $funcList->getNextFuncionario();
-                $funcionarios[] = array(
-                    "codigo"  => $funcionario->getCdFuncionario(),
-                    "nome"    => $funcionario->getNmFuncionario()
-                );
 
-            }
-
-            echo json_encode( array( "funcionarios" => $funcionarios ) );
+            echo json_encode( $lista );
 
         }

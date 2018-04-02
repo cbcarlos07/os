@@ -447,6 +447,7 @@
     <script src="js/chosen.jquery.js"></script>
     <script src="js/bootstrap.fd.js"></script>
     <script src="js/chamados2.js"></script>
+    <script src="js/custom.js"></script>
     <script>
 
           $('#solicitante').chosen( {

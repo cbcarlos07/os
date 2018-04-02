@@ -129,6 +129,11 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/chosen.jquery.js"></script>
+
+      <script src="js/jquery.dataTables.min.js"></script>
+      <script src="js/dataTables.bootstrap.min.js"></script>
+      <script src="js/jquery.slimscroll.min.js"></script>
+      <script src="js/fastclick.js"></script>
     <script>
         $('#responsavel').chosen( {allow_single_deselect: true} );
         $('#oficina').chosen( {allow_single_deselect: true} );

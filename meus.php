@@ -39,6 +39,7 @@
   <link href="css/font-awesome.css" rel="stylesheet" type="text/css" />
   <link href="css/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
   <link href="css/bootstrap-chosen.css" rel="stylesheet" type="text/css" />
+  <link href="css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
   <div class="linear-progress-material" style="display: block;">
       <div class="bar bar1"></div>
       <div class="bar bar2"></div>
@@ -168,6 +169,10 @@
     <script src="js/jquery.datetimepicker.full.js"></script>
 
     <script src="js/chosen.jquery.js"></script>
+    <script src="js/jquery.dataTables.min.js"></script>
+    <script src="js/dataTables.bootstrap.min.js"></script>
+    <script src="js/jquery.slimscroll.min.js"></script>
+    <script src="js/fastclick.js"></script>
     <script>
         $('#responsavel').chosen( {allow_single_deselect: true} );
         $('#oficina').chosen( {allow_single_deselect: true} );

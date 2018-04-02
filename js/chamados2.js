@@ -1602,7 +1602,7 @@ dataFinal.on('blur', function () {
 
 
         function preencherTabelaServicos( situacao ) {
-            $('.tabela').fadeOut();
+           // $('.tabela').fadeOut();
             var cdOs = $('#cdos').val();
 
             $('.tbody').find('tr').remove();
@@ -1617,6 +1617,7 @@ dataFinal.on('blur', function () {
                 },
                 success : function (data) {
                   //  console.log(data);
+                    var linha = "";
                     $.each( data.itens, function (i, j) {
                      //   console.log("Final:  "+j.final);
                         var string = j.descricao.split( "<br />" );
@@ -1625,13 +1626,13 @@ dataFinal.on('blur', function () {
                             descricao = j.descricao.replace("#HIDE#","");
                         }
 
-                        var linha;
+
                         if( situacao != 'C'){
                             var cor = "";
                             if( j.final != "" )
                                 cor = "#B2EBF2"
 
-                            linha = "<tr bgcolor='" + cor + "'>"
+                            linha += "<tr bgcolor='" + cor + "'>"
                                         +"  <td>" + j.codigo + "</td>"
                                         +"  <td>" + j.servico + "</td>"
                                         +"  <td>" + j.funcionario + "</td>"
@@ -1644,7 +1645,7 @@ dataFinal.on('blur', function () {
                                         +  "</td>"
                                         +"</tr> ";
                         }else{
-                            linha = "<tr>"
+                            linha += "<tr>"
                                             +"  <td>" + j.codigo + "</td>"
                                             +"  <td>" + j.servico + "</td>"
                                             +"  <td>" + j.funcionario + "</td>"
@@ -1653,12 +1654,15 @@ dataFinal.on('blur', function () {
                                             +"  <td>" + j.final + "</td>"
                                             +"  <td>" + j.tempo + "</td>"
                                             +"  <td></td>"
-                                +"</tr> ";
+                                    +"</tr>";
                         }
 
-                        $('.tbody').append( linha );
+
                     } );
-                    $('.tabela').fadeIn();
+                    var tbody = $('.tbody');
+                    tbody.find('tr').remove();
+                    tbody.append( linha )
+                    //$('.tabela').fadeIn();
                 }
 
             });

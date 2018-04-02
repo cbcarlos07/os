@@ -393,20 +393,18 @@ class os_dao
 
     public function getListaResponsaveis(  ){
         require_once "class.connection_factory.php";
-        require_once "../beans/class.usuario.php";
-        require_once "../services/class.usuario_list.php";
         $con = new connection_factory();
         $conn = $con->getConnection();
         $sql =   "SELECT * FROM DBAMV.VIEW_HAM_OS_USUARIOS";
-        $list = new usuario_list();
+        $list = array();
         try {
             $stmt = ociparse( $conn, $sql );
             ociexecute( $stmt );
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $usuario = new usuario();
-                $usuario->setNmUsuario( $row["NM_USUARIO"]);
-                $usuario->setCdUsuario( $row["CD_USUARIO"]);
-                $list->addUsuario($usuario);
+                $list[] = array(
+                    'nm_usuario'  => $row["NM_USUARIO"],
+                    'cd_usuario'  => $row["CD_USUARIO"]
+                );
             }
         } catch ( PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
@@ -1231,6 +1229,7 @@ class os_dao
                         AND V.CD_OS          LIKE :codigo
                         AND V.CD_RESPONSAVEL LIKE :responsavel";
             $stmt = oci_parse( $conn, $sql );
+
             oci_bind_by_name( $stmt, "solicitante", $variavel['solicitante'] );
             oci_bind_by_name( $stmt, "setor", $variavel['setor'] );
             oci_bind_by_name( $stmt, "oficina", $variavel['oficina'] );
@@ -1245,6 +1244,7 @@ class os_dao
                 if( isset( $row['DS_SERVICO'] ) )
                     $servico = $row['DS_SERVICO'];
 
+               // echo "Cd os: ".$row['CD_OS'].'<br>';
                 $os[] = array(
 
                     'cd_os'          => $row['CD_OS'],
@@ -1351,7 +1351,6 @@ class os_dao
 
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $os_list = new itemSolicitacaoServico_list();
 
         try {
             $sql = "SELECT * 
@@ -1371,7 +1370,7 @@ class os_dao
             ociexecute( $stmt );
             $osItem = array();
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $os = new itemSolicitacaoServico();
+
 
                 $servico = "";
                 if( isset( $row['DS_SERVICO'] ) )

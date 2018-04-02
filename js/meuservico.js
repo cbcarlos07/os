@@ -123,12 +123,14 @@ function carregarComboResponsavel( usuario ){
             // console.log(data);
           //  $('#responsavel').append( $('<option />').val( '' ) );
 			
-            $.each( data.funcionarios, function (key, value) {
-                if( usuario == value.nome )
-                    codigo = value.codigo;
-                var option  = "<option value='"+ value.codigo +"'>"
-                    + value.nome
-                    +"</option> ";
+            $.each( data, function (key, value) {
+              //  console.log( 'Nome: '+ value.nm_func);
+                if( usuario == value.nm_func )
+                    codigo = value.cd_func;
+
+                var option  = "<option value='"+ value.cd_func +"'>"
+                                        + value.nm_func
+                              +"</option> ";
 
                 $('#responsavel').append(option);
 
@@ -287,16 +289,17 @@ function carregarComboSetor(  ){
 
                        tbody.append(
                            "<tr>"+
-                               "<td><a href='#'  onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
+                               "<td><a href='#'  onclick='obterCodigoOs("+ j.cd_os +")'>"+ j.cd_os + "</a></td>"+
                                "<td>"+ j.chamado + "</td>"+
-                               "<td>"+ j.responsavel + "</td>"+
-                               "<td>"+ j.servico + "</td>"+
-                               "<td>"+ j.descricao.replace("#HIDE#","") + "</td>"+
+                               "<td>"+ j.cd_responsavel + "</td>"+
+                               "<td>"+ j.nm_servico + "</td>"+
+                               "<td>"+ j.ds_servico.replace("#HIDE#","") + "</td>"+
                                "<td>"+ j.inicio + "</td>"+
                                "<td align='center'>"+ status + "</td>"+
                            "</tr>"
                        );
                  });
+              pagingTable();
 
           }
       });
@@ -304,8 +307,23 @@ function carregarComboSetor(  ){
 
 
   }
-  
-   $('.btn-limpar').on('click', function(){
+
+function pagingTable() {
+    $('.table').DataTable({
+        'paging'      : true,
+        'lengthChange': false,
+        'searching'   : false,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : false,
+        "pageLength": 10,
+        "retrieve": true
+
+    });
+}
+
+
+$('.btn-limpar').on('click', function(){
 	   carregarTabela();
 	   $("#setor").val( '%' ).trigger( "chosen:updated" );
    }); 
@@ -329,6 +347,7 @@ function carregarComboSetor(  ){
 
 				   },
 				  success : function (data) {
+				      // console.log( data );
 						 var tbody = $('#t-meus');
 						 tbody.find('tr').remove();
 						 $.each( data, function (i, j) {
@@ -343,18 +362,18 @@ function carregarComboSetor(  ){
 
                              tbody.append(
 								   "<tr>"+
-                                       "<td><a href='#'  onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
+                                       "<td><a href='#'  onclick='obterCodigoOs("+ j.cd_os +")'>"+ j.cd_os + "</a></td>"+
                                        "<td>"+ j.chamado + "</td>"+
-                                       "<td>"+ j.responsavel + "</td>"+
-                                       "<td>"+ j.servico + "</td>"+
-                                       "<td>"+ j.descricao.replace("#HIDE#","") + "</td>"+
+                                       "<td>"+ j.cd_responsavel + "</td>"+
+                                       "<td>"+ j.nm_servico + "</td>"+
+                                       "<td>"+ j.ds_servico.replace("#HIDE#","") + "</td>"+
                                        "<td>"+ j.inicio + "</td>"+
                                        "<td>"+ status + "</td>"+
 								   "</tr>"
 							   );
 						 });
 						 
-						
+						pagingTable();
 
 				  }
 			  });

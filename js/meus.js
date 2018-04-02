@@ -132,19 +132,22 @@ function carregarComboResponsavel( usuario ){
         },
         success : function (data) {
 
-            // console.log(data);
-//            $('#responsavel').append( $('<option />').val( '%' ).text( "SELECIONE" ) );
+        //    console.log(data);
+            var option = "";
 			
-            $.each( data.usuarios, function (key, value) {
+            $.each( data, function (key, value) {
 
-                var option  = "<option value='"+ value.cdusuario +"'>"
-                    + value.nome
-                    +"</option> ";
+                 option  += "<option value='"+ value.cd_usuario +"'>"
+                    + value.nm_usuario
+                    +"</option>";
 
-                $('#responsavel').append(option);
+
 
             } );
-            $('#responsavel').val( usuario ).trigger("chosen:updated");
+            var responsavel = $('#responsavel');
+            responsavel.find('option').remove();
+            responsavel.append( option );
+            responsavel.val( usuario ).trigger("chosen:updated");
         }
 
     });
@@ -354,30 +357,33 @@ $('#chk_sit').on('click', function () {
 
             },
             success : function (data) {
+
                 var btn = $('.btn-consultar');
                 btn.empty().html('Consultar');
                 var tbody = $('#t-meus');
                 tbody.find('tr').remove();
+                console.log( data );
                 $.each( data, function (i, j) {
                     var cor = "";
                     var title = "";
-                    if( j.situacao == 'C' ) {
+                    if( j.tp_situacao == 'C' ) {
                         cor = "#B2EBF2";
                         title = "Conclu&iacute;do";
                     }
                     tbody.append(
                         "<tr bgcolor='"+ cor +"'>"+
-                            "<td><a href='#' title='"+ title +"' onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
+                            "<td><a href='#' title='"+ title +"' onclick='obterCodigoOs("+ j.cd_os +")'>"+ j.cd_os + "</a></td>"+
                             "<td>"+ j.prioridade + "</td>"+
-                            "<td>"+ j.setor + "</td>"+
-                            "<td>"+ j.responsavel + "</td>"+
-                            "<td>"+ j.servico + "</td>"+
-                            "<td>"+ j.solicitacao + "</td>"+
-                            "<td>"+ j.espera + "</td>"+
+                            "<td>"+ j.nm_setor + "</td>"+
+                            "<td>"+ j.cd_responsavel + "</td>"+
+                            "<td>"+ j.ds_servico + "</td>"+
+                            "<td>"+ j.dt_pedido + "</td>"+
+                            "<td>"+ j.time_ + "</td>"+
                         "</tr>"
                     );
                 });
 
+                pagingTable();
             }
         });
 
@@ -426,6 +432,7 @@ $('#chk_sit').on('click', function () {
                  //console.log( data );
                  var tbody = $('#t-meus');
                  tbody.find('tr').remove();
+
                  $.each( data, function (i, j) {
                        tbody.append(
                            "<tr>"+
@@ -439,6 +446,7 @@ $('#chk_sit').on('click', function () {
                            "</tr>"
                        );
                  });
+              pagingTable();
 
           }
       });
@@ -498,7 +506,7 @@ $('#chk_sit').on('click', function () {
 							   );
 						 });
 						 
-						
+	                    pagingTable();
 
 				  }
 			  });
@@ -512,7 +520,23 @@ $('#chk_sit').on('click', function () {
 
   }
 
-  function obterCodigoOs( id ){
+
+function pagingTable() {
+    $('.table').DataTable({
+        'paging'      : true,
+        'lengthChange': false,
+        'searching'   : false,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : false,
+        "pageLength": 10,
+        "retrieve": true
+
+    });
+}
+
+
+function obterCodigoOs( id ){
 	  console.log('obterCodigoOs');
 	  var formulario = $('<form action="cadastro2.php" method="post">'+
 													'<input type="hidden" name="cdos" value="'+ id +'">'+
