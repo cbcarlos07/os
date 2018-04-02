@@ -10,14 +10,10 @@ class os_dao
 {
     public function get_os_solicitadas($pesquisa, $usuario, $inicio, $fim){
         require_once 'class.connection_factory.php';
-        require_once '../services/class.os_list.php';
-        require_once '../beans/class.oficina.php';
-        require_once '../beans/class.setor.php';
-        require_once '../beans/class.usuario.php';
         $con = new connection_factory();
         $conn = $con->getConnection();
 
-        $os_list = new os_list();
+        $os = array();
 
         $query = "SELECT * FROM (
                       SELECT ROWNUM LINHA, OS_.* FROM (
@@ -42,7 +38,7 @@ class os_dao
             oci_bind_by_name($stmt, ":fim", $fim, -1);
             oci_execute($stmt);
             while ( $row = oci_fetch_array($stmt, OCI_ASSOC) ){
-                $os =  new os();
+
                 $observacao = "";
                 if( isset( $row['DS_OBSERVACAO'] ) ){
                     $observacao = $row['DS_OBSERVACAO'];
@@ -52,21 +48,19 @@ class os_dao
                 if( isset( $row['CD_RESPONSAVEL'] ) )
                     $responsavel = $row['CD_RESPONSAVEL'];
 
-                $os->setCdOs($row['CD_OS']);
-                $os->setDataPedido($row['DATA_PEDIDO']);
-                $os->setDescricao($row['DS_SERVICO']);
-                $os->setSituacao($row['TP_SITUACAO']);
-                $os->setSetor( new setor() );
-                $os->getSetor()->setCdSetor( $row['CD_SETOR'] );
-                $os->getSetor()->setNmSetor( $row['NM_SETOR'] );
-                $os->setOficina(new oficina());
-                $os->getOficina()->setCdOficina($row['CD_OFICINA']);
-                $os->getOficina()->setDsOficina($row['DS_OFICINA']);
-                $os->setResponsavel( new usuario() );
-                $os->getResponsavel()->setCdUsuario( $responsavel );
-                $os->setObservacao( $observacao );
+                $os[] =  array(
+                    'cd_os'          => $row['CD_OS'],
+                    'data_pedido'    => $row['DATA_PEDIDO'],
+                    'ds_servico'     => $row['DS_SERVICO'],
+                    'tp_situacao'    => $row['TP_SITUACAO'],
+                    'cd_setor'       => $row['CD_SETOR'],
+                    'nm_setor'       => $row['NM_SETOR'],
+                    'cd_oficina'     => $row['CD_OFICINA'],
+                    'cd_responsavel' => $responsavel,
+                    'ds_observacao'  => $observacao,
 
-                $os_list->addOs($os);
+                );
+
 
 
             }
@@ -74,7 +68,7 @@ class os_dao
         }catch (PDOException $e){
             echo "Erro: ".$e->getMessage();
         }
-        return $os_list;
+        return $os;
 
     }
 
@@ -83,36 +77,32 @@ class os_dao
 
     public function get_chamados_aguardando(){
         require_once 'class.connection_factory.php';
-        require_once '../services/class.os_list.php';
-        require_once '../beans/class.oficina.php';
-        require_once '../beans/class.setor.php';
-        require_once '../beans/class.usuario.php';
         $con = new connection_factory();
         $conn = $con->getConnection();
-
-        $os_list = new os_list();
 
         $query = "SELECT * FROM DBAMV.VIEW_HAM_LISTA_OS_OPEN";
         try{
             $stmt = oci_parse($conn, $query);
+            $os =  array();
             ociexecute( $stmt );
             while ( $row = oci_fetch_array($stmt, OCI_ASSOC) ){
-                $os =  new os();
-                $os->setCdOs($row['CD_OS']);
-                $os->setDataPedido($row['DATA']);
-                $os->setDescricao($row['DS_SERVICO']);
-                $os->setSetor( new setor() );
-                $os->getSetor()->setNmSetor( $row['NM_SETOR'] );
-                $os->setSolicitante( new usuario() );
-                $os->getSolicitante()->setCdUsuario( $row['NM_SOLICITANTE'] );
-            $os->setObservacao( $row['NM_USUARIO'] );;
-                $os_list->addOs($os);
+
+
+                $os[] =  array(
+                    'cd_os'          => $row['CD_OS'],
+                    'data'           => $row['DATA'],
+                    'ds_servico'     => $row['DS_SERVICO'],
+                    'nm_setor'       => $row['NM_SETOR'],
+                    'nm_solicitante' => $row['NM_SOLICITANTE'],
+                    'nm_usuario'     => $row['NM_USUARIO'],
+
+                );
             }
 
         }catch (PDOException $e){
             echo "Erro: ".$e->getMessage();
         }
-        return $os_list;
+        return $os;
 
     }
 
@@ -192,37 +182,27 @@ class os_dao
 
      public function getUltimaSolicitacao( $usuario ){
             require_once "class.connection_factory.php";
-            require_once "../beans/class.os.php";
-            require_once "../beans/class.manuEspec.php";
-            require_once "../beans/class.motServ.php";
-            require_once "../beans/class.manuServ.php";
-            require_once "../beans/class.tipo_os.php";
-            require_once "../beans/class.oficina.php";
-            require_once "../beans/class.usuario.php";
 
-            $solicitacao = null;
+
             $con = new connection_factory();
             $conn = $con->getConnection();
 
 
             $sql =   "SELECT * FROM DBAMV.VIEW_HAM_OS_CHAMADOS V WHERE V.NM_USUARIO = :usuario ";
-
+            $solicitacao = array();
             try {
                $stmt = oci_parse( $conn, $sql );
                oci_bind_by_name( $stmt, ":usuario", $usuario );
+
                oci_execute( $stmt );
                 if( $row = oci_fetch_array( $stmt, OCI_ASSOC )){
-                    $solicitacao = new os();
-                    $solicitacao->setEspecialidade( new manuEspec() );
-                    $solicitacao->getEspecialidade()->setCdEspec( $row['CD_ESPEC'] );
-                    $solicitacao->setTipoOs( new tipo_os() );
-                    $solicitacao->getTipoOs()->setCdTipoOs( $row['CD_TIPO_OS'] );
-                    $solicitacao->setMotServ( new motServ() );
-                    $solicitacao->getMotServ()->setCdMotServ( $row['CD_MOT_SERV'] );
-                    $solicitacao->setOficina( new oficina() );
-                    $solicitacao->getOficina()->setCdOficina( $row['CD_OFICINA'] );
-                    $solicitacao->setResponsavel( new usuario() );
-                    $solicitacao->getResponsavel()->setCdUsuario( $row['CD_RESPONSAVEL'] );
+                    $solicitacao = array(
+                        'cd_espec'        => $row['CD_ESPEC'],
+                        'cd_tipo_os'      => $row['CD_TIPO_OS'],
+                        'cd_mot_serv'     => $row['CD_MOT_SERV'],
+                        'cd_oficina'      => $row['CD_OFICINA'],
+                        'cd_responsavel'  => $row['CD_RESPONSAVEL']
+                    );
 
                 }
                 $con->closeConnection( $conn );
@@ -235,24 +215,22 @@ class os_dao
 
      public function getListIpoOs(){
         require_once "class.connection_factory.php";
-        require_once "../beans/class.tipo_os.php";
-        require_once "../services/class.tipo_os_list.php";
 
-        $tipo_os = null;
+        $tipo_os = array();
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $sql =   " SELECT * FROM DBAMV.TIPO_OS TP WHERE TP.CD_TIPO_OS NOT IN (5, 39, 1,2,3,4,37,41 )";
+    //    $sql =   " SELECT * FROM DBAMV.TIPO_OS TP WHERE TP.CD_TIPO_OS NOT IN (5, 39, 1,2,3,4,37,41 )";
+        $sql =   " SELECT * FROM DBAMV.TIPO_OS TP WHERE TP.CD_TIPO_OS NOT IN (39, 37 )";
 
-        $lista = new tipo_os_list();
         try {
             $stmt = oci_parse( $conn, $sql );
             oci_execute( $stmt );
             while ( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
 
-                $tipo_os = new tipo_os();
-                $tipo_os->setCdTipoOs( $row['CD_TIPO_OS'] );
-                $tipo_os->setDescricao( $row['DS_TIPO_OS'] );
-                $lista->addTipo_Os( $tipo_os );
+                $tipo_os[] = array(
+                    'cd_tipo_os'   => $row['CD_TIPO_OS'],
+                    'ds_tipo_os'   => $row['DS_TIPO_OS']
+                );
             }
             $con->closeConnection( $conn );
 
@@ -260,35 +238,32 @@ class os_dao
             echo "Erro: ".$ex->getMessage();
         }
 
-        return $lista;
+        return $tipo_os;
    }
 
    public function getListEspecialidade(){
         require_once "class.connection_factory.php";
-        require_once "../beans/class.manuServ.php";
-        require_once "../services/class.manuEspec_list.php";
         $con = new connection_factory();
         $conn = $con->getConnection();
 
-        $manuEspec = null;
+        $manuEspec = array();
 
         $sql =   "  SELECT * FROM DBAMV.MANU_ESPEC";
-        $list = new manuEspec_list();
         try {
             $stmt = oci_parse( $conn, $sql );
             oci_execute( $stmt );
 
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $manuEspec = new ManuEspec();
-                $manuEspec->setCdEspec( $row["CD_ESPEC"]);
-                $manuEspec->setDsEspec( $row["DS_ESPEC"]);
-                $list->addManuEspec($manuEspec);
+                $manuEspec[] = array(
+                    'cd_espec'   => $row["CD_ESPEC"],
+                    'ds_espec'   => $row["DS_ESPEC"]
+                );
             }
         } catch ( PDOException $ex) {
            echo "Erro: ".$ex;
         }
 
-        return $list;
+        return $manuEspec;
     }
 
     public function getListMotServ($tipoOs){
@@ -383,8 +358,6 @@ class os_dao
 
     public function getListUsuarioOficina( $oficina ){
       require_once "class.connection_factory.php";
-      require_once "../beans/class.usuario.php";
-      require_once "../services/class.usuario_list.php";
       $con = new connection_factory();
       $conn = $con->getConnection();
       $sql =   "SELECT UF.CD_OFICINA
@@ -398,16 +371,17 @@ class os_dao
                 AND A.CD_OFICINA = UF.CD_OFICINA
                 AND U.CD_USUARIO = UF.CD_USUARIO
                 ORDER BY U.NM_USUARIO";
-        $list = new usuario_list();
+        $list = array();
+
         try {
             $stmt = ociparse( $conn, $sql );
             ocibindbyname( $stmt, ":oficina", $oficina );
             ociexecute( $stmt );
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $usuario = new usuario();
-                $usuario->setNmUsuario( $row["NM_USUARIO"]);
-                $usuario->setCdUsuario( $row["CD_USUARIO"]);
-                $list->addUsuario($usuario);
+                $list[] = array(
+                    'nm_usuario'  => $row["NM_USUARIO"],
+                    'cd_usuario'  => $row["CD_USUARIO"]
+                );
             }
         } catch ( PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
@@ -619,7 +593,7 @@ class os_dao
     }
 
 
-    public function insert_chamado(os $os){
+    public function insert_chamado( $os){
         require_once "class.connection_factory.php";
 
         $retorno = 0;
@@ -633,55 +607,35 @@ class os_dao
                   SN_SOL_EXTERNA,  SN_ORDEM_SERVICO_PRINCIPAL, 
                   SN_PACIENTE, TP_PRIORIDADE, SN_RECEBIDA,  SN_ETIQUETA_IMPRESSA,
                   SN_EMAIL_ENVIADO, TP_CLASSIFICACAO, CD_ESPEC, DS_RAMAL, TP_LOCAL
-                  ,CD_BEM, CD_LOCALIDADE
+                  ,CD_BEM, CD_LOCALIDADE, CD_FORNECEDOR
                  )
                  VALUES 
                 ( :codigo, TO_DATE(:pedido, 'DD/MM/YYYY HH24:MI' ), TO_DATE(:entrega, 'DD/MM/YYYY HH24:MI' ), :solicitante,:setor, 
                   :tipoos, :motserv, :oficina, :servico, :observacao,
                   :responsavel, :situacao, :resolucao, 1, :usuario, SYSDATE, 'S', 'S',
-                 'N', 'E', 'S', 'N', 'N', 'P', 31, :ramal, 'I', :bem, :localidade)";
+                 'N', 'E', 'S', 'N', 'N', 'P', 31, :ramal, 'I', :bem, :localidade, :proprietario)";
 
         try {
 
             $stmt = ociparse($conn, $sql);
-            //System.out.println("Data: "+os.getData_pedido());
-            $dataPedido   = $os->getDataPedido();
-            $dataEntrega  = $os->getPrevisao();
-            $solicitante  = $os->getSolicitante()->getCdusuario();
-            $setor        = $os->getSetor()->getCdSetor();
-            $tipoOs       = $os->getTipoOs()->getCdTipoOs();
-            $motivoServi  = $os->getMotServ()->getCdMotServ();
-            $oficina      = $os->getOficina()->getCdOficina();
-            $descricao    = $os->getDescricao();
-            $observacao   = $os->getObservacao();
-            $responsavel  = $os->getResponsavel()->getCdUsuario();
-            $situacao     = $os->getSituacao();
-            $resolucao    = $os->getResolucao();
-            $usuario      = $os->getUsuario()->getCdUsuario();
-            $ramal        = $os->getDsRamal();
-            $bem          = $os->getBem()->getCodBem();
-            $localidade   = $os->getLocalidade();
-
-            /*echo "OS DAO Bem: $bem \n";
-            echo "OS DAO localidade: $localidade \n";
-            echo "OS DAO tipo os: $tipoOs";*/
             ocibindbyname( $stmt, ":codigo", $codigo );
-            ocibindbyname( $stmt, ":pedido", $dataPedido );
-            ocibindbyname( $stmt, ":entrega", $dataEntrega );
-            ocibindbyname( $stmt, ":solicitante", $solicitante );
-            ocibindbyname( $stmt, ":setor", $setor );
-            ocibindbyname( $stmt, ":tipoos", $tipoOs );
-            ocibindbyname( $stmt, ":motserv", $motivoServi);
-            ocibindbyname( $stmt, ":oficina", $oficina );
-            ocibindbyname( $stmt, ":servico", $descricao );
-            ocibindbyname( $stmt, ":observacao", $observacao );
-            ocibindbyname( $stmt, ":responsavel", $responsavel);
-            ocibindbyname( $stmt, ":situacao", $situacao);
-            ocibindbyname( $stmt, ":resolucao", $resolucao);
-            ocibindbyname( $stmt, ":usuario", $usuario );
-            ocibindbyname( $stmt, ":ramal", $ramal );
-            ocibindbyname( $stmt, ":bem", $bem );
-            ocibindbyname( $stmt, ":localidade", $localidade );
+            ocibindbyname( $stmt, ":pedido", $os[0] );
+            ocibindbyname( $stmt, ":entrega", $os[1] );
+            ocibindbyname( $stmt, ":solicitante", $os[2] );
+            ocibindbyname( $stmt, ":setor", $os[3] );
+            ocibindbyname( $stmt, ":tipoos", $os[4] );
+            ocibindbyname( $stmt, ":motserv", $os[5]);
+            ocibindbyname( $stmt, ":oficina", $os[6] );
+            ocibindbyname( $stmt, ":servico", $os[7] );
+            ocibindbyname( $stmt, ":observacao", $os[8] );
+            ocibindbyname( $stmt, ":responsavel", $os[9]);
+            ocibindbyname( $stmt, ":situacao", $os[10]);
+            ocibindbyname( $stmt, ":resolucao", $os[11]);
+            ocibindbyname( $stmt, ":usuario", $os[12] );
+            ocibindbyname( $stmt, ":ramal", $os[13] );
+            ocibindbyname( $stmt, ":bem", $os[14] );
+            ocibindbyname( $stmt, ":localidade", $os[15] );
+            ocibindbyname( $stmt, ":proprietario", $os[16] );
 
 
             $retorno = $codigo;
@@ -916,11 +870,6 @@ class os_dao
 
     private function proxRegistro(){
         require_once "class.connection_factory.php";
-        require_once "../beans/class.manuEspec.php";
-        require_once "../beans/class.tipo_os.php";
-        require_once "../beans/class.setor.php";
-        require_once "../beans/class.oficina.php";
-        require_once "../beans/class.usuario.php";
         $codigo = 0;
         $con = new connection_factory();
         $conn = $con->getConnection();
@@ -942,24 +891,16 @@ class os_dao
 
     public function getSolicitacao( $codigoOs ){
         require_once "class.connection_factory.php";
-        require_once "../beans/class.os.php";
-        require_once "../beans/class.usuario.php";
-        require_once "../beans/class.manuEspec.php";
-        require_once "../beans/class.tipo_os.php";
-        require_once "../beans/class.motServ.php";
-        require_once "../beans/class.setor.php";
-        require_once "../beans/class.oficina.php";
 
-        $os =  null;
+        $os =  array();
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $sql =  "SELECT * FROM DBAMV.VIEW_HAM_GETSOLICITACAO V WHERE V.CODIGO = :codigo";
+        $sql =  "select * from VIEW_HAM_GETSOLICITACAO t where t.CODIGO = :codigo";
         try {
             $stmt = ociparse( $conn, $sql );
             ocibindbyname( $stmt, ":codigo", $codigoOs );
             ociexecute( $stmt );
             if( $row = oci_fetch_array( $stmt, OCI_COMMIT_ON_SUCCESS ) ){
-                $os = new os();
                 $observacao = "";
                 if( isset($row["OBSERVACAO"]) )
                     $observacao = $row["OBSERVACAO"];
@@ -990,37 +931,56 @@ class os_dao
                 }
 
                 $ramal = "";
-                if( isset( $row['DS_RAMAL'] ) ){
-                    $ramal = $row['DS_RAMAL'];
+                if( isset( $row['RAMAL'] ) ){
+                    $ramal = $row['RAMAL'];
                 }
 
-              //  echo "Ramal : $ramal";
+                $bem = "";
+                if( isset( $row['CD_BEM'] ) ){
+                    $bem = $row['CD_BEM'];
+                }
 
-                $os->setUsuario( new usuario() );
-                $os->getUsuario()->setCdUsuario( $row['USUARIO'] );
-                $os->setDescricao( $row["SERVICO"]);
-                $os->setSolicitante( new usuario() );
-                $os->getSolicitante()->setCdUsuario( $row["SOLICITANTE"] );
-                $os->setDataPedido( $row["DH_PEDIDO"]);
-                $os->setEspecialidade( new manuEspec() );
-                $os->getEspecialidade()->setCdEspec( $espec );
-                $os->setTipoOs( new tipo_os() );
-                $os->getTipoOs()->setCdTipoOs( $row["CODIGO_TIPO_OS"] );
-                $os->setMotServ( new motServ() );
-                $os->getMotServ()->setCdMotServ( $motivo );
-                $os->setSetor( new setor() );
-                $os->getSetor()->setCdSetor( $row["CODIGO_SETOR"] );
-                $os->getSetor()->setNmSetor( $row["SETOR"] );
-                $os->setOficina( new oficina() );
-                $os->getOficina()->setCdOficina( $row["CODIGO_OFICINA"] );
-                $os->setPrioridade( $row["PRIORIDADE"] );
-                $os->setResponsavel( new usuario() );
-                $os->getResponsavel()->setCdUsuario( $resp );
-                $os->setSituacao( $row["SITUACAO"] );
-                $os->setPrevisao( $previsao );
-                $os->setObservacao( $observacao );
-                $os->setResolucao( $resolucao );
-                $os->setDsRamal( $ramal );
+                $localidade = "";
+                if( isset( $row['CD_LOCALIDADE'] ) ){
+                    $localidade = $row['CD_LOCALIDADE'];
+                }
+
+                $fornecedor = "";
+                if( isset( $row['CD_FORNECEDOR'] ) ){
+                    $fornecedor = $row['CD_FORNECEDOR'];
+                }
+
+                $ds_item = "";
+                if( isset( $row['DS_ITEM'] ) ){
+                    $ds_item = $row['DS_ITEM'];
+                }
+
+
+
+
+                $os = array(
+                    'usuario'        => $row['USUARIO'],
+                    'servico'        => $row['SERVICO'],
+                    'solicitante'    => $row['SOLICITANTE'],
+                    'dh_pedido'      => $row['DH_PEDIDO'],
+                    'codigo_espec'   => $espec,
+                    'codigo_tipo_os' => $row['CODIGO_TIPO_OS'],
+                    'codigo_motivo'  => $motivo,
+                    'codigo_setor'   => $row['CODIGO_SETOR'],
+                    'codigo_oficina' => $row['CODIGO_OFICINA'],
+                    'prioridade'     => $row['PRIORIDADE'],
+                    'responsavel'    => $resp,
+                    'status'         => $this->returnStatusAcento( $row['SITUACAO']),
+                    'situacao'       => $row['SITUACAO'],
+                    'previsao'       => $previsao,
+                    'observacao'     => $observacao,
+                    'resolucao'      => $resolucao,
+                    'ds_ramal'       => $ramal,
+                    'cd_bem'         => $bem,
+                    "cd_localidade"  => $localidade,
+                    "cd_fornecedor"  => $fornecedor,
+                    "ds_item"        => $ds_item,
+                );
 
 
 
@@ -1032,16 +992,46 @@ class os_dao
         return $os;
     }
 
+    function returnStatusAcento( $status ){
+        $retorno = "";
+
+        switch ( $status ){
+            case 'A':
+                $retorno = "Aberta";
+                break;
+            case 'C':
+                $retorno = "Concluída";
+                break;
+            case 'D':
+                $retorno = "Cancelada";
+                break;
+            case 'E':
+                $retorno = "Conserto Externo";
+                break;
+            case 'N':
+                $retorno = "Não Atendida";
+                break;
+            case 'M':
+                $retorno = "Aguardando Material";
+                break;
+
+            case 'S':
+                $retorno = "Solicitação";
+                break;
+            case 'L':
+                $retorno = "Aguardando Liberação do Setor";
+                break;
+            case 'F':
+                $retorno = "Agendar";
+                break;
+
+        }
+        return $retorno;
+    }
+
 
     public function verificaSeTemSolicitacao( $codigoOs ){
         require_once "class.connection_factory.php";
-        require_once "../beans/class.os.php";
-        require_once "../beans/class.usuario.php";
-        require_once "../beans/class.manuEspec.php";
-        require_once "../beans/class.tipo_os.php";
-        require_once "../beans/class.motServ.php";
-        require_once "../beans/class.setor.php";
-        require_once "../beans/class.oficina.php";
 
         $os =  false;
         $con = new connection_factory();
@@ -1065,19 +1055,10 @@ class os_dao
 
     public function getListSolicitacao( $inicio, $fim ){
         require_once "class.connection_factory.php";
-        require_once "../beans/class.os.php";
-        require_once "../services/class.os_list.php";
-        require_once "../beans/class.usuario.php";
-        require_once "../beans/class.manuEspec.php";
-        require_once "../beans/class.tipo_os.php";
-        require_once "../beans/class.motServ.php";
-        require_once "../beans/class.setor.php";
-        require_once "../beans/class.oficina.php";
 
         $os =  null;
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $osList = new os_list();
         $sql =  "SELECT * FROM (
                   SELECT rownum LINHA, V.* 
                   FROM DBAMV.VIEW_HAM_GETSOLICITACAO V
@@ -1089,7 +1070,7 @@ class os_dao
             ocibindbyname( $stmt, ":fim", $fim );
             ociexecute( $stmt );
             while( $row = oci_fetch_array( $stmt, OCI_COMMIT_ON_SUCCESS ) ){
-                $os = new os();
+
                 $observacao = "";
                 if( isset($row["OBSERVACAO"]) )
                     $observacao = $row["OBSERVACAO"];
@@ -1124,36 +1105,45 @@ class os_dao
                     $ramal = $row['DS_RAMAL'];
                 }
 
+                $bem = "";
+                if( isset( $row['CD_BEM'] ) ){
+                    $bem = $row['CD_BEM'];
+                }
 
 
-                $os->setCdOs( $row['CODIGO'] );
-                $os->setUsuario( new usuario() );
-                $os->getUsuario()->setCdUsuario( $row['USUARIO'] );
-                $os->setDescricao( $row["SERVICO"]);
-                $os->setSolicitante( new usuario() );
-                $os->getSolicitante()->setCdUsuario( $row["SOLICITANTE"] );
-                $os->setDataPedido( $row["DH_PEDIDO"]);
-                $os->setEspecialidade( new manuEspec() );
-                $os->getEspecialidade()->setCdEspec( $espec );
-                $os->setTipoOs( new tipo_os() );
-                $os->getTipoOs()->setCdTipoOs( $row["CODIGO_TIPO_OS"] );
-                $os->setMotServ( new motServ() );
-                $os->getMotServ()->setCdMotServ( $motivo );
-                $os->setSetor( new setor() );
-                $os->getSetor()->setCdSetor( $row["CODIGO_SETOR"] );
-                $os->getSetor()->setNmSetor( $row["SETOR"] );
-                $os->setOficina( new oficina() );
-                $os->getOficina()->setCdOficina( $row["CODIGO_OFICINA"] );
-                $os->setPrioridade( $row["PRIORIDADE"] );
-                $os->setResponsavel( new usuario() );
-                $os->getResponsavel()->setCdUsuario( $resp );
-                $os->setSituacao( $row["SITUACAO"] );
-                $os->setPrevisao( $previsao );
-                $os->setObservacao( $observacao );
-                $os->setResolucao( $resolucao );
-                $os->setDsRamal( $ramal );
 
-                $osList->addOs( $os );
+                $localidade = "";
+                if( isset( $row['CD_LOCALIDADE'] ) ){
+                    $localidade = $row['CD_LOCALIDADE'];
+                }
+
+                $fornecedor = "";
+                if( isset( $row['CD_FORNECEDOR'] ) ){
+                    $fornecedor = $row['CD_FORNECEDOR'];
+                }
+
+                $os[] = array(
+                    'usuario'        => $row['USUARIO'],
+                    'servico'        => $row['SERVICO'],
+                    'solicitante'    => $row['SOLICITANTE'],
+                    'dh_pedido'      => $row['DH_PEDIDO'],
+                    'codigo_espec'   => $espec,
+                    'codigo_tipo_os' => $row['CODIGO_TIPO_OS'],
+                    'codigo_motivo'  => $motivo,
+                    'codigo_setor'   => $row['CODIGO_SETOR'],
+                    'codigo_oficina' => $row['CODIGO_OFICINA'],
+                    'prioridade'     => $row['PRIORIDADE'],
+                    'responsavel'    => $resp,
+                    'situacao'       => $row['SITUACAO'],
+                    'previsao'       => $previsao,
+                    'observacao'     => $observacao,
+                    'resolucao'      => $resolucao,
+                    'ds_ramal'       => $ramal,
+                    'cd_bem'         => $bem,
+                    "cd_localidade"  => $localidade,
+                    "cd_fornecedor"  => $fornecedor
+                );
+
 
 
 
@@ -1162,7 +1152,7 @@ class os_dao
             echo "Erro: ".$ex->getMessage();
         }
 
-        return $osList;
+        return $os;
     }
 
 
@@ -1227,16 +1217,10 @@ class os_dao
 	 public function getListaMeusChamados( $variavel ){
 		require_once "../includes/error.php";
         require_once "class.connection_factory.php";
-        require_once "../services/class.os_list.php";
-        require_once "../beans/class.os.php";
-        require_once "../beans/class.oficina.php";
-        require_once "../beans/class.setor.php";
-        require_once "../beans/class.usuario.php";
 
 
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $os_list = new os_list();
 
         try {
             $sql = "SELECT * 
@@ -1254,45 +1238,40 @@ class os_dao
             oci_bind_by_name( $stmt, "responsavel", $variavel['responsavel'] );
 
             ociexecute( $stmt );
+            $os = array();
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $os = new os();
+
                 $servico = "";
                 if( isset( $row['DS_SERVICO'] ) )
                     $servico = $row['DS_SERVICO'];
 
-                $os->setCdOs( $row['CD_OS'] );
-                $os->setPrioridade( $row['PRIORIDADE'] );
-                $os->setOficina( new oficina() );
-                $os->setSolicitante( new usuario() );
-                $os->getSolicitante()->setCdUsuario( $row['NM_SOLICITANTE'] );
-                $os->setResponsavel( new usuario() );
-                $os->getResponsavel()->setCdUsuario( $row['CD_RESPONSAVEL'] );
-                $os->setSetor( new setor() );
-                $os->getSetor()->setNmSetor( $row['NM_SETOR'] );
-                $os->setDescricao( $servico );
-                $os->setDataPedido( $row['DT_PEDIDO'] );
-                $os->setPrevisao( $row['TIME_'] );
-                $os_list->addOs( $os );
+                $os[] = array(
+
+                    'cd_os'          => $row['CD_OS'],
+                    'prioridade'     => $row['PRIORIDADE'],
+                    'nm_solicitante' => $row['NM_SOLICITANTE'],
+                    'cd_responsavel' => $row['CD_RESPONSAVEL'],
+                    'nm_setor'       => $row['NM_SETOR'],
+                    'dt_pedido'      => $row['DT_PEDIDO'],
+                    'ds_servico'     => $servico,
+                    'time_'          => $row['TIME_']
+
+                );
+
             }
         } catch ( PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
         }
-        return $os_list;
+        return $os;
     }
 
     public function getListaMeusChamadosData( $variavel ){
         require_once "../includes/error.php";
         require_once "class.connection_factory.php";
-        require_once "../services/class.os_list.php";
-        require_once "../beans/class.os.php";
-        require_once "../beans/class.oficina.php";
-        require_once "../beans/class.setor.php";
-        require_once "../beans/class.usuario.php";
 
 
         $con = new connection_factory();
         $conn = $con->getConnection();
-        $os_list = new os_list();
 
         try {
             $sql = "SELECT * 
@@ -1319,25 +1298,24 @@ class os_dao
                 if( isset( $row['DS_SERVICO'] ) )
                     $servico = $row['DS_SERVICO'];
 
-                $os->setCdOs( $row['CD_OS'] );
-                $os->setPrioridade( $row['PRIORIDADE'] );
-                $os->setOficina( new oficina() );
-                $os->setSolicitante( new usuario() );
-                $os->getSolicitante()->setCdUsuario( $row['NM_SOLICITANTE'] );
-                $os->setResponsavel( new usuario() );
-                $os->getResponsavel()->setCdUsuario( $row['CD_RESPONSAVEL'] );
-                $os->setSetor( new setor() );
-                $os->getSetor()->setNmSetor( $row['NM_SETOR'] );
-                $os->setDescricao( $servico );
-                $os->setDataPedido( $row['DT_PEDIDO'] );
-                $os->setPrevisao( $row['TIME_'] );
-                $os->setSituacao( $row['TP_SITUACAO'] );
-                $os_list->addOs( $os );
+                $os[] = array(
+
+                    'cd_os'          => $row['CD_OS'],
+                    'prioridade'     => $row['PRIORIDADE'],
+                    'nm_solicitante' => $row['NM_SOLICITANTE'],
+                    'cd_responsavel' => $row['CD_RESPONSAVEL'],
+                    'nm_setor'       => $row['NM_SETOR'],
+                    'dt_pedido'      => $row['DT_PEDIDO'],
+                    'ds_servico'     => $servico,
+                    'time_'          => $row['TIME_'],
+                    'tp_situacao'    => $row['TP_SITUACAO']
+
+                );
             }
         } catch ( PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
         }
-        return $os_list;
+        return $os;
     }
 
 
@@ -1369,13 +1347,6 @@ class os_dao
     public function getListaMeusServicos( $variavel ){
         require_once "../includes/error.php";
         require_once "class.connection_factory.php";
-        require_once "../services/class.itemSolicitacaoServico_list.php";
-        require_once "../beans/class.os.php";
-        require_once "../beans/class.oficina.php";
-        require_once "../beans/class.setor.php";
-        require_once "../beans/class.usuario.php";
-        require_once "../beans/class.itemSolicitacaoServico.php";
-        require_once "../beans/class.manuServ.php";
 
 
         $con = new connection_factory();
@@ -1398,6 +1369,7 @@ class os_dao
             oci_bind_by_name( $stmt, "responsavel", $variavel['responsavel'] );
 
             ociexecute( $stmt );
+            $osItem = array();
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
                 $os = new itemSolicitacaoServico();
 
@@ -1405,27 +1377,26 @@ class os_dao
                 if( isset( $row['DS_SERVICO'] ) )
                     $servico = $row['DS_SERVICO'];
 
-                $os->setCdOs( $row['CD_OS'] );
-                $os->setChamado( $row['CHAMADO'] );
-                $os->setResponsavel( $row['CD_RESPONSAVEL'] );
-                $os->setManuServ( new manuServ() );
-                $os->getManuServ()->setStrNmServico( $row['NM_SERVICO'] );
-                $os->setDescricao( $servico );
-                $os->setDataInicial( $row['INICIO'] );
-                $os->setTempo( $row['STATUS'] );
+                $osItem[] = array(
 
-                $os_list->addItemSolicitacaoServico( $os );
+                    'cd_os'          => $row['CD_OS'],
+                    'chamado'        => $row['CHAMADO'],
+                    'cd_responsavel' => $row['CD_RESPONSAVEL'],
+                    'nm_servico'     => $row['NM_SERVICO'],
+                    'ds_servico'     => $servico,
+                    'inicio'         => $row['INICIO'],
+                    'status'         => $row['STATUS']
+
+                );
             }
         } catch ( PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
         }
-        return $os_list;
+        return $osItem;
     }
 
     public function getListFuncionario(){
         require_once "class.connection_factory.php";
-        require_once "../beans/class.funcionario.php";
-        require_once "../services/class.funcionario_list.php";
         $con = new connection_factory();
         $conn = $con->getConnection();
 
@@ -1439,21 +1410,21 @@ class os_dao
                     GROUP BY F.CD_FUNC
                           ,F.NM_FUNC
                           ORDER BY 2 ";
-        $list = new funcionario_list();
+        $usuario = array();
         try {
             $stmt = ociparse( $conn, $sql );
             ociexecute( $stmt );
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $usuario = new funcionario();
-                $usuario->setNmFuncionario( $row["NM_FUNC"]);
-                $usuario->setCdFuncionario( $row["CD_FUNC"]);
-                $list->addFuncionario( $usuario );
+                $usuario[] = array(
+                    'nm_func' => $row["NM_FUNC"],
+                    'cd_func' => $row["CD_FUNC"]
+                );
             }
         } catch ( PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
         }
 
-        return $list;
+        return $usuario;
     }
 
     public function getByPlaqueta( $plaqueta ){
@@ -1462,7 +1433,7 @@ class os_dao
         require_once "../beans/class.bens.php";
         require_once "../beans/class.setor.php";
 
-        $bem = null;
+        $bem = array();
         $con = new connection_factory();
         $conn = $con->getConnection();
 
@@ -1474,12 +1445,12 @@ class os_dao
             oci_bind_by_name( $stmt, ":plaqueta", $plaqueta );
             oci_execute( $stmt );
             if( $row = oci_fetch_array( $stmt, OCI_ASSOC )){
-                $bem = new bens();
-                $bem->setCodBem( $row['CD_BEM'] );
-                $bem->setSetor( new setor() );
-                $bem->getSetor()->setCdSetor( $row['CD_SETOR']);
-                $bem->setLocalidade( $row['CD_LOCALIDADE']);
-                $bem->setDescBem( $row['DS_BEM']);
+                $bem = array(
+                    'cd_bem'        => $row['CD_BEM'],
+                    'cd_setor'      => $row['CD_SETOR'],
+                    'cd_localidade' => $row['CD_LOCALIDADE'],
+                    'ds_bem'        => $row['DS_BEM']
+                );
 
 
             }

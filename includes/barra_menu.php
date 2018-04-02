@@ -36,6 +36,12 @@
                     </a>
                 </li>
 
+                <li class="bem">
+                    <a href="cadastro2.php">
+                        <i class="glyphicon glyphicon-edit"></i>Cadastrar Chamado
+                    </a>
+                </li>
+
                 <li>
                     <a href="cadastro.php">
                         <i class="glyphicon glyphicon-edit"></i>Cadastrar Chamado

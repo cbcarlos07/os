@@ -214,7 +214,7 @@
                       <div class="form-group ">
                           <label for="dataos" class="col-md-1 control-label">Data Os</label>
                           <div class="col-md-3">
-                              <input type="text" class="form-control" id="dataos" tabindex="1">
+                              <input type="text" class="form-control" id="dataos" tabindex="1" disabled>
                           </div>
                       </div>
 
@@ -230,10 +230,7 @@
                       <div class="form-group ">
                           <label for="solicitante" class="col-md-1 control-label" id="labelsolicitante" data-toggle="tooltip" data-placement="top" data-html="true">Solicitante<span style="color: red">*</span></label>
                           <div class="col-md-4">
-                              <select   data-placeholder="Selecione o solicitante" class="form-control" id="solicitante" tabindex="3"
-                              data-toggle="tooltip" data-placement="top" data-html="true">
-                                  <option value="0"></option>
-                              </select>
+                              <input placeholder="Selecione o solicitante" class="form-control" id="solicitante" tabindex="3" disabled />
                           </div>
                       </div>
 
@@ -292,7 +289,7 @@
                       <div class="form-group ">
                           <label for="descricao" class="col-md-1 control-label">Descri&ccedil;&atilde;o</label>
                           <div class="col-md-8">
-                              <input type="text" class="form-control" id="descricao" tabindex="8" placeholder="Ex.: Impressora com problema"  />
+                              <input type="text" class="form-control" id="descricao" tabindex="8" placeholder="Ex.: Impressora com problema" disabled />
                           </div>
                       </div>
                       <div class="form-group ">
@@ -449,11 +446,11 @@
     <script src="js/chamados2.js"></script>
     <script>
 
-          $('#solicitante').chosen( {
+         /* $('#solicitante').chosen( {
               allow_single_deselect: true,
               search_contains: true,
               no_results_text: "Nenhum resultado enontrado!"
-          } );
+          } );*/
 
           $('#plaqueta').chosen( {
               allow_single_deselect: true,

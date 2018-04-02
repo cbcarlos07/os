@@ -38,16 +38,8 @@ switch ($acao){
 
         $os_controller = new os_controller();
         $lista = $os_controller->getListUsuarioOficina( $oficina );
-        $usuarioList = new usuario_list_iterator( $lista );
-        $usuarios = array();
-        while ( $usuarioList->hasNextUsuario() ){
-            $usuario = $usuarioList->getNextUsuario();
-            $usuarios[] = array(
-                "cdusuario" => $usuario->getCdUsuario()
-            );
-        }
 
-        echo json_encode(array("usuarios" => $usuarios));
+        echo json_encode( $lista );
 
     }
 

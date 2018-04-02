@@ -423,18 +423,19 @@ $('#chk_sit').on('click', function () {
 
            },
           success : function (data) {
+                 //console.log( data );
                  var tbody = $('#t-meus');
                  tbody.find('tr').remove();
                  $.each( data, function (i, j) {
                        tbody.append(
                            "<tr>"+
-                               "<td><a href='#'  onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
+                               "<td><a href='#'  onclick='obterCodigoOs("+ j.cd_os +")'>"+ j.cd_os + "</a></td>"+
                                "<td>"+ j.prioridade + "</td>"+
-                               "<td>"+ j.setor + "</td>"+
-                               "<td>"+ j.responsavel + "</td>"+
-                               "<td>"+ j.servico + "</td>"+
-                               "<td>"+ j.solicitacao + "</td>"+
-                               "<td>"+ j.espera + "</td>"+
+                               "<td>"+ j.nm_setor + "</td>"+
+                               "<td>"+ j.cd_responsavel + "</td>"+
+                               "<td>"+ j.ds_servico + "</td>"+
+                               "<td>"+ j.dt_pedido + "</td>"+
+                               "<td>"+ j.time_ + "</td>"+
                            "</tr>"
                        );
                  });
@@ -485,15 +486,15 @@ $('#chk_sit').on('click', function () {
 						 tbody.find('tr').remove();
 						 $.each( data, function (i, j) {
 							   tbody.append(
-								   "<tr>"+
-                                       "<td><a href='#'  onclick='obterCodigoOs("+ j.codigo +")'>"+ j.codigo + "</a></td>"+
+                                   "<tr>"+
+                                       "<td><a href='#'  onclick='obterCodigoOs("+ j.cd_os +")'>"+ j.cd_os + "</a></td>"+
                                        "<td>"+ j.prioridade + "</td>"+
-                                       "<td>"+ j.setor + "</td>"+
-                                       "<td>"+ j.responsavel + "</td>"+
-                                       "<td>"+ j.servico + "</td>"+
-                                       "<td>"+ j.solicitacao + "</td>"+
-                                       "<td>"+ j.espera + "</td>"+
-								   "</tr>"
+                                       "<td>"+ j.nm_setor + "</td>"+
+                                       "<td>"+ j.cd_responsavel + "</td>"+
+                                       "<td>"+ j.ds_servico + "</td>"+
+                                       "<td>"+ j.dt_pedido + "</td>"+
+                                       "<td>"+ j.time_ + "</td>"+
+                                   "</tr>"
 							   );
 						 });
 						 
@@ -513,7 +514,7 @@ $('#chk_sit').on('click', function () {
 
   function obterCodigoOs( id ){
 	  console.log('obterCodigoOs');
-	  var formulario = $('<form action="cadastro.php" method="post">'+
+	  var formulario = $('<form action="cadastro2.php" method="post">'+
 													'<input type="hidden" name="cdos" value="'+ id +'">'+
 												'</form>');
 	$('body').append(formulario);

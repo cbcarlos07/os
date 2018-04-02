@@ -435,31 +435,31 @@ function carregarTabela ( usuario ) {
             $.each(data.chamados, function (key, value) {
                 var cor = "";
                 //console.log("Chamado: "+value.cdos+" - Status: "+value.status);
-                if( value.status == 'C' ){
+                if( value.tp_situacao == 'C' ){
                     cor = "#E0F7FA";
                  //   console.log("Cor verde");
 
                 }
                 var lines;
-                if( value.status == 'C' ){
+                if( value.tp_situacao == 'C' ){
                     lines = "<tr class='linha' bgcolor='"+ cor +"'>"
-                        +"<td>" + value.cdos + "</td>"
-                        +"<td>" + value.setor + "</td>"
-                        +"<td>" + value.descricao + "</td>"
-                        +"<td>" + value.pedido + "</td>"
-                        +"<td>" + value.situacao + "</td>"
+                        +"<td>" + value.cd_os + "</td>"
+                        +"<td>" + value.nm_setor + "</td>"
+                        +"<td>" + value.ds_servico + "</td>"
+                        +"<td>" + value.data_pedido + "</td>"
+                        +"<td>" + value.tp_situacao + "</td>"
                         // +"<td><a href='#editar' title='Clique para editar' class='btn-lg' onclick='editar("+value.cdos+")'><i class='fa fa-pencil-square-o'></i></a></td>"
-                        +"<td><a href='#servicos' title='Clique para visualizar' class='btn-lg' onclick='ver("+value.cdos+")'><i class='fa fa-eye'></i></a></td>"
+                        +"<td><a href='#servicos' title='Clique para visualizar' class='btn-lg' onclick='ver("+value.cd_os+")'><i class='fa fa-eye'></i></a></td>"
                         +"</tr>";
                 }else{
                     lines = "<tr class='linha' >"
-                        +"<td>" + value.cdos + "</td>"
-                        +"<td>" + value.setor + "</td>"
-                        +"<td>" + value.descricao + "</td>"
-                        +"<td>" + value.pedido + "</td>"
-                        +"<td>" + value.situacao + "</td>"
+                        +"<td>" + value.cd_os + "</td>"
+                        +"<td>" + value.nm_setor + "</td>"
+                        +"<td>" + value.ds_servico + "</td>"
+                        +"<td>" + value.data_pedido + "</td>"
+                        +"<td>" + value.tp_situacao + "</td>"
                         // +"<td><a href='#editar' title='Clique para editar' class='btn-lg' onclick='editar("+value.cdos+")'><i class='fa fa-pencil-square-o'></i></a></td>"
-                        +"<td><a href='#servicos' title='Clique para visualizar' class='btn-lg' onclick='ver("+value.cdos+")'><i class='fa fa-eye'></i></a></td>"
+                        +"<td><a href='#servicos' title='Clique para visualizar' class='btn-lg' onclick='ver("+value.cd_os+")'><i class='fa fa-eye'></i></a></td>"
                         +"</tr>";
                 }
 
@@ -598,10 +598,10 @@ function ver( codos ) {
         },
         success : function (data) {
             $('#codOs').val( codos );
-            $('#descos').val(data.descricao);
-            $('#obs').val(data.observacao);
-            $('#nmusuario').val(data.atendente);
-            $('#status').val(data.status);
+            $('#descos').val(data.ordem.servico);
+            $('#obs').val(data.ordem.observacao);
+            $('#nmusuario').val(data.ordem.usuario);
+            $('#status').val(data.ordem.status);
 
             $.each(data.servicos, function (key, value) {
                      var hide = value.descricao;

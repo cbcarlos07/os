@@ -637,7 +637,7 @@ function   verifyField() {
         verificarCampoChamado();
     });
 
-    $('#solicitante').on('change', function () {
+  /*  $('#solicitante').on('change', function () {
         //console.log("Solicitante mudou: "+$(this).val());
         if( $(this).val() != 0 ){
           //  console.log("Solicitante maior do que zero");
@@ -646,7 +646,7 @@ function   verifyField() {
             buscarUltimoSolicitante();
         }
 
-    });
+    });*/
 
     $('#plaqueta').on('focusout', function () {
         var plaqueta = $(this).val();
@@ -1138,11 +1138,10 @@ function carregarComboSolcitante(  ){
             acao   : 'U'
         },
         success : function (data) {
-            /*var op = $("<option>").val('0').text('Selecione');
-            $('#solicitante').append(op); */
+            var op = $("<option>").val('0').text('Selecione');
+            $('#solicitante').append(op); 
             // console.log(data);
             $.each( data.usuarios, function (key, value) {
-             //  console.log( "Usuario: '"+value.usuario+"'" )
                 var option  = $('<option>').val( value.usuario ).text( value.nome ) ;
 
                 solicitante.append(option);
@@ -1860,9 +1859,9 @@ function getOs( codigoOs ) {
                 $('#dataos').val(data.ordem.dh_pedido);
                 //console.log('Previsao: '+data.previsao);
                 $('#previsao').val(data.ordem.previsao);
-              //  console.log("Cadastro Solicitante: '"+data.solicitante+"'");
+                console.log("Cadastro Solicitante: '"+data.ordem.solicitante+"'");
                 $('#solicitante').val( data.ordem.solicitante ).trigger("chosen:updated");
-                carregarComboSolicitante( data.ordem.solicitante );
+            //    carregarComboSolicitante( data.ordem.solicitante );
                 $('#setor').val(data.ordem.codigo_setor).trigger("chosen:updated");
                 //$('#tipoos').val( data.ordem.codigo_tipo_os ).trigger("chosen:updated");
                 carregarComboTipoOs( data.ordem.codigo_tipo_os )
@@ -1893,12 +1892,12 @@ function getOs( codigoOs ) {
                 $('.btn-pesquisar').find('i').addClass('fa-search');
                 //$('#cdos').focus();
                 setAtributes( "#previsao", "disabled", false );
-                setAtributes( "#solicitante", "disabled", false );
+               // setAtributes( "#solicitante", "disabled", false );
                 setAtributes( "#setor", "disabled", false );
                 setAtributes( "#tipoos", "disabled", false );
                 setAtributes( "#motivo", "disabled", false );
                 setAtributes( "#oficina", "disabled", false );
-                setAtributes( "#descricao", "disabled", false );
+               // setAtributes( "#descricao", "disabled", false );
                 setAtributes( "#observacao", "disabled", false );
                 setAtributes( "#responsavel", "disabled", false );
 
@@ -1976,7 +1975,7 @@ function getOs( codigoOs ) {
         $('#cdos').val("0");
         $('#descricao').val("");
         $('#observacao').val("");
-        $('#solicitante').val(0).trigger("chosen:updated");
+      //  $('#solicitante').val(0).trigger("chosen:updated");
         $('#setor').val(0);
         var cdsetor = document.getElementById('cdsetor').value;
         carregarComboSetor( cdsetor );

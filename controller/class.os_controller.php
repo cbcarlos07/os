@@ -126,7 +126,7 @@ class os_controller
         return $teste;
     }
 
-    public function insert_chamado(os $os){
+    public function insert_chamado($os){
         require_once '../dao/class.os_dao.php';
         $os_dao = new os_dao();
         $teste = $os_dao->insert_chamado( $os);

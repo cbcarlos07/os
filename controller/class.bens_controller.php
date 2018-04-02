@@ -57,4 +57,11 @@ class bens_controller
         return $retorno;
     }
 
+    public function getItemCodigo( $codigo ){
+        require_once '../dao/class.bens_dao.php';
+        $bens_dao = new bens_dao();
+        $retorno = $bens_dao->getItemCodigo( $codigo );
+        return $retorno;
+    }
+
 }

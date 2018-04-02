@@ -30,15 +30,15 @@ function loadTotal(  ) {
             },
             success : function (data) {
 
-                $.each(data.chamados, function (i, j) {
+                $.each(data, function (i, j) {
                      var tbody = "<tr>" +
-                                     "<td>" + j.codigo + "</td>"+
+                                     "<td>" + j.cd_os + "</td>"+
                                      "<td>" + j.data + "</td>"+
-                                     "<td>" + j.descricao + "</td>"+
-                                     "<td>" + j.setor + "</td>"+
-                                     "<td>" + j.solicitante + "</td>"+
-                                     "<td>" + j.criacao + "</td>"+
-                                     "<td> <a href='#rec' class='btn btn-primary btn-rec btn-xs' onclick='receber("+ j.codigo +")'>Receber</a>  </td>"+
+                                     "<td>" + j.ds_servico + "</td>"+
+                                     "<td>" + j.nm_setor + "</td>"+
+                                     "<td>" + j.nm_solicitante + "</td>"+
+                                     "<td>" + j.nm_usuario + "</td>"+
+                                     "<td> <a href='#rec' class='btn btn-primary btn-rec btn-xs' onclick='receber("+ j.cd_os +")'>Receber</a>  </td>"+
                                  "</tr>";
                      $('.tbody').append( tbody );
 
@@ -50,7 +50,7 @@ function loadTotal(  ) {
 
  function receber( codigo ) {
 
-    var form = $('<form action="chamados.php" method="post">'
+    var form = $('<form action="chamados2.php" method="post">'
                +'<input type="hidden" name="cdos" value="'+ codigo +'" />'
                + '</form>');
     $('body').append( form );

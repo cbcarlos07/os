@@ -98,7 +98,8 @@ class bens_dao
                 //echo "DS_ITEM: ".$row['DS_ITEM']."\n";
                 $vetor[] = array(
                     "cd_bem"          => $row['CD_BEM'],
-                    "ds_item"         => $row['DS_ITEM']
+                    "ds_item"         => $row['DS_ITEM'],
+                    "nr_patrimonio"   => $row['NR_PATRIMONIO'],
                 );
             }
 
@@ -232,6 +233,55 @@ class bens_dao
       }
 
       return $vetor;
+    }
+
+    public function getItemCodigo( $codigo ){
+        require_once 'class.connection_factory.php';
+        $con = new connection_factory();
+        $conn = $con->getConnection();
+        $query = "SELECT  D.CD_BEM 
+                          ,D.DS_ITEM
+                          ,MAX(B.CD_HISTORICO)
+                          ,MAX(B.CD_SETOR) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO)      CD_SETOR 
+                          ,MAX(S.NM_SETOR) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO)      NM_SETOR
+                          ,MAX(B.CD_LOCALIDADE) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO) CD_LOCALIDADE 
+                          ,MAX(L.DS_LOCALIDADE) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO) DS_LOCALIDADE
+                          ,MAX(B.DT_ENTRADA) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO)    DT_ENTRADA
+                          ,D.PROPRIETARIO
+                          ,F.NM_FANTASIA NM_FORNECEDOR  
+                        FROM DTI_BEM_PATRIMONIAL D
+                          ,DTI_BEM_HISTORICO   B
+                          ,DBAMV.SETOR         S
+                          ,DBAMV.LOCALIDADE    L
+                          ,DBAMV.FORNECEDOR    F
+                        WHERE B.CD_BEM         =    D.CD_BEM 
+                        AND   S.CD_SETOR       =    B.CD_SETOR
+                        AND   L.CD_LOCALIDADE  =    B.CD_LOCALIDADE
+                        AND   F.CD_FORNECEDOR  =    D.PROPRIETARIO
+                        AND   D.CD_BEM         =    :codigo                    
+                        GROUP BY D.CD_BEM 
+                          ,D.DS_ITEM
+                          ,D.PROPRIETARIO
+                          ,F.NM_FANTASIA";
+        $vetor = array();
+        try{
+            $stmt = ociparse( $conn, $query );
+            oci_bind_by_name( $stmt, ":codigo", $codigo );
+
+            ociexecute( $stmt );
+            if ( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
+                $vetor[] = array(
+                    "cd_bem"               => $row['CD_BEM'],
+                    "ds_item"              => $row['DS_ITEM'],
+                    "proprietario"         => $row['PROPRIETARIO'],
+                    "cd_localidade"           => $row['CD_LOCALIDADE']
+                );
+            }
+        }catch ( PDOException  $exception ){
+            echo "Erro: ".$exception->getMessage();
+        }
+
+        return $vetor;
     }
 
 

@@ -22,6 +22,7 @@ $localidade   = 0;
 $data         = "";
 $usuario      = "";
 
+
 if( isset( $_POST['codigo'] ) ){
     $codigo = $_POST['codigo'];
 }
@@ -82,6 +83,9 @@ switch ( $acao ){
         break;
     case 'F':
         getBens(  );
+        break;
+    case 'G':
+        getItemCodigo( $codigo );
         break;
 
 }
@@ -193,6 +197,18 @@ function getItem( $codigo ){
     );
 
     echo json_encode( $dados );
+}
+function getItemCodigo( $codigo ){
+    require_once '../controller/class.bens_controller.php';
+    require_once '../controller/class.bemHistorico_controller.php';
+    $histController = new bemHistorico_controller();
+    $bemController = new bens_controller();
+
+    $bem = $bemController->getItemCodigo( $codigo );
+
+
+
+    echo json_encode( $bem );
 }
 
 function delete( $codigo ){

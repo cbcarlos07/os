@@ -5,6 +5,9 @@
  * Date: 18/07/2017
  * Time: 11:05
  */
+ini_set('display_errors',1);
+ini_set('display_startup_erros',1);
+error_reporting(E_ALL);
 $acao = $_POST['acao'];
 
 $_tipoOs = 0;
@@ -50,16 +53,7 @@ switch ($acao){
 
         $os_controller = new os_controller();
         $lista = $os_controller->getListIpoOs(  );
-        $tipoOsList = new tipo_os_list_iterator( $lista );
-        $tipos = array();
-        while ( $tipoOsList->hasNextTipo_Os() ){
-            $tipo = $tipoOsList->getNextTipo_Os();
-            $tipos[] = array(
-                "codigo"    => $tipo->getCdTipoOs(),
-                "descricao" => $tipo->getDescricao()
-            );
-        }
 
-        echo json_encode(array("tipoos" => $tipos));
+        echo json_encode( $lista );
 
     }
