@@ -446,7 +446,7 @@
     <script src="js/jquery.datetimepicker.full.js"></script>
     <script src="js/chosen.jquery.js"></script>
     <script src="js/bootstrap.fd.js"></script>
-    <script src="js/chamados2.js"></script>
+    <script src="js/cadastro2.js"></script>
     <script src="js/custom.js"></script>
     <script>
 

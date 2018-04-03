@@ -638,7 +638,7 @@ function   verifyField() {
     });
 
     $('#solicitante').on('change', function () {
-        //console.log("Solicitante mudou: "+$(this).val());
+        console.log("Solicitante mudou: "+$(this).val());
         if( $(this).val() != 0 ){
           //  console.log("Solicitante maior do que zero");
             $("#solicitante_chosen").removeClass("required");
