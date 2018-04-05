@@ -2,6 +2,9 @@
  * Created by carlos.bruno on 07/07/2017.
  */
 var enviar = false;
+/*
+Primeira ação ao carregar a página
+ */
 $(document).ready(function () {
 
   var usuario = document.getElementById('usuario').value;

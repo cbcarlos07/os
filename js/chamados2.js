@@ -201,25 +201,25 @@ function salvarOs() {
            cdos         : codOs,
            pedido       : dataos,
            previsao     : previsao,
-           solicitante : solicitante,
-           setor       : setor,
-           tipoos      : tipoos,
-           motivo      : motivo,
-           descricao   : descricao,
-           observacao  : observacao,
-           responsavel : responsavel,
-           status      : status,
-           resolucao   : resolucao,
-           oficina     : oficina,
-           usuario     : usuario,
-           acao        : acao,
-           bem         : bem,
-           localidade  : localidade,
-           proprietario  : fornecedor,
-           ramal       : ramal
+           solicitante  : solicitante,
+           setor        : setor,
+           tipoos       : tipoos,
+           motivo       : motivo,
+           descricao    : descricao,
+           observacao   : observacao,
+           responsavel  : responsavel,
+           status       : status,
+           resolucao    : resolucao,
+           oficina      : oficina,
+           usuario      : usuario,
+           acao         : acao,
+           bem          : bem,
+           localidade   : localidade,
+           proprietario : fornecedor,
+           ramal        : ramal
        },
         success : function (data) {
-          // console.log("Retorno: "+data.sucesso);
+           console.log("Retorno: "+data);
             if( data.sucesso == 1 ){
                 if( $('#responsavel').text() != "Selecione" ){
                     carregarTotalRecebimentos();
@@ -1051,7 +1051,7 @@ function carregarComboResponsavel( oficina, usuario ){
         success : function (data) {
      /*       var op = "<option value='0'>Selecione</option>";
             $('#responsavel').append(op);*/
-             console.log(data);
+        //     console.log(data);
             $.each( data, function (key, value) {
 
                 var option  = "<option value='"+ value.cd_usuario +"'>"
@@ -1877,7 +1877,7 @@ function getOs( codigoOs ) {
                 $('#descricao').val(data.ordem.servico);
                 $('#observacao').val(data.ordem.observacao);
                 $('#responsavel').val(data.ordem.responsavel).trigger("chosen:updated");
-                $('#status').val(data.ordem.situacao).trigger("chosen:updated");
+                //('#status').val(data.ordem.situacao).trigger("chosen:updated");
                 setarValorComboStatus( data.ordem.situacao );
                 $('#resolucao').val(data.ordem.resolucao);
                 //console.log( "Plaqueta: "+data.ordem.cd_bem );

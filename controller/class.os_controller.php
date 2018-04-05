@@ -140,7 +140,7 @@ class os_controller
         return $teste;
     }
 
-    public function update_chamado(os $os){
+    public function update_chamado($os){
         require_once '../dao/class.os_dao.php';
         $os_dao = new os_dao();
         $teste = $os_dao->update_chamado( $os );

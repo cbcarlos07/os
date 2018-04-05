@@ -6,6 +6,9 @@
  * Date: 19/06/2017
  * Time: 16:02
  */
+ini_set('display_errors',1);
+ini_set('display_startup_erros',1);
+error_reporting(E_ALL);
 class os_dao
 {
     public function get_os_solicitadas($pesquisa, $usuario, $inicio, $fim){
@@ -196,12 +199,13 @@ class os_dao
 
                oci_execute( $stmt );
                 if( $row = oci_fetch_array( $stmt, OCI_ASSOC )){
+
                     $solicitacao = array(
                         'cd_espec'        => $row['CD_ESPEC'],
                         'cd_tipo_os'      => $row['CD_TIPO_OS'],
                         'cd_mot_serv'     => $row['CD_MOT_SERV'],
                         'cd_oficina'      => $row['CD_OFICINA'],
-                        'cd_responsavel'  => $row['CD_RESPONSAVEL']
+                      //  'cd_responsavel'  => $row['CD_RESPONSAVEL']
                     );
 
                 }
@@ -702,7 +706,8 @@ class os_dao
     }
 
 
-    public function update_chamado(os $os){
+    public function update_chamado($os){
+       // echo "Update chamado: ";
         require_once "class.connection_factory.php";
 
         $teste = false;
@@ -727,6 +732,9 @@ class os_dao
                          ,CD_ESPEC          = :especialidade
                          ,DS_RAMAL          = :ramal
                          ,TP_LOCAL          = 'I'
+                         ,CD_BEM            = :bem
+                         ,CD_FORNECEDOR     = :proprietario
+                         ,CD_LOCALIDADE     = :localidade
                          WHERE CD_OS = :codigo";
 
 
@@ -734,40 +742,27 @@ class os_dao
 
             $stmt = oci_parse( $conn, $sql );
 
-            $codigo      = $os->getCdOs();
-            $dataPedido  = $os->getDataPedido();
-            $previsao    = $os->getPrevisao();
-            $descricao   = $os->getDescricao();
-            $observacao  = $os->getObservacao();
-            $solicitante = $os->getSolicitante()->getCdUsuario();
-            $setor        = $os->getSetor()->getCdSetor();
-            $especidalide = $os->getEspecialidade()->getCdEspec();
-            $tipoOs       = $os->getTipoOs()->getCdTipoOs();
-            $oficina      = $os->getOficina()->getCdOficina();
-            $motivoServi  = $os->getMotServ()->getCdMotServ();
-            $prioridade   = $os->getPrioridade();
-            $responsavel  = $os->getResponsavel()->getCdUsuario();
-            $status       = $os->getSituacao();
-            $resolucao    = $os->getResolucao();
-            $ramal        = $os->getDsRamal();
 
-
-            oci_bind_by_name( $stmt, ":pedido", $dataPedido );
-            oci_bind_by_name( $stmt, ":entrega", $previsao );
-            oci_bind_by_name( $stmt, ":solicitante", $solicitante );
-            oci_bind_by_name( $stmt, ":setor", $setor );
-            oci_bind_by_name( $stmt, ":tipoos", $tipoOs );
-            oci_bind_by_name( $stmt, ":motservico", $motivoServi);
-            oci_bind_by_name( $stmt, ":servico", $descricao );
-            oci_bind_by_name( $stmt, ":observacao", $observacao );
-            oci_bind_by_name( $stmt, ":responsavel", $responsavel, -1);
-            oci_bind_by_name( $stmt, ":status", $status );
-            oci_bind_by_name( $stmt, ":resolucao", $resolucao );
-            oci_bind_by_name( $stmt, ":oficina", $oficina );
-            oci_bind_by_name( $stmt, ":prioridade", $prioridade);
-            oci_bind_by_name( $stmt, ":especialidade", $especidalide );
-            oci_bind_by_name( $stmt, ":codigo", $codigo );
-            oci_bind_by_name( $stmt, ":ramal", $ramal );
+            oci_bind_by_name( $stmt, ":pedido", $os[0] );
+            oci_bind_by_name( $stmt, ":entrega", $os[1] );
+            oci_bind_by_name( $stmt, ":solicitante", $os[2] );
+            oci_bind_by_name( $stmt, ":setor", $os[3] );
+            oci_bind_by_name( $stmt, ":tipoos", $os[4] );
+            oci_bind_by_name( $stmt, ":motservico", $os[5]);
+            oci_bind_by_name( $stmt, ":servico", $os[6] );
+            oci_bind_by_name( $stmt, ":observacao", $os[7] );
+            oci_bind_by_name( $stmt, ":responsavel", $os[8], -1);
+            oci_bind_by_name( $stmt, ":status", $os[9] );
+            oci_bind_by_name( $stmt, ":resolucao", $os[10] );
+            oci_bind_by_name( $stmt, ":oficina", $os[11] );
+            oci_bind_by_name( $stmt, ":prioridade", $os[12]);
+            oci_bind_by_name( $stmt, ":especialidade", $os[13] );
+            oci_bind_by_name( $stmt, ":codigo", $os[14] );
+            oci_bind_by_name( $stmt, ":ramal", $os[15] );
+            oci_bind_by_name( $stmt, ":proprietario", $os[16] );
+            oci_bind_by_name( $stmt, ":bem", $os[17] );
+            oci_bind_by_name( $stmt, ":localidade", $os[18] );
+            oci_bind_by_name( $stmt, ":codigo", $os[19] );
             oci_execute( $stmt, OCI_COMMIT_ON_SUCCESS );
             $teste = true;
 
@@ -1272,7 +1267,7 @@ class os_dao
 
         $con = new connection_factory();
         $conn = $con->getConnection();
-
+        $os = array();
         try {
             $sql = "SELECT * 
                       FROM DBAMV.V_CHAMADOS_CONSULTA_TOTAL V
@@ -1293,7 +1288,7 @@ class os_dao
 
             ociexecute( $stmt );
             while( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ){
-                $os = new os();
+
                 $servico = "";
                 if( isset( $row['DS_SERVICO'] ) )
                     $servico = $row['DS_SERVICO'];

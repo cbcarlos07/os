@@ -462,7 +462,7 @@ $('#chk_sit').on('click', function () {
   function carregarTabela(  ){
 	  
 	  var usuario = $('#usuario').val();
-
+      console.log( 'Usuario: '+usuario );
 	  $.ajax({
 		  url : 'funcao/os.php',
 		  type : 'post',

@@ -8,6 +8,7 @@
 ini_set('display_errors',1);
 ini_set('display_startup_erros',1);
 error_reporting(E_ALL);
+
     $acao       = $_POST['acao'];
     $usuario    = "";
     $cdos       = 0;
@@ -28,9 +29,9 @@ error_reporting(E_ALL);
     $ramal      = "";
     $anexo      = "";
     $file       = "";
-    $bem        = 0;
-    $proprietario  = 0;
-    $localidade = 0;
+    $bem        = "";
+    $proprietario  = "";
+    $localidade = "";
 
     if( isset($_POST['usuario']) )
         $usuario = $_POST['usuario'];
@@ -111,7 +112,8 @@ switch ( $acao ){
             update_situacao( $status, $cdos );
             break;
         case 'C':
-            update_chamado( $cdos, $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $ramal );
+
+            update_chamado( $cdos, $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $ramal, $bem, $localidade, $proprietario );
             break;
         case 'D':
             getDadosUltimoSolicitante( $solicitante );
@@ -348,46 +350,28 @@ switch ( $acao ){
 
     }
 
-function update_chamado ( $codigo, $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $ramal ){
+function update_chamado ( $codigo, $pedido, $previsao, $solicitante, $setor, $descricao, $observacao, $responsavel, $status, $resolucao, $oficina, $tipoos, $motivo, $ramal, $bem, $localidade, $proprietario ){
     require_once "../controller/class.os_controller.php";
-    require_once "../beans/class.os.php";
-    require_once "../beans/class.usuario.php";
-    require_once "../beans/class.setor.php";
-    require_once "../beans/class.oficina.php";
-    require_once "../beans/class.manuEspec.php";
-    require_once "../beans/class.tipo_os.php";
-    require_once "../beans/class.motServ.php";
 
     $osController = new os_controller();
-    $ordem = new os();
-    $ordem->setCdOs( $codigo );
-    $ordem->setDataPedido( $pedido );
-    $ordem->setPrevisao( $previsao );
-    $ordem->setSolicitante( new usuario() );
-    $ordem->getSolicitante()->setCdUsuario( $solicitante );
-    $ordem->setSetor( new setor() );
-    $ordem->getSetor()->setCdSetor( $setor );
-    $ordem->setDescricao( $descricao );
-    $ordem->setObservacao( $observacao );
-    $ordem->setResponsavel( new usuario() );
-    $ordem->getResponsavel()->setCdUsuario( $responsavel );
-    $ordem->setSituacao( $status );
-    $ordem->setResolucao( $resolucao );
-    $ordem->setOficina( new oficina() );
-    $ordem->getOficina()->setCdOficina( $oficina );
-    $ordem->setEspecialidade( new manuEspec() );
-    $ordem->getEspecialidade()->setCdEspec( 31 );
-    $ordem->setTipoOs( new tipo_os() );
-    $ordem->getTipoOs()->setCdTipoOs( $tipoos );
-    $ordem->setMotServ( new motServ() );
-    $ordem->getMotServ()->setCdMotServ( $motivo );
-    $ordem->setPrioridade( 'E' );
-    $ordem->setDsRamal( $ramal );
+    /*
+      Setando os valores em array
+
+     */
+
+    $ordem = array(
+        $pedido,      $previsao,  $solicitante, $setor,
+        $tipoos,      $motivo,    $descricao,   $observacao,
+        $responsavel, $status,    $resolucao,   $oficina,
+        'E',          31,         $ramal,       $proprietario,
+        $bem,         $localidade,   $codigo
+    );
+
 
 
 
     $teste = $osController->update_chamado( $ordem );
-
+    //echo "Retorno: ".$teste;
     $retorno = array();
     if( $teste ){
         $retorno['sucesso'] = 1;

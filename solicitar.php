@@ -1,12 +1,15 @@
-
-
+<!--
+ Essa é a primeira tela que o usuário verá após o login
+-->
 <!DOCTYPE html>
 <html>
    <?php
    echo "<title>Ordem de Servi&ccedil;o - Solicitar Chamado</title>";
    include "includes/head.php";
 
-
+  /*
+   * Recuperando dados que foram setados na sessão
+   */
    $usuario     = $_SESSION['usuario'];
    $funcionario = $_SESSION['funcionario'];
 
@@ -352,6 +355,11 @@ Meu IP: 192.168.1.1" ></textarea>
           $('#solicitante').chosen( {allow_single_deselect: true} );
     </script>
     <script src="js/custom.js"></script>
+  <!--
+   Esse é o arquivo onde serão realizadas as operacoes para serem processadas no php
+
+  -->
+
     <script src="js/solicitar.js"></script>
 
 
