@@ -17,7 +17,7 @@ $(document).ready(function () {
   carregarTemplates(  );
   startCountdown();
   buscarLastSolicitante( usuario );
-   loadTotal();
+  loadTotal();
 
 
 
@@ -187,6 +187,9 @@ function carregarComboSolcitante(  ){
     });
 
 }
+
+/* carregamento de combobox */
+
 function carregarComboSetor(  ){
     //  console.log("IdSetor: "+idSetor);
       $.ajax({
@@ -252,6 +255,29 @@ function carregarTemplates(  ) {
     });
 }
 
+function carregarTemplateNosCampos( codigo ) {
+    //  console.log("Codigo: "+codigo);
+    $.ajax({
+        url    : 'funcao/template.php',
+        dataType : 'json',
+        type   : 'post',
+        data   : {
+            acao : 'T',
+            codigo : codigo
+        },
+        success : function (data) {
+            $('#descricao').val( data.descricao );
+            $('#observacao').val( data.observacao.replace(new RegExp('<br />', 'g'), ' ') );
+            verificarCampo();
+
+
+        }
+    });
+}
+
+/* carregamento de combobox  */
+
+
     function removerExemplo( codigo, titulo ) {
         $('span.texto-remover').html('<b>' + titulo + '</b>');
         $('.modal-remover').modal('show');
@@ -302,25 +328,7 @@ $('#observacao').on('input', function () {
 });
 
 
-function carregarTemplateNosCampos( codigo ) {
-     //  console.log("Codigo: "+codigo);
-        $.ajax({
-            url    : 'funcao/template.php',
-            dataType : 'json',
-            type   : 'post',
-            data   : {
-                acao : 'T',
-                codigo : codigo
-            },
-            success : function (data) {
-                $('#descricao').val( data.descricao );
-                $('#observacao').val( data.observacao.replace(new RegExp('<br />', 'g'), ' ') );
-                verificarCampo();
 
-
-            }
-        });
-    }
 
 
 $('.btn-salvar').on('click',function(){
