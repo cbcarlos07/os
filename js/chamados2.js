@@ -64,7 +64,7 @@ function carregarComboBens() {
          success : function (data) {
              var option = "<option value=''></option>";
              $.each( data, function (i, j) {
-                 option += "<option value='"+j.cd_bem+"'>"+j.nr_patrimonio+"</option>";
+                 option += "<option data-bem='"+j.ds_item+"' data-localidade='"+j.localidade+"' data-fornecedor='"+j.fornecedor+"' value='"+j.cd_bem+"'>"+j.nr_patrimonio+"</option>";
              } );
              var serie = $('#plaqueta');
              serie.find('option').remove();
@@ -76,7 +76,12 @@ function carregarComboBens() {
 }
 
 $('#plaqueta').on('change', function () {
-     getItem();
+     //getItem();
+    var selected = $(this).find('option:selected');
+    $('#descbem').val( selected.data('bem') );
+    $('#localidade').val( selected.data('localidade') );
+    $('#fornecedor').val( selected.data('fornecedor') );
+
 });
 
 

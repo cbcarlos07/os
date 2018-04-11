@@ -61,6 +61,7 @@ if( isset( $_POST['localidade'] ) ){
 if( isset( $_POST['data'] ) ){
     $data = $_POST['data'];
 }
+
 if( isset( $_POST['usuario'] ) ){
     $usuario = $_POST['usuario'];
 }

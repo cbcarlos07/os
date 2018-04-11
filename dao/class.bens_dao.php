@@ -84,7 +84,43 @@ class bens_dao
         $con = new connection_factory();
         $conn = $con->getConnection();
 
-        $query = "SELECT * FROM DTI_BEM_PATRIMONIAL ";
+       // $query = "SELECT * FROM DTI_BEM_PATRIMONIAL ";
+        //Esta consulta traz os bens tanto de material do setor de informática quanto o bem cadastrado no MV
+        $query = "SELECT * FROM (
+
+                              SELECT 1 IND
+                                    ,D.CD_BEM 
+                                    ,D.DS_ITEM DESCRICAO
+                                    ,MAX( D.NR_PATRIMONIO ) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO) PLAQUETA
+                                    ,MAX(B.CD_LOCALIDADE) KEEP (DENSE_RANK LAST ORDER BY B.CD_HISTORICO) LOCALIDADE
+                                    ,F.CD_FORNECEDOR
+                                FROM DTI_BEM_PATRIMONIAL D
+                                  ,DTI_BEM_HISTORICO   B
+                                  ,DBAMV.SETOR         S
+                                  ,DBAMV.LOCALIDADE    L
+                                  ,DBAMV.FORNECEDOR    F
+                                WHERE B.CD_BEM         =    D.CD_BEM 
+                                AND   S.CD_SETOR       =    B.CD_SETOR
+                                AND   L.CD_LOCALIDADE  =    B.CD_LOCALIDADE
+                                AND   F.CD_FORNECEDOR  =    D.PROPRIETARIO                  
+                                GROUP BY D.CD_BEM 
+                                        ,D.DS_ITEM
+                                        ,F.CD_FORNECEDOR
+                              UNION 
+                              SELECT 2 IND
+                                    ,B.CD_BEM
+                                    ,B.DS_BEM DESCRICAO
+                                    ,B.DS_PLAQUETA PLAQUETA 
+                                    ,B.CD_LOCALIDADE LOCALIDADE
+                                    ,NVL(B.CD_FORNECEDOR, 0  )
+                                FROM BENS B
+                               WHERE CD_ESPECIE = 7
+                               AND   CD_CLASSE  = 3
+                              
+                            )A
+
+
+                              ";
         $vetor = array();
         try{
 
@@ -95,11 +131,14 @@ class bens_dao
             while ( $row = oci_fetch_array( $stmt, OCI_ASSOC ))
             {
 
+
                 //echo "DS_ITEM: ".$row['DS_ITEM']."\n";
                 $vetor[] = array(
                     "cd_bem"          => $row['CD_BEM'],
-                    "ds_item"         => $row['DS_ITEM'],
-                    "nr_patrimonio"   => $row['NR_PATRIMONIO'],
+                    "ds_item"         => $row['DESCRICAO'],
+                    "nr_patrimonio"   => $row['PLAQUETA'],
+                    "localidade"      => $row['LOCALIDADE'],
+                    "fornecedor"      => $row['CD_FORNECEDOR']
                 );
             }
 

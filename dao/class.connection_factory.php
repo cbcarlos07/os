@@ -24,7 +24,7 @@ class connection_factory
 
     private $ora_user = DB_USER;
     private $ora_senha = DB_PWD;
-    private $ora_bd = DB_URL_PRD;
+    private $ora_bd = DB_URL_SML;
 
     public function getConnection()
     {

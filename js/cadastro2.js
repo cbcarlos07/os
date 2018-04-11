@@ -64,7 +64,7 @@ function carregarComboBens() {
          success : function (data) {
              var option = "<option value=''></option>";
              $.each( data, function (i, j) {
-                 option += "<option value='"+j.cd_bem+"'>"+j.nr_patrimonio+"</option>";
+                 option += "<option data-bem='"+j.ds_item+"' data-localidade='"+j.localidade+"' data-fornecedor='"+j.fornecedor+"' value='"+j.cd_bem+"'>"+j.nr_patrimonio+"</option>";
              } );
              var serie = $('#plaqueta');
              serie.find('option').remove();
@@ -76,7 +76,11 @@ function carregarComboBens() {
 }
 
 $('#plaqueta').on('change', function () {
-     getItem();
+    // getItem();
+    var selected = $(this).find('option:selected');
+    $('#descbem').val( selected.data('bem') );
+    $('#localidade').val( selected.data('localidade') );
+    $('#fornecedor').val( selected.data('fornecedor') );
 });
 
 
@@ -187,8 +191,8 @@ function salvarOs() {
     }else{
 
     }
-    console.log( "Localidade Salvar: "+localidade );
-    console.log( "Fornecedor salvar: "+fornecedor );
+  //  console.log( "Localidade Salvar: "+localidade );
+  //  console.log( "Fornecedor salvar: "+fornecedor );
     /*console.log('Tipo os: '+tipoos);
     console.log('Usuario : '+usuario);*/
     //console.log("Codigo da Os: "+cdOs);
@@ -638,7 +642,7 @@ function   verifyField() {
     });
 
     $('#solicitante').on('change', function () {
-        console.log("Solicitante mudou: "+$(this).val());
+      //  console.log("Solicitante mudou: "+$(this).val());
         if( $(this).val() != 0 ){
           //  console.log("Solicitante maior do que zero");
             $("#solicitante_chosen").removeClass("required");
@@ -666,7 +670,7 @@ function   verifyField() {
                 plaqueta : plaqueta
             },
             success : function (data) {
-                console.log('Plaqueta Setor: :'+data.setor);
+            //    console.log('Plaqueta Setor: :'+data.setor);
                 var setor = $('#setor');
                 $('#bem').val( data.codigo );
                 $('#descbem').val( data.descricao );
@@ -1051,7 +1055,7 @@ function carregarComboResponsavel( oficina, usuario ){
         success : function (data) {
      /*       var op = "<option value='0'>Selecione</option>";
             $('#responsavel').append(op);*/
-             console.log(data);
+         //    console.log(data);
             $.each( data, function (key, value) {
 
                 var option  = "<option value='"+ value.cd_usuario +"'>"
