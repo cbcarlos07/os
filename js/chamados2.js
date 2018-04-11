@@ -75,6 +75,12 @@ function carregarComboBens() {
 
 }
 
+/**
+ * Quando o combobox do bem patrimonial é selecionado, ele seta em alguns campos dos quais Localidade e Fornecedor estão ocultos e no campo
+ * Bem Patrimonial cujo id é descbem
+ * Em cada opção do combobox já tem cada valor necessário para o preenchimento evitando assim a necessidade de busca no banco de dados novamente
+ */
+
 $('#plaqueta').on('change', function () {
      //getItem();
     var selected = $(this).find('option:selected');
